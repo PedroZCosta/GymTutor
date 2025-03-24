@@ -32,9 +32,8 @@ public class CustomUserDetailsService implements org.springframework.security.co
 
         // Adiciona o prefixo ROLE_ para cada role, se necessário
         userBuilder.roles(user.getRoles().stream()
-                .map(role -> "ROLE_" + role.getRoleName().name())  // Prefixando com ROLE_
+                .map(role -> role.getRoleName().name())  // Prefixando com ROLE_
                 .toArray(String[]::new));
-
 
         return userBuilder.build();
     }

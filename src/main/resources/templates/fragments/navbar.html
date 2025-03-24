@@ -19,15 +19,8 @@
     </div>
 
 
-    <div th:if="${LoggedUserRole.contains('ROLE_MASTER')}">
-        <h2>Seção do Usuário Master</h2>
-        <ul>
-            <li><a href="/master/entity">Gerenciar Entidades</a></li>
-            <li><a href="/master/user">Gerenciar Usuários</a></li>
-        </ul>
-    </div>
 
-    <div th:if="${LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
+    <div th:if="${LoggedUserRole.contains('ROLE_ADMIN')}">
         <h2>Seção do Administrador</h2>
         <ul>
             <h3>Cadastros</h3>
@@ -38,43 +31,21 @@
         </ul>
     </div>
 
-    <div th:if="${LoggedUserRole.contains('ROLE_FARMACY') or LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
-        <h2>Seção da Farmácia</h2>
+    <div th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_ADMIN')}">
+        <h2>Seção do Aluno</h2>
         <ul>
-            <h3>Cadastros</h3>
-            <li><a href="/pharmacy/configs/measure-unit">Gerenciar Unidades de Medidas</a></li>
-            <li><a href="/pharmacy/configs/medicine-type">Gerenciar Classe de Medicamentos</a></li>
-            <li><a href="/pharmacy/configs/medicine">Gerenciar Medicamentos</a></li>
-            <li><a href="/pharmacy/configs/medicinepercontainer">Gerenciar Medicamentos por Recipientes</a></li>
-            <li><a href="/pharmacy/configs/supplier">Gerenciar Fornecedores</a></li>
-            <li><a href="/pharmacy/configs/motives">Gerenciar Motivos de Ajustes (saídas)</a></li>
-            <h3>Movimentações</h3>
-            <li><a href="/pharmacy/entries">Entradas no Estoque</a></li>
-            <li><a href="/pharmacy/exits">Saídas no Estoque</a></li>
-            <li><a href="/pharmacy/adjustments">Ajustes de Estoque</a></li>
-            <h3>Relatórios</h3>
-            <li><a href="/pharmacy/stock">Estoque Atual</a></li>
-            <li><a href="/home">Produtos a Vencer</a></li>
-            <li><a href="/home">Pontos de Pedido</a></li>
-            <li><a href="/home">Curva ABC</a></li>
-            <li><a href="/home">Entradas</a></li>
-            <li><a href="/home">Saídas</a></li>
         </ul>
     </div>
 
-    <div th:if="${LoggedUserRole.contains('ROLE_VETERINARY') or LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
-        <h2>Seção do Veterinário</h2>
+
+    <div th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+        <h2>Seção do Personal</h2>
         <ul>
             <!-- Adicione links conforme necessário -->
         </ul>
     </div>
 
-    <div th:if="${LoggedUserRole.contains('ROLE_AUXILIARY') or LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
-        <h2>Seção Auxiliar</h2>
-        <ul>
-            <!-- Adicione links conforme necessário -->
-        </ul>
-    </div>
+
 </div>
 </body>
 </html>
