@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>list</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<body>
+<h1>Gerenciamento de Setores</h1>
+
+<!-- Mensagens de erro e sucesso -->
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- Lista dos Usuarios -->
+<a href="/admin/sector/new">Criar Novo Setor</a>
+<table>
+    <thead>
+    <tr>
+        <th>ID do Setor</th>
+        <th>Nome do Setor</th>
+        <th>Entidade do Setor</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="sector : ${sectors}">
+        <td th:text="${sector.sectorId}"></td>
+        <td th:text="${sector.sectorName}"></td>
+        <td th:text="${sector.entity.entityName}"></td>
+        <td class="actions-cell">
+            <div class="actions-cell-row">
+                <form th:action="@{/admin/sector/{id}/edit(id=${sector.sectorId})}" th:method="get" style="display: inline;">
+                    <button type="submit">Editar Setor</button>
+                </form>
+                <form th:action="@{/admin/sector/delete/{id}(id=${sector.sectorId})}" th:method="post" style="display: inline;">
+                    <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir este usuario?')">Excluir</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

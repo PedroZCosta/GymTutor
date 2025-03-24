@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+  <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <body>
+    <h1>Editar Setor</h1>
+    <!-- Link de Voltar -->
+    <a href="/admin/sector">Voltar</a><br>
+
+    <!-- Mensagens de erro e sucesso -->
+    <div th:if="${successMessage}" style="color: green;">
+      <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" style="color: red;">
+      <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Formulário de edição -->
+    <form th:action="@{/admin/sector/{sectorId}/edit(sectorId=${sectorId})}" th:method="post" th:object="${sectorFormDTO}">
+      <!-- Campo para nome do setor -->
+      <label for="sectorName">Nome do Setor:</label>
+      <input type="text" id="sectorName" name="sectorName" th:value="*{sectorName}" required />
+
+      <!-- Exibe erro se houver -->
+      <div th:if="${#fields.hasErrors('sectorName')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('sectorName')}" th:text="${err}"></p>
+      </div>
+
+
+      <button type="submit">Atualizar</button>
+    </form>
+  </body>
+
+</html>
