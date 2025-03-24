@@ -1,41 +1,43 @@
 package com.gymtutor.gymtutor.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PersonalRepository personalRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PersonalRepository personalRepository;
+    //Construtor
+    public UserService(UserRepository userRepository, PersonalRepository personalRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.personalRepository = personalRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    public void criarUsuario(User user, boolean isPersonal, String creef) {
+    @Transactional
+    public void createUser(User user, boolean isPersonal, String CREEF) {
         // Criptografando a senha
-        user.setSenha(passwordEncoder.encode(user.getSenha()));
+        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
 
         // Associando a role 'STUDENT' por padrão
-        Role studentRole = roleRepository.findByNome("ROLE_STUDENT");
+        Role studentRole = roleRepository.findByRoleName(RoleName.STUDENT);
         user.getRoles().add(studentRole);
 
         // Se o usuário for um 'PERSONAL', associa a role 'PERSONAL' e o CREEF
         if (isPersonal) {
-            Role personalRole = roleRepository.findByNome("ROLE_PERSONAL");
+            Role personalRole = roleRepository.findByRoleName(RoleName.PERSONAL);
             user.getRoles().add(personalRole);
 
             // Criando e associando o Personal
             Personal personal = new Personal();
             personal.setUser(user);
-            personal.setCreef(creef);
+            personal.setPersonalCREEF(CREEF);
             personalRepository.save(personal);
         }
 
@@ -43,15 +45,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void criarAdmin() {
-        if (userRepository.findByEmail("admin@academia.com").isEmpty()) {
+    public void createAdminUser() {
+        if (userRepository.findByUserEmail("admin@academia.com").isEmpty()) {
             User admin = new User();
-            admin.setNome("Administrador");
-            admin.setEmail("admin@academia.com");
-            admin.setSenha(passwordEncoder.encode("admin123"));
+            admin.setUserName("Administrador");
+            admin.setUserEmail("admin@academia.com");
+            admin.setUserPassword(passwordEncoder.encode("admin123"));
 
             // Adicionando a role 'ADMIN' para o administrador
-            Role adminRole = roleRepository.findByNome("ROLE_ADMIN");
+            Role adminRole = roleRepository.findByRoleName(RoleName.ADMIN);
             admin.getRoles().add(adminRole);
 
             userRepository.save(admin);

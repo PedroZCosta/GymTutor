@@ -29,6 +29,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("jakarta.platform:jakarta.jakartaee-api:10.0.0")
+	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
 }
 
 tasks.withType<Test> {

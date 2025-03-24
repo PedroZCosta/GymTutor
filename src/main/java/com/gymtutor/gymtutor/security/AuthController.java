@@ -25,10 +25,12 @@ public class AuthController {
     }
 
     @PostMapping("/cadastro")
-    public String criarConta(@ModelAttribute User user,
-                             @RequestParam(required = false) boolean isPersonal,
-                             @RequestParam(required = false) String creef) {
-        userService.criarUsuario(user, isPersonal, creef);
+    public String criarConta(
+            @ModelAttribute User user,
+            @RequestParam(required = false) boolean isPersonal,
+            @RequestParam(required = false) String creef
+    ) {
+        userService.createUser(user, isPersonal, creef);
         return "redirect:/login";
     }
 }

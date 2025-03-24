@@ -1,6 +1,10 @@
 package com.gymtutor.gymtutor.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,15 +18,29 @@ import java.util.Set;
 )
 public class User {
 
+    // Identificador único do usuário (gerado automaticamente no banco)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userId;
 
-    private String nome;
-    private String email;
-    private String senha;
-    private String cpf;
+    // Nome do aluno (obrigatório e tamanho mínimo de 2 caracteres)
+    @Size(min = 2, message = "O nome deve ter pelo menos 2 caracteres.")
+    private String userName;
 
+    // Email (obrigatório e precisa ser um email válido)
+    @NotBlank
+    @Email(message = "Email inválido.")
+    private String userEmail;
+
+    // Senha (obrigatória e com tamanho mínimo de 5 caracteres)
+    @NotBlank
+    @Size(min = 5, message = "A senha deve ter pelo menos 5 caracteres.")
+    private String userPassword;
+
+    // CPF
+    private String userCpf;
+
+    // Cria uma tabela relacionar entre o papel e o usuario
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
@@ -31,44 +49,44 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     // Getters and Setters
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public String getNome() {
-        return nome;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getUserCpf() {
+        return userCpf;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setUserCpf(String userCpf) {
+        this.userCpf = userCpf;
     }
 
     public Set<Role> getRoles() {
@@ -78,6 +96,5 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
 
 }

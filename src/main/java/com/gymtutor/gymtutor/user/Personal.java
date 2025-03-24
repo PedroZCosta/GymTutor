@@ -1,34 +1,37 @@
 package com.gymtutor.gymtutor.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Table(name = "tb_personal")
 public class Personal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int personalId;
 
-    private String creef;
+    @NotBlank
+    private String personalCREEF;
 
     @OneToOne
     private User user;
 
     // Getters and Setters
-    public int getId() {
-        return id;
+    public int getPersonalId() {
+        return personalId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPersonalId(int personalId) {
+        this.personalId = personalId;
     }
 
-    public String getCreef() {
-        return creef;
+    public String getPersonalCREEF() {
+        return personalCREEF;
     }
 
-    public void setCreef(String creef) {
-        this.creef = creef;
+    public void setPersonalCREEF(String personalCREEF) {
+        this.personalCREEF = personalCREEF;
     }
 
     public User getUser() {
