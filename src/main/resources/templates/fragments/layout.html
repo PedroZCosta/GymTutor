@@ -1,0 +1,19 @@
+<!-- src/main/resources/templates/layout.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Farma Pro - Home</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- fragmento do navbar -->
+<div class="navbar" th:insert="~{fragments/navbar :: navbar}"></div>
+
+<!-- Conteudo geral -->
+<div class="content" th:insert="~{${body}}"></div>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="navbar">
+    <h1>Bem-vindo,</h1>
+    <h2><span th:text="${LoggedUserName}">User</span>!</h2>
+
+    <!-- Botão de logout -->
+    <form th:action="@{/logout}" th:method="post" style="display: inline;">
+        <button type="submit" onclick="return confirm('Você tem certeza de que deseja sair?')">Logout</button>
+    </form>
+
+    <div>
+        <h2>Página Home</h2>
+        <ul>
+            <li><a href="/home">Página Home</a></li>
+        </ul>
+    </div>
+
+
+    <div th:if="${LoggedUserRole.contains('ROLE_MASTER')}">
+        <h2>Seção do Usuário Master</h2>
+        <ul>
+            <li><a href="/master/entity">Gerenciar Entidades</a></li>
+            <li><a href="/master/user">Gerenciar Usuários</a></li>
+        </ul>
+    </div>
+
+    <div th:if="${LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
+        <h2>Seção do Administrador</h2>
+        <ul>
+            <h3>Cadastros</h3>
+            <li><a href="/admin/user">Gerenciar Usuários</a></li>
+            <li><a href="/admin/sector">Gerenciar Setores</a></li>
+            <h3>Relatórios</h3>
+            <li><a href="/home">Custo Setorial</a></li>
+        </ul>
+    </div>
+
+    <div th:if="${LoggedUserRole.contains('ROLE_FARMACY') or LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
+        <h2>Seção da Farmácia</h2>
+        <ul>
+            <h3>Cadastros</h3>
+            <li><a href="/pharmacy/configs/measure-unit">Gerenciar Unidades de Medidas</a></li>
+            <li><a href="/pharmacy/configs/medicine-type">Gerenciar Classe de Medicamentos</a></li>
+            <li><a href="/pharmacy/configs/medicine">Gerenciar Medicamentos</a></li>
+            <li><a href="/pharmacy/configs/medicinepercontainer">Gerenciar Medicamentos por Recipientes</a></li>
+            <li><a href="/pharmacy/configs/supplier">Gerenciar Fornecedores</a></li>
+            <li><a href="/pharmacy/configs/motives">Gerenciar Motivos de Ajustes (saídas)</a></li>
+            <h3>Movimentações</h3>
+            <li><a href="/pharmacy/entries">Entradas no Estoque</a></li>
+            <li><a href="/pharmacy/exits">Saídas no Estoque</a></li>
+            <li><a href="/pharmacy/adjustments">Ajustes de Estoque</a></li>
+            <h3>Relatórios</h3>
+            <li><a href="/pharmacy/stock">Estoque Atual</a></li>
+            <li><a href="/home">Produtos a Vencer</a></li>
+            <li><a href="/home">Pontos de Pedido</a></li>
+            <li><a href="/home">Curva ABC</a></li>
+            <li><a href="/home">Entradas</a></li>
+            <li><a href="/home">Saídas</a></li>
+        </ul>
+    </div>
+
+    <div th:if="${LoggedUserRole.contains('ROLE_VETERINARY') or LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
+        <h2>Seção do Veterinário</h2>
+        <ul>
+            <!-- Adicione links conforme necessário -->
+        </ul>
+    </div>
+
+    <div th:if="${LoggedUserRole.contains('ROLE_AUXILIARY') or LoggedUserRole.contains('ROLE_ADMINISTRATOR')}">
+        <h2>Seção Auxiliar</h2>
+        <ul>
+            <!-- Adicione links conforme necessário -->
+        </ul>
+    </div>
+</div>
+</body>
+</html>

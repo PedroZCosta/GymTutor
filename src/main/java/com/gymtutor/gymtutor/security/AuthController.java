@@ -33,4 +33,5 @@ public class AuthController {
         userService.createUser(user, isPersonal, creef);
         return "redirect:/login";
     }
+
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+
+  <head>
+    <title>GymTutor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+<!--    <link rel="stylesheet" href="/css/base/login.css">-->
+  </head>
+
+  <body>
+
+    <div class="overlay">
+
+      <h1>Bem-vindo ao GymTutor!</h1>
+      <p>Logue com suas credenciais.</p>
+
+      <!-- Mostrar mensagem de erro se a autenticação falhar -->
+      <div th:if="${session.errorMessage}">
+        <p style="color: red;" th:text="${session.errorMessage}"></p>
+      </div>
+
+
+      <form th:action="@{/login}" th:method="post">
+
+        <label for="username">E-mail</label>
+        <input type="email" id="username" name="username" required>
+
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <p>Crie uma conta... link</p>
+
+
+    </div>
+
+  </body>
+
+</html>
