@@ -8,6 +8,8 @@ public class GymtutorApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GymtutorApplication.class, args);
+		System.out.println("hello world");
 	}
+
 
 }
