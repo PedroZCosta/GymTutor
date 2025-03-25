@@ -4,7 +4,8 @@
   <body>
     <h1>Editar Setor</h1>
     <!-- Link de Voltar -->
-    <a href="/admin/sector">Voltar</a><br>
+    <a href="/admin/activities">Voltar</a><br>
+
 
     <!-- Mensagens de erro e sucesso -->
     <div th:if="${successMessage}" style="color: green;">
@@ -15,14 +16,15 @@
     </div>
 
     <!-- Formulário de edição -->
-    <form th:action="@{/admin/sector/{sectorId}/edit(sectorId=${sectorId})}" th:method="post" th:object="${sectorFormDTO}">
+    <form th:action="@{/admin/activities/{activitiesId}/edit(activitiesId=${activitiesId})}" th:method="post" th:object="${ActivitiesModel}">
       <!-- Campo para nome do setor -->
-      <label for="sectorName">Nome do Setor:</label>
-      <input type="text" id="sectorName" name="sectorName" th:value="*{sectorName}" required />
-
+      <label for="activityName">Nome do Exercicio:</label>
+      <input type="text" id="activityName" name="activityName" th:value="*{activityName}" required />
+      <label for="activityDescription">Descrição</label>
+      <input type="text" id="activityDescription" name="activityDescription" th:value="*{activityDescription}" required />
       <!-- Exibe erro se houver -->
-      <div th:if="${#fields.hasErrors('sectorName')}" style="color: red;">
-        <p th:each="err : ${#fields.errors('sectorName')}" th:text="${err}"></p>
+      <div th:if="${#fields.hasErrors('activityName')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('activityName')}" th:text="${err}"></p>
       </div>
 
 
