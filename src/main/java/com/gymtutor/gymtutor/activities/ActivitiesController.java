@@ -1,6 +1,5 @@
 package com.gymtutor.gymtutor.activities;
 
-import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+// Controlador para gerenciar as operações relacionadas a entidades clínicas (ClinicEntity).
 @Controller
 @RequestMapping("/admin/activities")
 public class ActivitiesController {

@@ -2,6 +2,7 @@ package com.gymtutor.gymtutor.activities;
 
 import jakarta.persistence.*;
 
+// Entidade JPA que mapeia os dados da clínica no banco de dados. A tabela gerada será 'tb_activities'.
 @Entity
 @Table(
         name = "tb_activities"

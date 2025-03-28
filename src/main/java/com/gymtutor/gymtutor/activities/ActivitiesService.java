@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+// Serviço para gerenciar a lógica de negócios relacionada a entidades clínicas (ActivitiesService),
+// incluindo operações de criação, atualização, exclusão e recuperação de entidades,
+// além de realizar validações de permissão de acesso para o usuário logado.
 @Service
 public class ActivitiesService {
 
