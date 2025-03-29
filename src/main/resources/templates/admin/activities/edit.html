@@ -2,7 +2,7 @@
   <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
   <body>
-    <h1>Editar Setor</h1>
+    <h1>Editar Exercício</h1>
     <!-- Link de Voltar -->
     <a href="/admin/activities">Voltar</a><br>
 
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Formulário de edição -->
-    <form th:action="@{/admin/activities/{activitiesId}/edit(activitiesId=${activitiesId})}" th:method="post" th:object="${ActivitiesModel}">
+    <form th:action="@{/admin/activities/{activitiesId}/edit(activitiesId=${activitiesId})}" th:method="post" th:object="${activitiesModel}">
       <!-- Campo para nome do setor -->
       <label for="activityName">Nome do Exercicio:</label>
       <input type="text" id="activityName" name="activityName" th:value="*{activityName}" required />

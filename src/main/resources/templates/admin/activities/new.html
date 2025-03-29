@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<h1>Criar Novo Setor</h1>
+<h1>Criar Novo Exercício</h1>
 <!-- Link de Voltar -->
 <a href="/admin/activities">Voltar</a><br>
 
@@ -15,7 +15,7 @@
 </div>
 
 <!-- Formulário -->
-<form th:action="@{/admin/activities}" th:method="post" th:object="${ActivitiesModel}">
+<form th:action="@{/admin/activities}" th:method="post" th:object="${activitiesModel}">
 
   <!-- Campo para nome do setor -->
   <label for="activityName">Nome do Exercicio:</label>

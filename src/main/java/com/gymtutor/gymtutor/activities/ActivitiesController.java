@@ -28,7 +28,7 @@ public class ActivitiesController {
 
     @GetMapping("/new")
     public String newActivityForm(Model model){
-        model.addAttribute("ActivitiesModel", new ActivitiesModel());
+        model.addAttribute("activitiesModel", new ActivitiesModel());
         model.addAttribute("body", "/admin/activities/new");
         return "/fragments/layout";
     }
@@ -55,7 +55,7 @@ public class ActivitiesController {
             RedirectAttributes redirectAttribute
     ){
         ActivitiesModel activitiesModel = activitiesService.findById(activitiesId);
-        model.addAttribute("ActivitiesModel", activitiesModel);
+        model.addAttribute("activitiesModel", activitiesModel);
         model.addAttribute("body", "/admin/activities/edit");
         return "/fragments/layout";
     }
