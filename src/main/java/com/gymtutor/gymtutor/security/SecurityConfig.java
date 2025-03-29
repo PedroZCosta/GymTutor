@@ -29,6 +29,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/cadastro", "/login").permitAll() // Páginas públicas
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // Permitir acesso a arquivos estáticos
                         .requestMatchers("/student/**").hasRole("STUDENT") // Apenas STUDENT pode acessar /student
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Apenas ADMIN pode acessar /admin
                         .requestMatchers("/personal/**").hasRole("PERSONAL") // Apenas PERSONAL pode acessar /personal
