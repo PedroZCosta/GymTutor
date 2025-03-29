@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+    <body>
 
-<body>
+    <!-- Define o corpo da página -->
+    <div>
+        <h2>Conteúdo da Página Home</h2>
+        <p>Bem-vindo à página inicial!</p>
+    </div>
 
-<!-- Define o corpo da página -->
-<div>
-    <h2>Conteúdo da Página Home</h2>
-    <p>Bem-vindo à página inicial!</p>
-</div>
+    <!-- Mensagens de erro e sucesso -->
+    <!-- Exibe mensagem de sucesso, se houver -->
+    <div th:if="${successMessage}" style="color: green;">
+        <p th:text="${successMessage}"></p>
+    </div>
 
-<!-- Mensagens de erro e sucesso -->
-<div th:if="${successMessage}" style="color: green;">
-    <p th:text="${successMessage}"></p>
-</div>
-<div th:if="${errorMessage}" style="color: red;">
-    <p th:text="${errorMessage}"></p>
-</div>
+    <!-- Exibe mensagem de erro, se houver -->
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
 
+    </body>
 
-</body>
 </html>

@@ -19,7 +19,7 @@ public class DataLoader implements CommandLineRunner {
         this.userService = userService;
     }
 
-    // Método executado ao iniciar a aplicação
+    // Metodo executado ao iniciar a aplicação
     @Override
     public void run(String... args) throws Exception {
         // Verifica se as roles já existem no banco de dados
@@ -30,7 +30,7 @@ public class DataLoader implements CommandLineRunner {
             roleRepository.save(new Role(RoleName.PERSONAL)); // Cria a role PERSONAL
         }
 
-        // Chama o método criarAdmin do UserService para criar o usuário administrador
+        // Chama o Metodo criar administrador do UserService para criar o usuário administrador
         userService.createAdminUser();
     }
 }

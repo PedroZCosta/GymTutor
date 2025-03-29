@@ -18,6 +18,8 @@ public class AuthController {
         return "login";
     }
 
+
+    //TODO: IMPLEMENTAR MÉTODOS DE CADASTRO DOS USUÁRIOS
     @GetMapping("/cadastro")
     public String cadastro(Model model) {
         model.addAttribute("user", new User());

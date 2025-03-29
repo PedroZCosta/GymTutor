@@ -2,37 +2,50 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" >
 
   <head>
+    <!-- Título da página, exibido na aba do navegador -->
     <title>GymTutor</title>
+
+    <!-- Link para o arquivo CSS 'water.css' que aplica um estilo simples e limpo à página -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
-<!--    <link rel="stylesheet" href="/css/base/login.css">-->
+    <!--    <link rel="stylesheet" href="/css/base/login.css">-->
+
   </head>
 
   <body>
 
+    <!-- Container para o formulário de login, com a classe 'overlay' -->
     <div class="overlay">
 
+      <!-- Título de boas-vindas -->
       <h1>Bem-vindo ao GymTutor!</h1>
+
+      <!-- Texto explicativo sobre a finalidade da página -->
       <p>Logue com suas credenciais.</p>
 
-      <!-- Mostrar mensagem de erro se a autenticação falhar -->
+      <!-- Bloco condicional que mostra a mensagem de erro se houver falha na autenticação -->
       <div th:if="${session.errorMessage}">
         <p style="color: red;" th:text="${session.errorMessage}"></p>
       </div>
 
-
+      <!-- Formulário de login -->
       <form th:action="@{/login}" th:method="post">
 
+        <!-- Campo de entrada para o e-mail do usuário -->
         <label for="username">E-mail</label>
         <input type="email" id="username" name="username" required>
 
+        <!-- Campo de entrada para a senha do usuário -->
         <label for="password">Senha</label>
         <input type="password" id="password" name="password" required>
 
+        <!-- Botão de envio do formulário -->
         <button type="submit">Login</button>
+
       </form>
 
+      <!-- Parágrafo oferecendo a opção de criar uma nova conta (link ainda não implementado) -->
+      <!-- TODO: Implementação do link de criação de um novo usuário -->
       <p>Crie uma conta... link</p>
-
 
     </div>
 

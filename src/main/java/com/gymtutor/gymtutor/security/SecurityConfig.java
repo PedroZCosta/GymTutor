@@ -53,7 +53,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Bean para fornecer o serviço de detalhes do usuário
+    // Bean para fornecer o serviço de detalhes do usuário, será carregado na session
     @Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService(userRepository); // Usando o repositório para carregar o usuário

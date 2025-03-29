@@ -1,6 +1,5 @@
 package com.gymtutor.gymtutor.security;
 
-import com.gymtutor.gymtutor.user.Role;
 import com.gymtutor.gymtutor.user.User;
 import com.gymtutor.gymtutor.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,8 +26,6 @@ public class CustomUserDetailsService implements org.springframework.security.co
         // Constrói e retorna o UserDetails
         UserBuilder userBuilder = org.springframework.security.core.userdetails.User.withUsername(user.getUserEmail());
         userBuilder.password(user.getUserPassword());
-
-//        userBuilder.roles(user.getRoles().stream().map(Role::getRoleName).toArray(String[]::new));
 
         // Adiciona o prefixo ROLE_ para cada role, se necessário
         userBuilder.roles(user.getRoles().stream()

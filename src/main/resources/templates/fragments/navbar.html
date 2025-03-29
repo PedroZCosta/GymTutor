@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<body>
-<div th:fragment="navbar">
-    <h1>Bem-vindo,</h1>
-    <h2><span th:text="${LoggedUserName}">User</span>!</h2>
+    <body>
 
-    <!-- Botão de logout -->
-    <form th:action="@{/logout}" th:method="post" style="display: inline;">
-        <button type="submit" onclick="return confirm('Você tem certeza de que deseja sair?')">Logout</button>
-    </form>
+        <div th:fragment="navbar">
+            <h1>Bem-vindo,</h1>
+            <h2><span th:text="${LoggedUserName}">User</span>!</h2>
 
-    <div>
-        <h2>Página Home</h2>
-        <ul>
-            <li><a href="/home">Página Home</a></li>
-        </ul>
-    </div>
+            <!-- Botão de logout -->
+            <form th:action="@{/logout}" th:method="post" style="display: inline;">
+                <button type="submit" onclick="return confirm('Você tem certeza de que deseja sair?')">Logout</button>
+            </form>
 
+            <div>
+                <h2>Página Home</h2>
+                <ul>
+                    <li><a href="/home">Página Home</a></li>
+                </ul>
+            </div>
 
+            <div th:if="${LoggedUserRole.contains('ROLE_ADMIN')}">
+                <h2>Seção do Administrador</h2>
+                <ul>
+                    <h3>Cadastros</h3>
+                    <li><a href="/admin/activities">Gerenciar exercicios</a></li>
+                </ul>
+            </div>
 
-    <div th:if="${LoggedUserRole.contains('ROLE_ADMIN')}">
-        <h2>Seção do Administrador</h2>
-        <ul>
-            <h3>Cadastros</h3>
-            <li><a href="/admin/activities">Gerenciar exercicios</a></li>
-        </ul>
-    </div>
-
-    <div th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_ADMIN')}">
-        <h2>Seção do Aluno</h2>
-        <ul>
-        </ul>
-    </div>
-
-
-    <div th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
-        <h2>Seção do Personal</h2>
-        <ul>
-            <!-- Adicione links conforme necessário -->
-        </ul>
-    </div>
+            <div th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_ADMIN')}">
+                <h2>Seção do Aluno</h2>
+                <ul>
+                </ul>
+            </div>
 
 
-</div>
-</body>
+            <div th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+                <h2>Seção do Personal</h2>
+                <ul>
+                    <!-- Adicione links conforme necessário -->
+                </ul>
+            </div>
+
+        </div>
+
+    </body>
+
 </html>

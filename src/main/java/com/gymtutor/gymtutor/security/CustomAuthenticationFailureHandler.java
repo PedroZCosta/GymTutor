@@ -18,6 +18,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             HttpServletResponse response,
             AuthenticationException exception
     ) throws IOException, ServletException {
+        // Adiciona a mensagem de erro na sessão
+        request.getSession().setAttribute("errorMessage", "Credenciais inválidas. Tente novamente.");
         response.sendRedirect("/login?error=true");  // Redireciona para a página de login com um parâmetro de erro
     }
 }
