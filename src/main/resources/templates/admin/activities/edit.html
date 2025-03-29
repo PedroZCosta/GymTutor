@@ -20,11 +20,18 @@
       <!-- Campo para nome do setor -->
       <label for="activityName">Nome do Exercicio:</label>
       <input type="text" id="activityName" name="activityName" th:value="*{activityName}" required />
-      <label for="activityDescription">Descrição</label>
-      <input type="text" id="activityDescription" name="activityDescription" th:value="*{activityDescription}" required />
+
       <!-- Exibe erro se houver -->
       <div th:if="${#fields.hasErrors('activityName')}" style="color: red;">
         <p th:each="err : ${#fields.errors('activityName')}" th:text="${err}"></p>
+      </div>
+
+      <label for="activityDescription">Descrição</label>
+      <input type="text" id="activityDescription" name="activityDescription" th:value="*{activityDescription}" required />
+
+      <!-- Exibe erro se houver -->
+      <div th:if="${#fields.hasErrors('activityDescription')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('activityDescription')}" th:text="${err}"></p>
       </div>
 
 

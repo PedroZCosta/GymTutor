@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Optional;
+
 // Controlador para gerenciar as operações relacionadas a entidades clínicas (ClinicEntity).
 @Controller
 @RequestMapping("/admin/activities")
@@ -15,8 +17,6 @@ public class ActivitiesController {
 
     @Autowired
     private ActivitiesService activitiesService;
-
-
 
     @GetMapping
     public String listActivities(Model model){
@@ -40,6 +40,9 @@ public class ActivitiesController {
             Model model,
             RedirectAttributes redirectAttributes
     ){
+        if(bindingResult.hasErrors()){
+            return handleValidationErrors(model, "/admin/activities/new", activitiesModel, bindingResult, null);
+        }
         activitiesService.createActivity(activitiesModel);
         redirectAttributes.addFlashAttribute("successMessage", "atividade criada com sucesso!!!");
         return "redirect:/admin/activities";
@@ -65,6 +68,10 @@ public class ActivitiesController {
             Model model,
             RedirectAttributes redirectAttributes
     ){
+        if(bindingResult.hasErrors()){
+            return handleValidationErrors(model, "/admin/activities/new", activitiesModel, bindingResult, activitiesId);
+        }
+
         activitiesService.updateActivity(activitiesModel, activitiesId);
         redirectAttributes.addFlashAttribute("successMessage", "atividade Alterada com sucesso!!!");
         return "redirect:/admin/activities";
@@ -79,6 +86,19 @@ public class ActivitiesController {
         activitiesService.deleteActivities(activitiesId);
         redirectAttributes.addFlashAttribute("successMessage", "DELETADO!");
         return "redirect:/admin/activities";
+    }
+
+
+    private String handleValidationErrors(Model model, String view, ActivitiesModel activitiesModel, BindingResult bindingResult, Integer activitiesId){
+        model.addAttribute("errorMessage", "Há erros no formulario!");
+        model.addAttribute("org.springframework.validation.BindingResult.activitiesModel", bindingResult);
+        model.addAttribute("ActivitiesModel", activitiesModel);
+        if(activitiesId != null){
+            model.addAttribute("activitiesId", activitiesId);
+        }
+        model.addAttribute("body", view);
+
+        return "/fragments/layout";
     }
 
 }

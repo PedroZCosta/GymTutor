@@ -51,7 +51,7 @@ label {
     color: #555; /* Cor suave para o texto do label */
 }
 
-input[type="text"],
+input[type="email"],
 input[type="password"] {
     width: 100%;
     padding: 10px;
@@ -62,7 +62,7 @@ input[type="password"] {
     box-sizing: border-box; /* Inclui o padding na largura total */
 }
 
-input[type="text"]:focus,
+input[type="email"]:focus,
 input[type="password"]:focus {
     border-color: #3498db; /* Cor de borda quando em foco */
     outline: none;
