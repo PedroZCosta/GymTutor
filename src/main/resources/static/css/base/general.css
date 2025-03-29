@@ -1,0 +1,202 @@
+/* Definindo um fundo escuro para o corpo da página */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #F0F3F4; /* Cor de fundo escura */
+  color: #154360; /* Cor de texto */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  height: 96vh; /* Alinha o conteúdo verticalmente */
+  width: 100vw;
+  overflow: hidden; /* Impede a barra de rolagem */
+}
+
+/* Conteúdo principal */
+.content {
+  width: 80vw; /* 80% da largura da tela */
+  height: 96vh; /* Ocupa toda a altura da tela */
+  background-color: #F0F3F4; /* Cor de fundo do corpo */
+  color: #878686; /* Cor de texto */
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: scroll; /* Barra de rolagem vertical para o conteúdo */
+}
+
+/* Estilização da tabela */
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  background-color: #ffffff; /* Fundo branco da tabela */
+}
+
+/* Define o tamanho máximo da tabela com rolagem */
+.scrollable-table-big {
+  margin-top: 20px;
+  max-height: 70%; /* Altura máxima da tabela */
+  overflow-y: auto; /* Permite rolagem vertical */
+  display: block; /* Necessário para que o overflow funcione corretamente */
+}
+ /*Estilo para fixar o cabeçalho da tabela*/
+.scrollable-table-big thead {
+  position: sticky;
+  top: 0;
+  z-index: 1; /* Garante que o cabeçalho fique sobre o conteúdo ao rolar */
+}
+
+
+.content th, td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.content th {
+  background-color: #154360; /* Fundo escuro para os cabeçalhos */
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.content td {
+  background-color: #f9f9f9; /* Fundo claro para as células de dados */
+  border-bottom: 1px solid #ddd; /* Linha divisória suave */
+}
+
+
+.content tr:nth-child(even) td {
+  background-color: #f1f1f1; /* Fundo alternado para as linhas */
+}
+
+.content tr:hover td {
+  background-color: #e0e0e0; /* Destacar a linha ao passar o mouse */
+}
+
+.content button {
+  background-color: #154360; /* Cor de fundo para os botões */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  min-height: 40px;
+  width: 100%;
+}
+
+.content button:hover {
+  background-color: #1d4f72; /* Cor mais escura ao passar o mouse */
+}
+
+.content form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px; /* Limita a largura do formulário */
+  margin: 0 auto; /* Centraliza o formulário */
+}
+
+.content a {
+  color: #154360;
+  text-decoration: none;
+  font-weight: bold;
+  width: fit-content
+}
+
+.content a:hover {
+  text-decoration: underline;
+}
+
+/* Personalização para os campos de formulário */
+.content input[type="text"],
+.content input[type="password"],
+.content input[type="number"],
+.content select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.content label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+/* Estilização do checkbox */
+.content input[type="checkbox"] {
+  width: 15px; /* Aumenta a largura do checkbox */
+  height: 15px; /* Aumenta a altura do checkbox */
+  margin-left: 10px; /* Distância entre o texto e o checkbox */
+  margin-bottom: 15px;
+  transform: scale(1.5); /* Aumenta o checkbox em 50% (ou seja, dobro do tamanho) */
+}
+
+/* Container do checkbox para controlar o layout */
+.checkbox-container {
+  display: flex;
+  align-items: baseline;
+  margin-top: 10px;
+
+}
+
+.content label[for="isActive"] {
+  font-weight: bold;
+  margin-right: 10px; /* Adiciona um espaço entre o label e o checkbox */
+}
+
+
+/* Estilo para mensagens de erro */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: green;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+
+.content td.actions-cell {
+  text-align: center;
+}
+
+.content div.actions-cell-column {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.content div.actions-cell-row {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.content div.actions-cell-row button,
+.content div.actions-cell-column button {
+  max-width: 80%;
+  margin: 10px;
+  justify-self: center;
+}
+
+@media (max-width: 1024px) {
+  .content div.actions-cell-row {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+}

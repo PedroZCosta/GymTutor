@@ -1,0 +1,104 @@
+
+/* Navbar */
+.navbar {
+  width: 20vw; /* 20% da largura da tela */
+  height: 96vh; /* Ocupa toda a altura da tela */
+  background-color: #b7b7b7; /* Cor de fundo da navbar */
+  color: #154360;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: scroll; /* Barra de rolagem vertical na navbar */
+}
+
+.navbar h1, .navbar h2 {
+  margin: 0; /* Remove a margem padrão */
+}
+
+.navbar h1 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #154360; /* Cor escura para o título */
+}
+
+.navbar h2 {
+  font-size: 16px;
+  color: #154360; /* Cor escura para o título 2 */
+}
+
+/* Links de navegação */
+.navbar a {
+  text-decoration: none; /* Remove o sublinhado padrão */
+  color: #154360; /* Cor escura para os links */
+  font-size: 14px; /* Tamanho maior para os links */
+  margin: 8px 0; /* Margem entre os itens */
+  padding: 8px 10px; /* Espaçamento interno nos links */
+  border-radius: 5px; /* Bordas arredondadas para os links */
+  transition: background-color 0.3s, color 0.3s; /* Transição suave ao passar o mouse */
+}
+
+/* Estado de hover */
+.navbar a:hover {
+  background-color: #154360; /* Cor de fundo escura ao passar o mouse */
+  color: white; /* Cor do texto quando o mouse passa sobre o link */
+}
+
+/* Estado de foco (quando o link é selecionado) */
+.navbar a:focus {
+  outline: none; /* Remove o contorno padrão de foco */
+  box-shadow: 0 0 5px 2px rgba(21, 67, 96, 0.5); /* Sombra suave para destacar o link */
+}
+
+/* Links desativados */
+.navbar a.disabled {
+  color: #b0b0b0; /* Cor mais clara para indicar que o link está desabilitado */
+  pointer-events: none; /* Desabilita a interação com o link */
+  cursor: not-allowed; /* Muda o cursor para indicar que o link não pode ser clicado */
+}
+
+
+.navbar button[type="submit"] {
+  background-color: #154360; /* Cor do botão */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  min-width: 30%;
+  margin: 20px;
+}
+
+.navbar button[type="submit"]:hover {
+  background-color: #0b3149; /* Tom mais escuro do botão ao passar o mouse */
+}
+
+
+/* Media Query para telas menores */
+@media (max-width: 1024px) {
+  .navbar {
+    width: 20vw; /* Reduz a largura da navbar para 15% */
+    padding: 10px; /* Reduz o padding */
+  }
+
+  /* Ajustando o tamanho dos títulos e subtítulos */
+  .navbar h1 {
+    font-size: 18px; /* Tamanho reduzido do título */
+  }
+
+  .navbar h2 {
+    font-size: 12px; /* Tamanho reduzido do subtítulo */
+  }
+
+  /* Ajustando os links */
+  .navbar a {
+    font-size: 12px; /* Reduz o tamanho dos links */
+    padding: 6px 8px; /* Ajuste no padding */
+  }
+
+  /* Ajustando os botões */
+  .navbar button[type="submit"] {
+    font-size: 14px; /* Reduz o tamanho do botão */
+    padding: 8px 16px; /* Ajuste no padding do botão */
+  }
+}
