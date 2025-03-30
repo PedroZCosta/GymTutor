@@ -76,8 +76,8 @@ public class ActivitiesController {
     ){
         if(bindingResult.hasErrors()){
             return handleValidationErrors(model, "/admin/activities/edit", activitiesModel, bindingResult, activitiesId);
-        }return handleRequest(redirectAttributes, model, "/admin/activities/edit", activitiesModel, () -> {
 
+        }return handleRequest(redirectAttributes, model, "/admin/activities/edit", activitiesModel, () -> {
             activitiesService.updateActivity(activitiesModel, activitiesId);
             redirectAttributes.addFlashAttribute("successMessage", "atividade Alterada com sucesso!!!");
             return "redirect:/admin/activities";
@@ -95,7 +95,7 @@ public class ActivitiesController {
         return "redirect:/admin/activities";
         } catch (DataIntegrityViolationException ex) {
             // Se não for possível excluir devido a dependências de outros registros, exibe um erro
-            redirectAttributes.addFlashAttribute("errorMessage", "Não é possível excluir a clínica, pois há registros dependentes.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Não é possível excluir o execicio, pois há registros dependentes.");
             return "redirect:/admin/activities";
         } catch (Exception ex) {
             // Para outros erros, exibe a mensagem de erro
@@ -130,6 +130,7 @@ public class ActivitiesController {
     public interface RequestHandler{
         String execute();
     }
+
     private String handleException(Exception ex, Model model, ActivitiesModel activitiesModel, String view, RedirectAttributes redirectAttributes){
         if(ex instanceof IllegalArgumentException){
             return handleIllegalArgumentException((IllegalArgumentException) ex, model, activitiesModel, view);
