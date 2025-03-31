@@ -37,9 +37,6 @@ public class ActivitiesImagesModel {
         return imageId;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
-    }
 
     public String getImageName() {
         return imageName;

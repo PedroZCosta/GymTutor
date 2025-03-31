@@ -1,9 +1,14 @@
 package com.gymtutor.gymtutor.activities;
 
+import com.gymtutor.gymtutor.activitiesimages.ActivitiesImagesModel;
+import com.gymtutor.gymtutor.activitiesvideos.ActivitiesVideosModel;
 import com.gymtutor.gymtutor.user.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // Entidade JPA que mapeia os dados da clínica no banco de dados. A tabela gerada será 'tb_activities'.
 @Entity
@@ -28,6 +33,27 @@ public class ActivitiesModel {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "muscular_group_id") // Define a chave estrangeira para a tabela Role
     private MuscularGroupModel muscularGroup;
+
+
+    // Relação com vídeos (um exercício para muitos vídeos)
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivitiesVideosModel> videos = new ArrayList<>();
+
+    // Relação com imagens (um exercício para muitas imagens)
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivitiesImagesModel> images = new ArrayList<>();
+
+
+
+    // Métodos para gerenciar vídeos
+    public List<ActivitiesVideosModel> getVideos() {
+        return videos;
+    }
+
+    public void addVideo(ActivitiesVideosModel video) {
+        videos.add(video);
+        video.setActivity(this);
+    }
 
     public ActivitiesModel() {
 
@@ -63,6 +89,9 @@ public class ActivitiesModel {
 
     public MuscularGroupModel getMuscularGroup() { return muscularGroup; }
 
-    public void setMuscularGroup(MuscularGroupModel muscularGroup) { this.muscularGroup = muscularGroup; }
+    public void setMuscularGroup(MuscularGroupModel muscularGroup) { this.muscularGroup = muscularGroup;}
+
+
+
 
 }

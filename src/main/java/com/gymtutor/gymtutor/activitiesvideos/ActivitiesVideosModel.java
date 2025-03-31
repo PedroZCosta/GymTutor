@@ -36,10 +36,6 @@ public class ActivitiesVideosModel {
         return videoId;
     }
 
-    public void setVideoId(int videoId) {
-        this.videoId = videoId;
-    }
-
     public String getVideoName() {
         return videoName;
     }
