@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
-// Controlador para gerenciar as operações relacionadas a entidades clínicas (ClinicEntity).
+// Controlador para gerenciar as operações relacionadas a activities.
 @Controller
 @RequestMapping("/admin/activities")
 public class ActivitiesController {
