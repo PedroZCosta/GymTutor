@@ -14,6 +14,8 @@ public class Personal {
     @NotBlank
     private String personalCREEF;
 
+
+    //todo: repensar na relacao entre essas tabelas
     @OneToOne
     private User user;
 

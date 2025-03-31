@@ -16,7 +16,6 @@ public class ActivitiesModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int activitiesId;
 
-
     @NotBlank(message = "Nome não pode estar vazio!")
     @Size(min = 3, max=100 , message = "Nome deve ter entre 3 e 100 caracteres.")
     private String activityName;
