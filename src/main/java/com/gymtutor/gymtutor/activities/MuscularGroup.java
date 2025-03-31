@@ -1,4 +1,13 @@
 package com.gymtutor.gymtutor.activities;
 
-public class MuscularGroup {
+
+public enum MuscularGroup {
+    PEITORAL,
+    COSTAS,
+    TRÍCEPS,
+    BÍCEPS,
+    OMBROS,
+    PERNA,
+    ABDOMEN;
+
 }

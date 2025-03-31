@@ -40,8 +40,8 @@ public class User {
     // CPF
     private String userCpf;
 
-    // Cria uma tabela relacionar entre o papel e o usuario
-    @ManyToMany(fetch = FetchType.EAGER)
+    //todo: alterar para ManyToOne quando for criar CRUD de usuario
+    @ManyToMany(fetch = FetchType.EAGER)// Cria uma tabela relacionar entre o papel e o usuario
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -89,12 +89,7 @@ public class User {
         this.userCpf = userCpf;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
+    public Set<Role> getRoles() { return roles; }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
 }

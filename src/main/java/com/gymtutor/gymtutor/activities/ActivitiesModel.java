@@ -1,5 +1,6 @@
 package com.gymtutor.gymtutor.activities;
 
+import com.gymtutor.gymtutor.user.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -23,6 +24,11 @@ public class ActivitiesModel {
     @NotBlank(message = "Descrição não pode estar vazio!")
     @Size(min = 10, max=200 , message = "Nome deve ter entre 10 e 200 caracteres.")
     private String activityDescription;
+
+    // Cria uma tabela relacionar entre o papel e o usuario
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "muscular_group_id") // Define a chave estrangeira para a tabela Role
+    private MuscularGroupModel muscularGroup;
 
     public ActivitiesModel() {
 
@@ -55,4 +61,9 @@ public class ActivitiesModel {
     public void setActivityName(String activityName) {
         this.activityName = activityName;
     }
+
+    public MuscularGroupModel getMuscularGroup() { return muscularGroup; }
+
+    public void setMuscularGroup(MuscularGroupModel muscularGroup) { this.muscularGroup = muscularGroup; }
+
 }
