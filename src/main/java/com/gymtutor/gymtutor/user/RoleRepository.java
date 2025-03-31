@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer> {
-    // Método para buscar a Role pelo nome
+    // Metodo para buscar a Role pelo nome
     Role findByRoleName(RoleName roleName);
 }
