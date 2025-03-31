@@ -10,6 +10,8 @@ import com.gymtutor.gymtutor.user.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -36,13 +38,9 @@ public class DataLoader implements CommandLineRunner {
         }
 
         if (muscularGroupRepository.count() == 0) {
-            muscularGroupRepository.save(new MuscularGroupModel(MuscularGroup.PEITORAL));
-            muscularGroupRepository.save(new MuscularGroupModel(MuscularGroup.COSTAS));
-            muscularGroupRepository.save(new MuscularGroupModel(MuscularGroup.TRICEPS));
-            muscularGroupRepository.save(new MuscularGroupModel(MuscularGroup.BICEPS));
-            muscularGroupRepository.save(new MuscularGroupModel(MuscularGroup.OMBROS));
-            muscularGroupRepository.save(new MuscularGroupModel(MuscularGroup.PERNA));
-            muscularGroupRepository.save(new MuscularGroupModel(MuscularGroup.ABDOMEN));
+            Arrays.stream(MuscularGroup.values())
+                    .map(MuscularGroupModel::new)
+                    .forEach(muscularGroupRepository::save);
         }
 
         // Chama o Metodo criar administrador do UserService para criar o usuário administrador

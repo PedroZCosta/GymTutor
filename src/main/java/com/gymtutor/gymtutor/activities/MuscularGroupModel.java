@@ -12,14 +12,12 @@ public class MuscularGroupModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private byte muscularGroupId;
 
-    // A anotação @Enumerated indica que o campo muscularGroupName será armazenado como uma string,
+    // A anotação @Enumerated indica que o campo muscularGroup será armazenado como uma string,
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
     private MuscularGroup muscularGroup;
 
-
-    // Construtor que recebe um MuscularGroupName para inicializar a instância de MuscularGroup.
-    public MuscularGroupModel(MuscularGroup muscularGroupName) {
+    // Construtor que recebe um MuscularGroup para inicializar a instância de MuscularGroup.
+    public MuscularGroupModel(MuscularGroup muscularGroup) {
         this.muscularGroup = muscularGroup;
     }
 
@@ -39,7 +37,7 @@ public class MuscularGroupModel {
         return muscularGroup;
     }
 
-    public void setMuscularGroupName(MuscularGroup muscularGroupName) {
-        this.muscularGroup = muscularGroupName;
+    public void setMuscularGroup(MuscularGroup muscularGroup) {
+        this.muscularGroup = muscularGroup;
     }
 }
