@@ -34,6 +34,19 @@
     <p th:each="err : ${#fields.errors('activityDescription')}" th:text="${err}"></p>
   </div>
 
+  <!-- Campo de seleção da unidade de medida -->
+  <label for="muscularGroup">Grupo Muscular:</label>
+  <select id="muscularGroup" name="muscularGroup" required>
+    <option th:each="muscularGroup : ${muscularGroups}"
+            th:value="${muscularGroup.muscularGroupId}"
+            th:text="${muscularGroup.muscularGroup}"
+            th:selected="${muscularGroup.muscularGroupId == activitiesModel.muscularGroup?.muscularGroupId}"></option>
+  </select><br>
+
+  <div th:if="${#fields.hasErrors('muscularGroup')}" style="color: red;">
+    <p th:each="err : ${#fields.errors('muscularGroup')}" th:text="${err}"></p>
+  </div>
+
 
   <button type="submit">Criar Exercicio</button>
 

@@ -40,7 +40,7 @@ public class ActivitiesService {
             // Atualiza os campos da atividade
             activity.setActivityName(activitiesModel.getActivityName());
             activity.setActivityDescription(activitiesModel.getActivityDescription());
-
+            activity.setMuscularGroup(activitiesModel.getMuscularGroup());
 
             // Salva a atividade atualizada no banco de dados
             activitiesRepository.save(activity);

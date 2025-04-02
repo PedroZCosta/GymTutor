@@ -20,6 +20,7 @@
         <th>ID</th>
         <th>Nome do Exercicio</th>
         <th>Descrição </th>
+        <th>Grupo Muscular </th>
         <th>Ações</th>
     </tr>
     </thead>
@@ -28,6 +29,7 @@
         <td th:text="${activity.activitiesId}"></td>
         <td th:text="${activity.activityName}"></td>
         <td th:text="${activity.activityDescription}"></td>
+        <td th:text="${activity.muscularGroup.muscularGroup}"></td>
         <td class="actions-cell">
             <div class="actions-cell-row">
                 <form th:action="@{/admin/activities/{id}/edit(id=${activity.activitiesId})}" th:method="get" style="display: inline;">

@@ -19,6 +19,9 @@ public class ActivitiesController {
     @Autowired
     private ActivitiesService activitiesService;
 
+    @Autowired
+    private MuscularGroupRepository muscularGroupRepository;
+
     @GetMapping
     public String listActivities(Model model, RedirectAttributes redirectAttributes){
         return handleRequest(redirectAttributes, model, null, null, () -> {
@@ -33,6 +36,7 @@ public class ActivitiesController {
     public String newActivityForm(Model model){
         model.addAttribute("activitiesModel", new ActivitiesModel());
         model.addAttribute("body", "/admin/activities/new");
+        model.addAttribute("muscularGroups", muscularGroupRepository.findAll());
         return "/fragments/layout";
     }
 
@@ -48,7 +52,7 @@ public class ActivitiesController {
         }
         return handleRequest(redirectAttributes, model, "/admin/activities/new", activitiesModel, () -> {
             activitiesService.createActivity(activitiesModel);
-            redirectAttributes.addFlashAttribute("successMessage", "atividade criada com sucesso!!!");
+            redirectAttributes.addFlashAttribute("successMessage", "Atividade criada com sucesso!!!");
             return "redirect:/admin/activities";
         });
     }
@@ -63,6 +67,7 @@ public class ActivitiesController {
             ActivitiesModel activitiesModel = activitiesService.findById(activitiesId);
             model.addAttribute("activitiesModel", activitiesModel);
             model.addAttribute("body", "/admin/activities/edit");
+            model.addAttribute("muscularGroups", muscularGroupRepository.findAll());
             return "/fragments/layout";
         });}
 
@@ -79,7 +84,7 @@ public class ActivitiesController {
 
         }return handleRequest(redirectAttributes, model, "/admin/activities/edit", activitiesModel, () -> {
             activitiesService.updateActivity(activitiesModel, activitiesId);
-            redirectAttributes.addFlashAttribute("successMessage", "atividade Alterada com sucesso!!!");
+            redirectAttributes.addFlashAttribute("successMessage", "Atividade alterada com sucesso!!!");
             return "redirect:/admin/activities";
         });
     }
@@ -109,6 +114,7 @@ public class ActivitiesController {
         model.addAttribute("errorMessage", "Há erros no formulario!");
         model.addAttribute("org.springframework.validation.BindingResult.activitiesModel", bindingResult);
         model.addAttribute("ActivitiesModel", activitiesModel);
+        model.addAttribute("muscularGroups", muscularGroupRepository.findAll());
         if(activitiesId != null){
             model.addAttribute("activitiesId", activitiesId);
         }
@@ -165,8 +171,10 @@ public class ActivitiesController {
         if (model != null) {
             model.addAttribute("errorMessage", errorMessage);
             model.addAttribute("ActivitiesModel", activitiesModel);
+            model.addAttribute("muscularGroups", muscularGroupRepository.findAll());
         }
         if(view != null){
+            assert model != null;
             model.addAttribute("body", view);
             return "/fragments/layout";
         }else{
