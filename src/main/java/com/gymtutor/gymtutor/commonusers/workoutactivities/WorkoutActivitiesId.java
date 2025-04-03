@@ -6,7 +6,10 @@ import java.util.Objects;
 @Embeddable // Indica que esta classe será usada como uma chave composta em outra entidade.
 class WorkoutActivitiesId implements Serializable { // Implementa Serializable para que possa ser usada como chave primária composta.
 
+    @Column(name = "workout_id") // Garantir que o nome da coluna seja "workout_id" e não "workoutId"
     private int workoutId; // Representa o ID do treino na relação N:N.
+
+    @Column(name = "activity_id") // Garantir que o nome da coluna seja "workout_id" e não "workoutId"
     private int activityId; // Representa o ID da atividade na relação N:N.
 
     public WorkoutActivitiesId() {} // Construtor padrão necessário para JPA.

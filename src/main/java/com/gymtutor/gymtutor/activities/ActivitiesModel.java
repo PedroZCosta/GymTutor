@@ -36,20 +36,15 @@ public class ActivitiesModel {
 
 
     // Relação com vídeos (um exercício para muitos vídeos)
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "activity")
     private List<ActivitiesVideosModel> videos = new ArrayList<>();
 
     // Relação com imagens (um exercício para muitas imagens)
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "activity")
     private List<ActivitiesImagesModel> images = new ArrayList<>();
 
 
-
     // Métodos para gerenciar vídeos
-    public List<ActivitiesVideosModel> getVideos() {
-        return videos;
-    }
-
     public void addVideo(ActivitiesVideosModel video) {
         videos.add(video);
         video.setActivity(this);
@@ -57,6 +52,10 @@ public class ActivitiesModel {
 
     public ActivitiesModel() {
 
+    }
+
+    public List<ActivitiesVideosModel> getVideos() {
+        return videos;
     }
 
     public ActivitiesModel(int activitiesId) {

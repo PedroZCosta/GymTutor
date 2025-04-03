@@ -1,6 +1,7 @@
 package com.gymtutor.gymtutor.commonusers.workout;
 
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
+import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import com.gymtutor.gymtutor.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -27,13 +28,19 @@ public class WorkoutModel {
     @OneToMany(mappedBy = "workout")
     private List<WorkoutActivitiesModel> workoutActivities; // Relacionamento com WorkoutActivities
 
+    @ManyToOne
+    @JoinColumn(name = "workout_plan_id", nullable = false)
+    private WorkoutPlanModel workout;
+
     @NotBlank(message = "Repetição não pode estar vazio!")
     @Size(min = 1, max=20 , message = "Este campo deve ter entre 1 e 20 caracteres.")
     private String restTime;
 
+    // Construtor padrão
     public WorkoutModel() {
     }
 
+    // Construtor com argumentos
     public WorkoutModel(int workoutId, User user, List<WorkoutActivitiesModel> workoutActivities, String restTime) {
         this.workoutId = workoutId;
         this.user = user;
@@ -42,6 +49,7 @@ public class WorkoutModel {
     }
 
 
+    // Getters e setters
     public User getUser() {
         return user;
     }

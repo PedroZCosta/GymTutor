@@ -14,11 +14,11 @@ public class WorkoutActivitiesModel {
     private WorkoutActivitiesId workoutActivitiesId;
 
     @ManyToOne
-    @JoinColumn(name = "workoutId", nullable = false, updatable = false, insertable = false) // FK para Workout
+    @JoinColumn(name = "workout_id", nullable = false, updatable = false, insertable = false) // FK para Workout
     private WorkoutModel workout;
 
     @ManyToOne
-    @JoinColumn(name = "activityId", nullable = false, updatable = false, insertable = false) // FK para Activity
+    @JoinColumn(name = "activity_id", nullable = false, updatable = false, insertable = false) // FK para Activity
     private ActivitiesModel activity;
 
     @NotBlank(message = "Repetição não pode estar vazio!")
@@ -27,6 +27,8 @@ public class WorkoutActivitiesModel {
 
     @NotBlank(message = "Sequencia não pode estar vazio!")
     private byte sequence; // Número de sequências
+
+
 
     public WorkoutActivitiesModel() {}
 
