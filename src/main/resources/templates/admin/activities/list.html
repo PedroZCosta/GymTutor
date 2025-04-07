@@ -1,53 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<body>
-<h1>Gerenciamento de Exercício</h1>
+    <body>
 
-<!-- Mensagens de erro e sucesso -->
-<div th:if="${successMessage}" style="color: green;">
-    <p th:text="${successMessage}"></p>
-</div>
-<div th:if="${errorMessage}" style="color: red;">
-    <p th:text="${errorMessage}"></p>
-</div>
+        <h1>Gerenciamento de Exercício</h1>
 
-<!-- Lista dos Usuarios -->
-<a href="/admin/activities/new">Criar Novo Exercício</a>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nome do Exercicio</th>
-        <th>Descrição </th>
-        <th>Grupo Muscular </th>
-        <th>Ações</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="activity : ${activities}">
-        <td th:text="${activity.activitiesId}"></td>
-        <td th:text="${activity.activityName}"></td>
-        <td th:text="${activity.activityDescription}"></td>
-        <td th:text="${activity.muscularGroup.muscularGroup}"></td>
-        <td class="actions-cell">
-            <div class="actions-cell-row">
-                <form th:action="@{/admin/activities/{id}/edit(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
-                    <button type="submit">Editar</button>
-                </form>
-                <form th:action="@{/admin/activities/delete/{id}(id=${activity.activitiesId})}" th:method="post" style="display: inline;">
-                    <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir esta atividade?')">Excluir</button>
-                </form>
-                <form th:action="@{/admin/activities/{id}/videos(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
-                    <button type="submit">Link</button>
-                </form>
-                <form th:action="@{/admin/activities/{id}/image(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
-                    <button type="submit">imagem</button>
-                </form>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
-</body>
+        <!-- Mensagens de erro e sucesso -->
+        <div th:if="${successMessage}" style="color: green;">
+            <p th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${errorMessage}" style="color: red;">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <!-- Lista dos Usuarios -->
+        <a href="/admin/activities/new">Criar Novo Exercício</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome do Exercicio</th>
+                    <th>Descrição </th>
+                    <th>Grupo Muscular </th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="activity : ${activities}">
+                    <td th:text="${activity.activitiesId}"></td>
+                    <td th:text="${activity.activityName}"></td>
+                    <td th:text="${activity.activityDescription}"></td>
+                    <td th:text="${activity.muscularGroup.muscularGroup}"></td>
+                    <td class="actions-cell">
+                        <div class="actions-cell-row">
+                            <form th:action="@{/admin/activities/{id}/edit(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
+                                <button type="submit">Editar</button>
+                            </form>
+                            <form th:action="@{/admin/activities/delete/{id}(id=${activity.activitiesId})}" th:method="post" style="display: inline;">
+                                <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir esta atividade?')">Excluir</button>
+                            </form>
+                            <form th:action="@{/admin/activities/{id}/videos(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
+                                <button type="submit">Link</button>
+                            </form>
+                            <form th:action="@{/admin/activities/{id}/image(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
+                                <button type="submit">imagem</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </body>
+
 </html>

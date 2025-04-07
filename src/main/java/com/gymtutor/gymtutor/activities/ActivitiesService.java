@@ -1,7 +1,6 @@
 package com.gymtutor.gymtutor.activities;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class ActivitiesService {
 
     public ActivitiesModel findById(int activitiesId){
         Optional<ActivitiesModel> optionalActivitiesModel = activitiesRepository.findById(activitiesId);
-        return optionalActivitiesModel.orElseThrow(()-> new RuntimeException("activities not found with id "+ activitiesId));
+        return optionalActivitiesModel.orElseThrow(()-> new RuntimeException("Atividade não encontrada com o ID: "+ activitiesId));
     }
 
     public List<ActivitiesModel> findAll(){

@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<body>
-<h1>Criar Novo Exercício</h1>
-<!-- Link de Voltar -->
-<a href="/admin/activities">Voltar</a><br>
+    <body>
 
-<!-- Mensagens de erro e sucesso -->
-<div th:if="${successMessage}" style="color: green;">
-    <p th:text="${successMessage}"></p>
-</div>
-<div th:if="${errorMessage}" style="color: red;">
-    <p th:text="${errorMessage}"></p>
-</div>
+        <h1>Adicionar Novo Vídeo</h1>
+        <!-- Link de Voltar -->
+        <a th:href="@{/admin/activities/{id}/videos(id=${activitiesId})}">Voltar</a><br>
 
-<!-- Formulário -->
-<form th:action="@{/admin/activities/{activitiesId}/videos/new(activitiesId=${activitiesId})}" th:method="post" th:object="${activitiesVideosModel}">
+        <!-- Mensagens de erro e sucesso -->
+        <div th:if="${successMessage}" style="color: green;">
+            <p th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${errorMessage}" style="color: red;">
+            <p th:text="${errorMessage}"></p>
+        </div>
 
-    <!-- Campo para nome do setor -->
-    <label for="videoName">Nome do video:</label>
-    <input type="text" id="videoName" name="videoName" th:value="*{videoName}" required />
+        <!-- Formulário -->
+        <form th:action="@{/admin/activities/{activitiesId}/videos/new(activitiesId=${activitiesId})}" th:method="post" th:object="${activitiesVideosModel}">
 
-    <!-- Exibe erro se houver -->
-    <div th:if="${#fields.hasErrors('videoName')}" style="color: red;">
-        <p th:each="err : ${#fields.errors('videoName')}" th:text="${err}"></p>
-    </div>
+            <!-- Campo para nome do setor -->
+            <label for="videoName">Nome do video:</label>
+            <input type="text" id="videoName" name="videoName" th:value="*{videoName}" required />
 
-    <label for="videoLink">Link</label>
-    <input type="text" id="videoLink" name="videoLink" th:value="*{videoLink}" required />
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('videoName')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('videoName')}" th:text="${err}"></p>
+            </div>
 
-    <!-- Exibe erro se houver -->
-    <div th:if="${#fields.hasErrors('videoLink')}" style="color: red;">
-        <p th:each="err : ${#fields.errors('videoLink')}" th:text="${err}"></p>
-    </div>
+            <label for="videoLink">Link</label>
+            <input type="text" id="videoLink" name="videoLink" th:value="*{videoLink}" required />
 
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('videoLink')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('videoLink')}" th:text="${err}"></p>
+            </div>
 
+            <button type="submit">Criar Video</button>
 
-    <button type="submit">Criar Video</button>
+        </form>
 
-</form>
-</body>
+    </body>
 
 </html>

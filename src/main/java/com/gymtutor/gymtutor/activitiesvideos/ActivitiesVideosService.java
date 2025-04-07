@@ -6,10 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
-// ActivitiesVideosService.java
 @Service
 public class ActivitiesVideosService {
 
@@ -25,13 +23,13 @@ public class ActivitiesVideosService {
     }
 
     public Object findByActivityModelActivitiesId(int activitiesId) {
-        return videosRepository.findByActivityModel_ActivitiesId(activitiesId);
+        return videosRepository.findByActivityModelActivitiesId(activitiesId);
 
     }
 
     public void createVideo(@Valid ActivitiesVideosModel activitiesVideosModel, int activitiesId) {
-        activitiesRepository.findById(activitiesId).orElseThrow(() -> new EntityNotFoundException("Activities not found"));
-        activitiesVideosModel.setActivity(activitiesRepository.findById(activitiesId).get());
+        ActivitiesModel activity = activitiesRepository.findById(activitiesId).orElseThrow(() -> new EntityNotFoundException("Activities not found"));
+        activitiesVideosModel.setActivity(activity);
         videosRepository.save(activitiesVideosModel);
     }
 
@@ -39,13 +37,12 @@ public class ActivitiesVideosService {
         Optional<ActivitiesVideosModel> optionalActivitiesVideosModel = videosRepository.findById(videoId);
         return optionalActivitiesVideosModel.orElseThrow(() -> new EntityNotFoundException("Video not found"));
     }
-    public List<ActivitiesVideosModel> findAll(){
-        return videosRepository.findAll();
-    }
+
     public void deleteVideo(int videoId){
         videosRepository.deleteById(videoId);
     }
-    public void updateVideo(ActivitiesVideosModel activitiesVideosModel, int videoId, int activitiesId){
+
+    public void updateVideo(ActivitiesVideosModel activitiesVideosModel, int videoId){
         Optional<ActivitiesVideosModel> existingVideo = videosRepository.findById(videoId);
         if(existingVideo.isPresent()){
             ActivitiesVideosModel video = existingVideo.get();

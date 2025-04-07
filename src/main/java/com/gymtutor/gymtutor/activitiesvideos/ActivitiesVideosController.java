@@ -1,9 +1,5 @@
 package com.gymtutor.gymtutor.activitiesvideos;
 
-import com.gymtutor.gymtutor.activities.ActivitiesController;
-import com.gymtutor.gymtutor.activities.ActivitiesModel;
-import com.gymtutor.gymtutor.activities.ActivitiesRepository;
-import com.gymtutor.gymtutor.activities.ActivitiesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,82 +13,84 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/admin/activities/{activitiesId}/videos")
 public class ActivitiesVideosController {
 
-
-    private final ActivitiesVideosService videosService;
-    private final ActivitiesVideosService activitiesVideosService;
     @Autowired
-    private ActivitiesService activitiesService;
-
-
-    public ActivitiesVideosController(ActivitiesVideosService videosService, ActivitiesVideosService activitiesVideosService) {
-        this.videosService = videosService;
-        this.activitiesVideosService = activitiesVideosService;
-    }
-
+    private ActivitiesVideosService videosService;
 
     @GetMapping
-    public String listVideos(RedirectAttributes redirectAttributes,
-                             @PathVariable int activitiesId,
-                             Model model) {
+    public String listVideos(
+            @PathVariable int activitiesId,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
         return handleRequest(redirectAttributes, model, null, null, activitiesId,()->{
             var videosList = videosService.findByActivityModelActivitiesId(activitiesId);
             model.addAttribute("videosList", videosList);
             model.addAttribute("activitiesId", activitiesId);
             model.addAttribute("body", "/admin/activities/videos/list");
             return "/fragments/layout";
-
-
         });
     }
+
     @GetMapping("/new")
-    public String newVideoForm(Model model, @PathVariable int activitiesId){
+    public String newVideoForm(
+            Model model,
+            @PathVariable int activitiesId
+    ){
         model.addAttribute("activitiesVideosModel", new ActivitiesVideosModel());
         model.addAttribute("activitiesId", activitiesId);
         model.addAttribute("body", "/admin/activities/videos/new");
         return "/fragments/layout";
     }
+
     @PostMapping("/new")
     public String createVideo(
             @PathVariable int activitiesId,
             @Valid @ModelAttribute ActivitiesVideosModel activitiesVideosModel,
-            RedirectAttributes redirectAttributes ,
+            BindingResult bindingResult,
             Model model,
-            BindingResult bindingResult
+            RedirectAttributes redirectAttributes
     ){
         if(bindingResult.hasErrors()){
             return handleValidationErrors(model, "/admin/activities/videos/new", activitiesVideosModel, bindingResult, activitiesId,null);
         }
 
         return  handleRequest(redirectAttributes, model, "admin/activities/videos/new", activitiesVideosModel,activitiesId,()->{
-
-            activitiesVideosService.createVideo(activitiesVideosModel, activitiesId);
+            videosService.createVideo(activitiesVideosModel, activitiesId);
             redirectAttributes.addFlashAttribute("successMessage","Video adicionado com sucesso!!!");
             return "redirect:/admin/activities/"+activitiesId+"/videos";
         });
     }
+
     @GetMapping("/{videoId}/edit")
-    public String editVideoForm(@PathVariable int videoId, Model model,
-                                @PathVariable int activitiesId,
-                                RedirectAttributes redirectAttributes) {
-        ActivitiesVideosModel video = activitiesVideosService.findById(videoId);
-        model.addAttribute("activitiesVideosModel", video);
-        model.addAttribute("videoId", videoId);
-        model.addAttribute("body", "/admin/activities/videos/edit");
-        return "/fragments/layout";
+    public String editVideoForm(
+            @PathVariable int activitiesId,
+            @PathVariable int videoId,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        return handleRequest(redirectAttributes, model, null, null, activitiesId, () -> {
+            ActivitiesVideosModel activitiesVideosModel = videosService.findById(videoId);
+            model.addAttribute("activitiesVideosModel", activitiesVideosModel);
+            model.addAttribute("videoId", videoId);
+            model.addAttribute("body", "/admin/activities/videos/edit");
+            return "/fragments/layout";
+        });
     }
 
     @PostMapping("/{videoId}/edit")
-    public String updateVideo(@PathVariable int activitiesId,
-                              @PathVariable int videoId,
-                              @Valid @ModelAttribute ActivitiesVideosModel activitiesVideosModel,
-                              Model model,
-                              BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes){
+    public String updateVideo(
+            @PathVariable int activitiesId,
+            @PathVariable int videoId,
+            @Valid @ModelAttribute ActivitiesVideosModel activitiesVideosModel,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ){
         if(bindingResult.hasErrors()){
             return handleValidationErrors(model, "/admin/activities/videos/edit", activitiesVideosModel, bindingResult, activitiesId, videoId);
 
         }return handleRequest(redirectAttributes, model, "/admin/activities/videos/edit", activitiesVideosModel,activitiesId,()->{
-            activitiesVideosService.updateVideo(activitiesVideosModel,activitiesId, videoId);
+            videosService.updateVideo(activitiesVideosModel, videoId);
             redirectAttributes.addFlashAttribute("successMessage","Video alterado com sucesso!!!");
             return "redirect:/admin/activities/"+activitiesId+"/videos";
         });
@@ -105,22 +103,17 @@ public class ActivitiesVideosController {
             RedirectAttributes redirectAttributes
     ){
         try {
-            activitiesVideosService.deleteVideo(videoId);
+            videosService.deleteVideo(videoId);
             redirectAttributes.addFlashAttribute("successMessage", "Item deletado com sucesso!");
             return "redirect:/admin/activities/"+activitiesId+"/videos";
         } catch (DataIntegrityViolationException ex){
-            redirectAttributes.addFlashAttribute("errorMessage","nao é possivel excluir o video pois ha registros dependentes");
+            redirectAttributes.addFlashAttribute("errorMessage","nao é possível excluir o video pois ha registros dependentes");
             return "redirect:/admin/activities/"+activitiesId+"/videos";
-
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/admin/activities/"+activitiesId+"/videos";
         }
     }
-
-
-
-
 
     private String handleValidationErrors(Model model, String view, ActivitiesVideosModel activitiesVideosModel, BindingResult bindingResult, Integer activitiesId, Integer videoId){
         model.addAttribute("errorMessage", "Há erros no formulário!");
@@ -136,7 +129,7 @@ public class ActivitiesVideosController {
         return "/fragments/layout";
     }
 
-    private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, ActivitiesVideosModel activitiesVideosModel, Integer activitiesId, ActivitiesController.RequestHandler block
+    private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, ActivitiesVideosModel activitiesVideosModel, Integer activitiesId, RequestHandler block
     ){
         try{
             return block.execute();
@@ -156,7 +149,7 @@ public class ActivitiesVideosController {
                     handleIllegalArgumentException(illegalArgumentException, model, activitiesVideosModel,activitiesId , view);
             case IllegalAccessException illegalAccessException ->
                     handleIllegalAccessException(illegalAccessException, redirectAttributes, activitiesId);
-            case DataIntegrityViolationException dataIntegrityViolationException ->
+            case DataIntegrityViolationException ignored ->
                     handleDataIntegrityViolationException(model, activitiesVideosModel, activitiesId, view);
             case null, default -> handleUnexpectedException(model, activitiesVideosModel, activitiesId, view);
         };
@@ -194,6 +187,4 @@ public class ActivitiesVideosController {
             return "redirect:/admin/activities/"+activitiesId+"/videos";
         }
     }
-
-
 }

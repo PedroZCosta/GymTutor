@@ -68,7 +68,8 @@ public class ActivitiesController {
             model.addAttribute("body", "/admin/activities/edit");
             model.addAttribute("muscularGroups", muscularGroupRepository.findAll());
             return "/fragments/layout";
-        });}
+        });
+    }
 
     @PostMapping("/{activitiesId}/edit")
     public String updateActivity(
@@ -142,7 +143,7 @@ public class ActivitiesController {
                     handleIllegalArgumentException(illegalArgumentException, model, activitiesModel, view);
             case IllegalAccessException illegalAccessException ->
                     handleIllegalAccessException(illegalAccessException, redirectAttributes);
-            case DataIntegrityViolationException dataIntegrityViolationException ->
+            case DataIntegrityViolationException ignored ->
                     handleDataIntegrityViolationException(model, activitiesModel, view);
             case null, default -> handleUnexpectedException(model, activitiesModel, view);
         };
