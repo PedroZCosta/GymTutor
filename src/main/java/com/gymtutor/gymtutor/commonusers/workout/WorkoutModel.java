@@ -19,7 +19,7 @@ public class WorkoutModel {
 
     @NotBlank(message = "Nome não pode estar vazio!")
     @Size(min = 2, max=200 , message = "Este campo deve ter entre 2 e 200 caracteres.")
-    private String name;
+    private String workoutName;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false) // FK para UserModel
@@ -28,9 +28,6 @@ public class WorkoutModel {
     @OneToMany(mappedBy = "workout")
     private List<WorkoutActivitiesModel> workoutActivities; // Relacionamento com WorkoutActivities
 
-    @ManyToOne
-    @JoinColumn(name = "workout_plan_id", nullable = false)
-    private WorkoutPlanModel workout;
 
     @NotBlank(message = "Repetição não pode estar vazio!")
     @Size(min = 1, max=20 , message = "Este campo deve ter entre 1 e 20 caracteres.")
@@ -50,12 +47,26 @@ public class WorkoutModel {
 
 
     // Getters e setters
+
+
+    public int getWorkoutId() {
+        return workoutId;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getWorkoutName() {
+        return workoutName;
+    }
+
+    public void setWorkoutName(String workoutName) {
+        this.workoutName = workoutName;
     }
 
     public List<WorkoutActivitiesModel> getWorkoutActivities() {

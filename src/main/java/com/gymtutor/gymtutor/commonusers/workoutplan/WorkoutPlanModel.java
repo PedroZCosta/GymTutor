@@ -12,7 +12,6 @@ import java.util.List;
 @Table(name="tb_workoutPlan")
 public class WorkoutPlanModel {
 
-    // todo: revisar pois nao esta criando uma tabela associativa com 2 id e tambem o user id erta duplicando na tabela!
     // Ao excluir um treino da ficha de treino deverá ser tirada a linha que a relaciona com a ficha e o treino especifico
     // todo: realizar crud da relacao ficha e treino!!!!
 
@@ -22,14 +21,11 @@ public class WorkoutPlanModel {
 
     @NotBlank(message = "Nome não pode estar vazio!")
     @Size(min = 2, max=200 , message = "Este campo deve ter entre 2 e 200 caracteres.")
-    private String nome;
+    private String workoutPlanName;
 
     @NotBlank(message = "Nome não pode estar vazio!")
     @Size(min = 2, max=200 , message = "Este campo deve ter entre 2 e 200 caracteres.")
-    private String descricao;
-
-    @OneToMany(mappedBy = "workout")
-    private List<WorkoutModel> workoutModel; // Relacionamento com WorkoutModel
+    private String workoutPlanDescription;
 
     @OneToOne
     @JoinColumn(name= "user_id")
@@ -40,36 +36,31 @@ public class WorkoutPlanModel {
     }
 
     // Construtor com argumentos
-    public WorkoutPlanModel(User user, String nome, String descricao, List<WorkoutModel> workoutModel) {
+    public WorkoutPlanModel(User user, String workoutPlanName, String workoutPlanDescription, List<WorkoutModel> workoutModel) {
         this.user = user;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.workoutModel = workoutModel;
+        this.workoutPlanName = workoutPlanName;
+        this.workoutPlanDescription = workoutPlanDescription;
     }
 
     // Getters e setters
-    public String getDescricao() {
-        return descricao;
+    public String getworkoutPlanDescription() {
+        return workoutPlanDescription;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setWorkoutPlanDescription(String workoutPlanDescription) {
+        this.workoutPlanDescription = workoutPlanDescription;
     }
 
-    public String getNome() {
-        return nome;
+    public int getWorkoutPlanId() {
+        return workoutPlanId;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public String getWorkoutPlanName() {
+        return workoutPlanName;
     }
 
-    public List<WorkoutModel> getWorkoutModel() {
-        return workoutModel;
-    }
-
-    public void setWorkoutModel(List<WorkoutModel> workoutModel) {
-        this.workoutModel = workoutModel;
+    public void setWorkoutPlanName(String workoutPlanName) {
+        this.workoutPlanName = workoutPlanName;
     }
 
     public User getUser() {
