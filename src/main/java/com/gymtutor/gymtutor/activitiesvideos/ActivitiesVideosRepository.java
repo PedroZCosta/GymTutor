@@ -8,5 +8,6 @@ import java.util.List;
 // ActivitiesVideosRepository.java
 @Repository
 public interface ActivitiesVideosRepository extends JpaRepository<ActivitiesVideosModel, Integer> {
-    List<ActivitiesVideosModel> findByActivity_ActivitiesId(int activity_activitiesId);
+
+    List<ActivitiesVideosModel> findByActivityModel_ActivitiesId(int activitiesId);
 }

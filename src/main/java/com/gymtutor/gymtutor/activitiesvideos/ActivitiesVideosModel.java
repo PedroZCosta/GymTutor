@@ -23,10 +23,9 @@ public class ActivitiesVideosModel {
     @Column(name = "video_link", length = 500)
     private String videoLink;
 
-    @NotNull(message = "O vídeo deve estar associado a um exercício!")
     @ManyToOne
     @JoinColumn(name = "activity_id", referencedColumnName = "activitiesId")
-    private ActivitiesModel activity;
+    private ActivitiesModel activityModel;
 
     public ActivitiesVideosModel() {
     }
@@ -53,11 +52,11 @@ public class ActivitiesVideosModel {
     }
 
     public ActivitiesModel getActivity() {
-        return activity;
+        return activityModel;
     }
 
     public void setActivity(ActivitiesModel activity) {
-        this.activity = activity;
+        this.activityModel = activity;
     }
 
 }

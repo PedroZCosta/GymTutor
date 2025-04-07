@@ -35,7 +35,7 @@ public class ActivitiesModel {
 
 
     // Relação com vídeos (um exercício para muitos vídeos)
-    @OneToMany(mappedBy = "activity")
+    @OneToMany(mappedBy = "activityModel")
     private List<ActivitiesVideosModel> videos = new ArrayList<>();
 
     // Relação com imagens (um exercício para muitas imagens)

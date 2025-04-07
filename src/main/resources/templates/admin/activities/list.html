@@ -29,7 +29,7 @@
         <td th:text="${activity.activitiesId}"></td>
         <td th:text="${activity.activityName}"></td>
         <td th:text="${activity.activityDescription}"></td>
-        <td th:text="${activity.muscularGroup}"></td>
+        <td th:text="${activity.muscularGroup.muscularGroup}"></td>
         <td class="actions-cell">
             <div class="actions-cell-row">
                 <form th:action="@{/admin/activities/{id}/edit(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
@@ -37,6 +37,12 @@
                 </form>
                 <form th:action="@{/admin/activities/delete/{id}(id=${activity.activitiesId})}" th:method="post" style="display: inline;">
                     <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir esta atividade?')">Excluir</button>
+                </form>
+                <form th:action="@{/admin/activities/{id}/videos(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
+                    <button type="submit">Link</button>
+                </form>
+                <form th:action="@{/admin/activities/{id}/image(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
+                    <button type="submit">imagem</button>
                 </form>
             </div>
         </td>
