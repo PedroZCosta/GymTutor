@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<h1>Gerenciamento de Exercício</h1>
+
+<!-- Mensagens de erro e sucesso -->
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- Lista dos Usuarios -->
+<a th:href="@{/admin/activities/{activitiesId}/videos/new(activitiesId=${activitiesId})}">Criar Novo Video</a>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nome do video</th>
+        <th>link </th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="video : ${videosList}">
+        <td th:text="${video.videoId}"></td>
+        <td th:text="${video.videoName}"></td>
+        <td th:text="${video.videoLink}"></td>
+
+        <td class="actions-cell">
+            <div class="actions-cell-row">
+                <form th:action="@{/admin/activities/{activitiesId}/videos/{videoId}/edit(activitiesId=${activitiesId}, videoId=${video.videoId})}" th:method="get" style="display: inline;">
+                    <button type="submit">Editar</button>
+                </form>
+
+                <form th:action="@{/admin/activities/{activitiesId}/videos/delete/{videoId}(activitiesId=${activitiesId}, videoId=${video.videoId})}" th:method="post" style="display: inline;">
+                    <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir esta atividade?')">Excluir</button>
+                </form>
+
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
