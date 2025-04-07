@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Optional;
 
 // Controlador para gerenciar as operações relacionadas a activities.
 @Controller
@@ -100,7 +99,7 @@ public class ActivitiesController {
         return "redirect:/admin/activities";
         } catch (DataIntegrityViolationException ex) {
             // Se não for possível excluir devido a dependências de outros registros, exibe um erro
-            redirectAttributes.addFlashAttribute("errorMessage", "Não é possível excluir o execicio, pois há registros dependentes.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Não é possível excluir o execício, pois há registros dependentes.");
             return "redirect:/admin/activities";
         } catch (Exception ex) {
             // Para outros erros, exibe a mensagem de erro
@@ -111,7 +110,7 @@ public class ActivitiesController {
 
 
     private String handleValidationErrors(Model model, String view, ActivitiesModel activitiesModel, BindingResult bindingResult, Integer activitiesId){
-        model.addAttribute("errorMessage", "Há erros no formulario!");
+        model.addAttribute("errorMessage", "Há erros no formulário!");
         model.addAttribute("org.springframework.validation.BindingResult.activitiesModel", bindingResult);
         model.addAttribute("ActivitiesModel", activitiesModel);
         model.addAttribute("muscularGroups", muscularGroupRepository.findAll());
@@ -138,15 +137,15 @@ public class ActivitiesController {
     }
 
     private String handleException(Exception ex, Model model, ActivitiesModel activitiesModel, String view, RedirectAttributes redirectAttributes){
-        if(ex instanceof IllegalArgumentException){
-            return handleIllegalArgumentException((IllegalArgumentException) ex, model, activitiesModel, view);
-        } else if (ex instanceof IllegalAccessException) {
-            return handleIllegalAccessException((IllegalAccessException) ex, redirectAttributes);
-        } else if (ex instanceof DataIntegrityViolationException) {
-            return handleDataIntegrityViolationException(model, activitiesModel, view);
-        } else {
-            return handleUnexpectedException(model, activitiesModel, view);
-        }
+        return switch (ex) {
+            case IllegalArgumentException illegalArgumentException ->
+                    handleIllegalArgumentException(illegalArgumentException, model, activitiesModel, view);
+            case IllegalAccessException illegalAccessException ->
+                    handleIllegalAccessException(illegalAccessException, redirectAttributes);
+            case DataIntegrityViolationException dataIntegrityViolationException ->
+                    handleDataIntegrityViolationException(model, activitiesModel, view);
+            case null, default -> handleUnexpectedException(model, activitiesModel, view);
+        };
     }
 
     private String handleIllegalArgumentException(IllegalArgumentException ex, Model model, ActivitiesModel activitiesModel, String view){

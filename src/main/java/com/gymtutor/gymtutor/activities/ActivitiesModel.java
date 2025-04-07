@@ -2,7 +2,6 @@ package com.gymtutor.gymtutor.activities;
 
 import com.gymtutor.gymtutor.activitiesimages.ActivitiesImagesModel;
 import com.gymtutor.gymtutor.activitiesvideos.ActivitiesVideosModel;
-import com.gymtutor.gymtutor.user.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -43,16 +42,7 @@ public class ActivitiesModel {
     @OneToMany(mappedBy = "activity")
     private List<ActivitiesImagesModel> images = new ArrayList<>();
 
-
-    // Métodos para gerenciar vídeos
-    public void addVideo(ActivitiesVideosModel video) {
-        videos.add(video);
-        video.setActivity(this);
-    }
-
-    public ActivitiesModel() {
-
-    }
+    public ActivitiesModel() {}
 
     public List<ActivitiesVideosModel> getVideos() {
         return videos;
