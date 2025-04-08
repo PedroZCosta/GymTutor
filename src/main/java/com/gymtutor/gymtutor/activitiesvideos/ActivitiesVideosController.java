@@ -54,7 +54,7 @@ public class ActivitiesVideosController {
             return handleValidationErrors(model, "/admin/activities/videos/new", activitiesVideosModel, bindingResult, activitiesId,null);
         }
 
-        return  handleRequest(redirectAttributes, model, "admin/activities/videos/new", activitiesVideosModel,activitiesId,()->{
+        return  handleRequest(redirectAttributes, model, "admin/activities/videos/new", activitiesVideosModel, activitiesId, ()-> {
             videosService.createVideo(activitiesVideosModel, activitiesId);
             redirectAttributes.addFlashAttribute("successMessage","Video adicionado com sucesso!!!");
             return "redirect:/admin/activities/"+activitiesId+"/videos";
@@ -176,7 +176,7 @@ public class ActivitiesVideosController {
     private String handleError(String errorMessage, Model model, ActivitiesVideosModel activitiesVideosModel, Integer activitiesId, String view){
         if (model != null) {
             model.addAttribute("errorMessage", errorMessage);
-            model.addAttribute("ActivitiesModel", activitiesVideosModel);
+            model.addAttribute("activitiesVideosModel", activitiesVideosModel);
             model.addAttribute("activitiesId", activitiesId);
         }
         if(view != null){

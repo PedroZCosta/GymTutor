@@ -28,14 +28,14 @@ public class ActivitiesVideosService {
     }
 
     public void createVideo(@Valid ActivitiesVideosModel activitiesVideosModel, int activitiesId) {
-        ActivitiesModel activity = activitiesRepository.findById(activitiesId).orElseThrow(() -> new EntityNotFoundException("Activities not found"));
+        ActivitiesModel activity = activitiesRepository.findById(activitiesId).orElseThrow(() -> new EntityNotFoundException("Exercícios não Encontrados"));
         activitiesVideosModel.setActivity(activity);
         videosRepository.save(activitiesVideosModel);
     }
 
     public ActivitiesVideosModel findById(int videoId) {
         Optional<ActivitiesVideosModel> optionalActivitiesVideosModel = videosRepository.findById(videoId);
-        return optionalActivitiesVideosModel.orElseThrow(() -> new EntityNotFoundException("Video not found"));
+        return optionalActivitiesVideosModel.orElseThrow(() -> new EntityNotFoundException("Videos não Encontrados"));
     }
 
     public void deleteVideo(int videoId){
