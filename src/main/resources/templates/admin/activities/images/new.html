@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-</body>
+    <body>
+
+        <h1>Adicionar Nova Imagem</h1>
+        <!-- Link de Voltar -->
+        <a th:href="@{/admin/activities/{id}/images(id=${activitiesId})}">Voltar</a><br>
+
+        <!-- Mensagens de erro e sucesso -->
+        <div th:if="${successMessage}" style="color: green;">
+            <p th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${errorMessage}" style="color: red;">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <!-- Formulário -->
+        <form th:action="@{/admin/activities/{activitiesId}/images/new(activitiesId=${activitiesId})}"
+              th:method="post" th:object="${activitiesImagesModel}" enctype="multipart/form-data">
+
+            <!-- Campo para o nome da imagem -->
+            <label for="imageName">Nome da Imagem:</label>
+            <input type="text" id="imageName" name="imageName" th:value="*{imageName}" required />
+
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('imageName')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('imageName')}" th:text="${err}"></p>
+            </div>
+
+            <!-- Campo para selecionar o arquivo da imagem -->
+            <label for="imagePath">Selecione a Imagem:</label>
+            <input type="file" id="imageFile" name="imageFile" accept="image/*" required onchange="previewImage(event)" />
+
+
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('imagePath')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('imagePath')}" th:text="${err}"></p>
+            </div>
+
+            <!-- Exibe a prévia da imagem -->
+            <div>
+                <img id="imagePreview" style="max-width: 300px; max-height: 300px; display: none;" />
+            </div>
+
+            <button type="submit">Adicionar Imagem</button>
+
+        </form>
+
+        <script>
+            function previewImage(event) {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+
+                // Limite de tamanho da imagem (5MB como exemplo)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("O tamanho da imagem não pode exceder 5MB.");
+                    document.getElementById('imagePath').value = "";  // Limpar o campo
+                    document.getElementById('imagePreview').style.display = 'none';  // Esconder a imagem
+                } else {
+                    reader.readAsDataURL(file);
+                }
+            }
+        </script>
+
+    </body>
+
 </html>

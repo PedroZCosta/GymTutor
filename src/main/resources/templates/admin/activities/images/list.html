@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<body>
+<h1>Gerenciamento de Exercício - Adicionar Imagens</h1>
+<!-- Link de Voltar -->
+<a href="/admin/activities">Voltar</a><br>
+
+<!-- Mensagens de erro e sucesso -->
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- Lista dos Usuarios -->
+<a th:href="@{/admin/activities/{activitiesId}/images/new(activitiesId=${activitiesId})}">Adicionar Nova Imagen</a>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nome da Imagem</th>
+        <th>Imagem</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="image : ${imagesList}">
+        <td th:text="${image.imageId}"></td>
+        <td th:text="${image.imageName}"></td>
+        <td>
+            <img th:src="${image.imagePath}" alt="Imagem" style="width: 100px; height: auto;"/>
+        </td>
+
+        <td class="actions-cell">
+            <div class="actions-cell-row">
+                <form th:action="@{/admin/activities/{activitiesId}/images/{imageId}/edit(activitiesId=${activitiesId}, imageId=${image.imageId})}" th:method="get" style="display: inline;">
+                    <button type="submit">Editar</button>
+                </form>
+
+                <form th:action="@{/admin/activities/{activitiesId}/images/delete/{imageId}(activitiesId=${activitiesId}, imageId=${image.imageId})}" th:method="post" style="display: inline;">
+                    <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir esta atividade?')">Excluir</button>
+                </form>
+
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

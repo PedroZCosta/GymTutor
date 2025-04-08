@@ -16,15 +16,16 @@ public class ActivitiesImagesModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int imageId;
 
+    //TODO: GARANTIR UNICICIDADE DO NOME DA IMAGEM
     @NotBlank(message = "Nome da imagem não pode estar vazio!")
-    @Size(min = 3, max = 100, message = "Nome da imagem deve ter entre 3 e 100 caracteres.")
+    @Size(min = 3, max = 50, message = "Nome da imagem deve ter entre 3 e 50 caracteres.")
     private String imageName;
 
     @ManyToOne
     @JoinColumn(name = "activity_id",  referencedColumnName = "activitiesId")
     private ActivitiesModel activity;
 
-    @NotBlank(message = "Caminho da imagem não pode estar vazio!")
+//    @NotBlank(message = "Caminho da imagem não pode estar vazio!") precisa ser em branco, pois o caminho não será validado no formulário, NÃO ATIVE ESSA LINHA!!!!!
     @Column(name = "image_path")
     private String imagePath;
 
