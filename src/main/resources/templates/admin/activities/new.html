@@ -46,9 +46,6 @@
   <div th:if="${#fields.hasErrors('muscularGroup')}" style="color: red;">
     <p th:each="err : ${#fields.errors('muscularGroup')}" th:text="${err}"></p>
   </div>
-  <label for="videoLink">Link do Vídeo Demonstrativo:</label>
-  <input type="url" id="videoLink" name="videoLink" placeholder="https://exemplo.com/video" required />
-
 
   <button type="submit">Criar Exercicio</button>
 
