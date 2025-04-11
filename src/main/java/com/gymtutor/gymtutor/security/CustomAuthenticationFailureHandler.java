@@ -23,9 +23,9 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             case org.springframework.security.authentication.BadCredentialsException ignored ->
                     "Nome de usuário ou senha inválidos. Verifique suas credenciais e tente novamente.";
             case org.springframework.security.authentication.LockedException ignored ->
-                    "A entidade associada à sua conta está bloqueada. Entre em contato com o administrador.";
+                    "Sua conta está bloqueada. Entre em contato com o administrador.";
             case org.springframework.security.authentication.DisabledException ignored ->
-                    "Sua conta está desativada. Entre em contato com o administrador.";
+                    "Sua conta está desativada. Clique em Recuperar sua conta.";
             case null, default ->
                     "Erro de autenticação desconhecido. Tente novamente mais tarde ou entre em contato com o suporte.";
         };
