@@ -19,7 +19,18 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             AuthenticationException exception
     ) throws IOException, ServletException {
         // Adiciona a mensagem de erro na sessão
-        request.getSession().setAttribute("errorMessage", "Credenciais inválidas. Tente novamente.");
+        String errorMessage = switch (exception) {
+            case org.springframework.security.authentication.BadCredentialsException ignored ->
+                    "Nome de usuário ou senha inválidos. Verifique suas credenciais e tente novamente.";
+            case org.springframework.security.authentication.LockedException ignored ->
+                    "A entidade associada à sua conta está bloqueada. Entre em contato com o administrador.";
+            case org.springframework.security.authentication.DisabledException ignored ->
+                    "Sua conta está desativada. Entre em contato com o administrador.";
+            case null, default ->
+                    "Erro de autenticação desconhecido. Tente novamente mais tarde ou entre em contato com o suporte.";
+        };
+
+        request.getSession().setAttribute("errorMessage", errorMessage);
         response.sendRedirect("/login?error=true");  // Redireciona para a página de login com um parâmetro de erro
     }
 }
