@@ -31,10 +31,6 @@ public class CustomUserDetails implements UserDetails {
         return user.getUserEmail();
     }
 
-    public User getUserEntity() {
-        return user;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Pega a lista de papéis (roles) do usuário e transforma em uma lista de "autoridades" do Spring Security
@@ -63,7 +59,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !user.isLocked(); // usuário está bloqueado? então não está "non-locked"
     }
 
     @Override
@@ -73,6 +69,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isActive(); // usa o campo isActive da entidade
     }
+
 }
