@@ -40,6 +40,13 @@ public class User {
     // CPF
     private String userCpf;
 
+    // Usuario está ativo?
+    private boolean isActive = true;
+
+    // Usuario está bloqueado?
+    private boolean isLocked = false;
+
+
     //todo: alterar para ManyToOne quando for criar CRUD de usuario
     @ManyToMany(fetch = FetchType.EAGER)// Cria uma tabela relacionar entre o papel e o usuario
     @JoinTable(
@@ -92,4 +99,13 @@ public class User {
     public Set<Role> getRoles() { return roles; }
 
     public void setRoles(Set<Role> roles) { this.roles = roles; }
+
+    public boolean isActive() { return isActive; }
+
+    public void setActive(boolean active) { isActive = active; }
+
+    public boolean isLocked() { return isLocked(); }
+
+    public void setLocked(boolean isLocked) { this.isLocked = isLocked; }
+
 }
