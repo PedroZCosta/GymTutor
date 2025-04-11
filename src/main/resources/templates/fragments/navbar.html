@@ -27,9 +27,12 @@
                 </ul>
             </div>
 
-            <div th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_ADMIN')}">
+            <!-- todo: confirmar se ele ira aparecer aqui mesmo KKKKK -->
+            <div th:if="${LoggedUserRole.contains('ROLE_STUDENT')or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
                 <h2>Seção do Aluno</h2>
                 <ul>
+                    <h3>Treinos</h3>
+                    <li><a href="/student/workoutplan">Ficha de treinos</a></li>
                 </ul>
             </div>
 

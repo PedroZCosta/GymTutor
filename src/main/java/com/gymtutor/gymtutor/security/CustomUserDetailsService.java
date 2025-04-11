@@ -23,15 +23,7 @@ public class CustomUserDetailsService implements org.springframework.security.co
         User user = userRepository.findByUserEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
-        // Constrói e retorna o UserDetails
-        UserBuilder userBuilder = org.springframework.security.core.userdetails.User.withUsername(user.getUserEmail());
-        userBuilder.password(user.getUserPassword());
 
-        // Adiciona o prefixo ROLE_ para cada role, se necessário
-        userBuilder.roles(user.getRoles().stream()
-                .map(role -> role.getRoleName().name())  // Prefixando com ROLE_
-                .toArray(String[]::new));
-
-        return userBuilder.build();
+        return new CustomUserDetails(user); // agora nn precisa mais construir manualmente o UserDetails
     }
 }

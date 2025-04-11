@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<h1>Editar ficha de treino</h1>
+<!-- Link de Voltar -->
+<a href="/student/workoutplan">Voltar</a><br>
+
+
+<!-- Mensagens de erro e sucesso -->
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- Formulário de edição -->
+<form th:action="@{/student/workoutplan/{workoutPlanId}/edit(workoutPlanId=${workoutPlanId})}" th:method="post" th:object="${workoutPlanModel}">
+    <!-- Campo para nome do setor -->
+    <label for="WorkoutPlanName">Nome da ficha de treino:</label>
+    <input type="text" id="WorkoutPlanName" name="WorkoutPlanName" th:value="*{WorkoutPlanName}" required />
+
+    <!-- Exibe erro se houver -->
+    <div th:if="${#fields.hasErrors('WorkoutPlanName')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('WorkoutPlanName')}" th:text="${err}"></p>
+    </div>
+
+    <label for="workoutPlanDescription">Descrição</label>
+    <input type="text" id="workoutPlanDescription" name="workoutPlanDescription" th:value="*{workoutPlanDescription}" required />
+
+    <!-- Exibe erro se houver -->
+    <div th:if="${#fields.hasErrors('workoutPlanDescription')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('workoutPlanDescription')}" th:text="${err}"></p>
+    </div>
+
+    <button type="submit">Atualizar</button>
+</form>
+</body>
+
+</html>

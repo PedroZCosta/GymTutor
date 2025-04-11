@@ -31,7 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/cadastro", "/login").permitAll() // Páginas públicas
                         .requestMatchers("/images/activities/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // Permitir acesso a arquivos estáticos
-                        .requestMatchers("/student/**").hasRole("STUDENT") // Apenas STUDENT pode acessar /student
+                        .requestMatchers("/student/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN") // STUDENT e PERSONAL podem acessar /student
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Apenas ADMIN pode acessar /admin
                         .requestMatchers("/personal/**").hasRole("PERSONAL") // Apenas PERSONAL pode acessar /personal
                         .anyRequest().authenticated() // Qualquer outra requisição requer autenticação

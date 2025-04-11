@@ -18,11 +18,12 @@ public interface WorkoutPerWorkoutPlanRepository extends JpaRepository<WorkoutPe
     // Buscar todos os vínculos por workoutPlanId
     List<WorkoutPerWorkoutPlanModel> findByWorkoutPlanWorkoutPlanId(int workoutPlanId);
 
+
     // Buscar vínculo específico entre workout e workoutPlan
     // Nome customizado para seguir o padrão do projeto sem underline.
     @Query("SELECT w FROM WorkoutPerWorkoutPlanModel w WHERE w.workout.workoutId = :workoutId AND w.workoutPlan.workoutPlanId = :workoutPlanId")
     Optional<WorkoutPerWorkoutPlanModel> findByWorkoutIdAndWorkoutPlanId(
             @Param("workoutId") int workoutId,
             @Param("workoutPlanId") int workoutPlanId
-    );
+    ); // todo: acabar com essa query personalizada e utilizar a nomeclatura correta
 }

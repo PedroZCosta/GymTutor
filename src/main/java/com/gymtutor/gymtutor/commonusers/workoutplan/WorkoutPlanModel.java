@@ -20,17 +20,16 @@ public class WorkoutPlanModel {
     private int workoutPlanId;
 
     @NotBlank(message = "Nome não pode estar vazio!")
-    @Size(min = 2, max=200 , message = "Este campo deve ter entre 2 e 200 caracteres.")
+    @Size(min = 2, max=30 , message = "Este campo deve ter entre 2 e 30 caracteres.")
     private String workoutPlanName;
 
     @NotBlank(message = "Nome não pode estar vazio!")
     @Size(min = 2, max=200 , message = "Este campo deve ter entre 2 e 200 caracteres.")
     private String workoutPlanDescription;
 
-    @OneToOne
-    @JoinColumn(name= "user_id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
-
     // Construtor padrão
     public WorkoutPlanModel() {
     }
@@ -43,7 +42,7 @@ public class WorkoutPlanModel {
     }
 
     // Getters e setters
-    public String getworkoutPlanDescription() {
+    public String getWorkoutPlanDescription() {
         return workoutPlanDescription;
     }
 

@@ -31,6 +31,7 @@ public class WorkoutPerWorkoutPlanModel {
         this.workoutPlan = workoutPlan;
     }
 
+    //Getters e setters
     public WorkoutPerWorkoutPlanId getWorkoutPerWorkoutPlanId() {
         return workoutPerWorkoutPlanId;
     }

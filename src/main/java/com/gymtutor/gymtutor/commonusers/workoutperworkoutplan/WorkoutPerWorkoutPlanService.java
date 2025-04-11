@@ -19,16 +19,6 @@ public class WorkoutPerWorkoutPlanService {
     @Autowired
     private WorkoutPerWorkoutPlanRepository workoutPerWorkoutPlanRepository;
 
-    // Buscar vínculos pelo workoutId
-    public List<WorkoutPerWorkoutPlanModel> findByWorkoutWorkoutId(int workoutId) {
-        return workoutPerWorkoutPlanRepository.findByWorkoutWorkoutId(workoutId);
-    }
-
-    // Buscar vínculos pelo workoutPlanId
-    public List<WorkoutPerWorkoutPlanModel> findByWorkoutPlanWorkoutPlanId(int workoutPlanId) {
-        return workoutPerWorkoutPlanRepository.findByWorkoutPlanWorkoutPlanId(workoutPlanId);
-    }
-
     // Vincular treino a uma ficha de treino
     @Transactional
     public void linkWorkoutToWorkoutPlan(WorkoutModel workout, WorkoutPlanModel workoutPlan) {

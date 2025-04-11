@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- todo: implementar min e maximo de caracteres nos campos -->
+
+<body>
+<h1>Criar Nova ficha de treino</h1>
+<!-- Link de Voltar -->
+<a href="/student/workoutplan">Voltar</a><br>
+
+<!-- Mensagens de erro e sucesso -->
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- Formulário -->
+<form th:action="@{/student/workoutplan}" th:method="post" th:object="${workoutPlanModel}">
+
+    <!-- Campo para nome do setor -->
+    <label for="workoutPlanName">Nome da ficha:</label>
+    <input type="text" id="workoutPlanName" name="workoutPlanName" th:value="*{workoutPlanName}" required />
+
+    <!-- Exibe erro se houver -->
+    <div th:if="${#fields.hasErrors('workoutPlanName')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('workoutPlanName')}" th:text="${err}"></p>
+    </div>
+
+    <label for="workoutPlanDescription">Descrição</label>
+    <input type="text" id="workoutPlanDescription" name="workoutPlanDescription" th:value="*{workoutPlanDescription}" required />
+
+    <!-- Exibe erro se houver -->
+    <div th:if="${#fields.hasErrors('workoutPlanDescription')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('workoutPlanDescription')}" th:text="${err}"></p>
+    </div>
+
+    <button type="submit">Criar ficha</button>
+
+</form>
+</body>
+
+</html>

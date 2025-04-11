@@ -37,4 +37,20 @@ public class WorkoutPerWorkoutPlanId implements Serializable { // Implementa Ser
         return Objects.hash(workoutId, workoutPlanId);
     }
 
+    // Getters e setters
+    public int getWorkoutId() {
+        return workoutId;
+    }
+
+    public void setWorkoutId(int workoutId) {
+        this.workoutId = workoutId;
+    }
+
+    public int getWorkoutPlanId() {
+        return workoutPlanId;
+    }
+
+    public void setWorkoutPlanId(int workoutPlanId) {
+        this.workoutPlanId = workoutPlanId;
+    }
 }
