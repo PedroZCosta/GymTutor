@@ -1,7 +1,10 @@
 package com.gymtutor.gymtutor.commonusers.profile;
 
 import com.gymtutor.gymtutor.security.CustomUserDetails;
+import com.gymtutor.gymtutor.user.Personal;
+import com.gymtutor.gymtutor.user.PersonalService;
 import com.gymtutor.gymtutor.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/profile")
 public class ProfileController {
 
+    @Autowired
+    private PersonalService personalService;
+
     @GetMapping
     public String showProfile(
             Model model,
@@ -20,8 +26,14 @@ public class ProfileController {
             @AuthenticationPrincipal CustomUserDetails loggedUser
     ) {
         User user = loggedUser.getUser();
-
         model.addAttribute("user", user);
+
+        Personal personal = personalService.findByUser(user);
+        if (personal != null) {
+            model.addAttribute("personal", personal);
+        }
+
+
         model.addAttribute("body", "profile/profile");
         return "/fragments/layout";
     }
