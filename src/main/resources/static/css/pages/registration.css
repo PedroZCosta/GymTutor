@@ -1,0 +1,118 @@
+/* Definindo um fundo escuro para o corpo da página */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #F0F3F4; /* Cor de fundo escura */
+    display: flex;
+    flex-direction: column;
+    height: 96vh; /* Alinha o conteúdo verticalmente */
+    width: 100vw;
+    overflow: hidden; /* Impede a barra de rolagem */
+    color: #878686; /* Cor de texto */
+    padding: 20px;
+    overflow-y: scroll; /* Barra de rolagem vertical para o conteúdo */
+}
+
+button {
+    background-color: #154360; /* Cor de fundo para os botões */
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    min-height: 40px;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #1d4f72; /* Cor mais escura ao passar o mouse */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 600px; /* Limita a largura do formulário */
+    margin: 0 auto; /* Centraliza o formulário */
+}
+
+a {
+    color: #154360;
+    text-decoration: none;
+    font-weight: bold;
+    width: fit-content
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Personalização para os campos de formulário */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"],
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+/* Estilização do checkbox */
+input[type="checkbox"] {
+    width: 15px; /* Aumenta a largura do checkbox */
+    height: 15px; /* Aumenta a altura do checkbox */
+    margin-left: 10px; /* Distância entre o texto e o checkbox */
+    margin-bottom: 15px;
+    transform: scale(1.5); /* Aumenta o checkbox em 50% (ou seja, dobro do tamanho) */
+}
+
+/* Container do checkbox para controlar o layout */
+.checkbox-container {
+    display: flex;
+    align-items: baseline;
+    margin-top: 10px;
+
+}
+
+label[for="isActive"] {
+    font-weight: bold;
+    margin-right: 10px; /* Adiciona um espaço entre o label e o checkbox */
+}
+
+
+/* Estilo para mensagens de erro */
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.success-message {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+input.is-valid {
+    border: 2px solid #28a745;
+}
+
+input.is-invalid {
+    border: 2px solid #dc3545;
+}
+
+.validation-error {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
