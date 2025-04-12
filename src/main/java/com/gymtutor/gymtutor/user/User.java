@@ -104,7 +104,7 @@ public class User {
 
     public void setActive(boolean active) { isActive = active; }
 
-    public boolean isLocked() { return isLocked(); }
+    public boolean isLocked() { return isLocked; }
 
     public void setLocked(boolean isLocked) { this.isLocked = isLocked; }
 
