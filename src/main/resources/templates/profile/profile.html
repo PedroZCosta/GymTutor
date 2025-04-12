@@ -19,12 +19,7 @@
     <p th:text="'CPF: ' + ${user.userCpf}"></p>
 
     <!-- Exibir roles -->
-    <div>
-      <p><strong>Papel:</strong></p>
-      <ul>
-        <li th:each="role : ${user.roles}" th:text="${role.roleName.displayName}"></li>
-      </ul>
-    </div>
+    <h3 th:text="'Papel do usuário: ' + ${user.role.roleName.displayName}"></h3>
 
     <!-- Exibir CREEF se for Personal -->
     <div th:if="${personal != null}">
