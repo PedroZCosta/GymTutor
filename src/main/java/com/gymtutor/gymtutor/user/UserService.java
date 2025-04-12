@@ -42,7 +42,7 @@ public class UserService {
 
         // Associando a role 'STUDENT' por padrão
         Role studentRole = roleRepository.findByRoleName(RoleName.STUDENT);
-        user.getRoles().add(studentRole);
+        user.setRole(studentRole);
 
         // Salvando o usuário
         userRepository.save(user);
@@ -57,7 +57,7 @@ public class UserService {
 
             // Adicionando a role 'ADMIN' para o administrador
             Role adminRole = roleRepository.findByRoleName(RoleName.ADMIN);
-            admin.getRoles().add(adminRole);
+            admin.setRole(adminRole);
 
             userRepository.save(admin);
         }
