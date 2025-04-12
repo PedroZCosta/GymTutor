@@ -50,18 +50,14 @@ public class User {
 
 
     //todo: alterar para ManyToOne quando for criar CRUD de usuario
-    @ManyToMany(fetch = FetchType.EAGER)// Cria uma tabela relacionar entre o papel e o usuario
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     // Getters and Setters
     public int getUserId() {
         return userId;
     }
-
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -69,7 +65,6 @@ public class User {
     public String getUserName() {
         return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -77,7 +72,6 @@ public class User {
     public String getUserEmail() {
         return userEmail;
     }
-
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
@@ -85,7 +79,6 @@ public class User {
     public String getUserPassword() {
         return userPassword;
     }
-
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
@@ -93,21 +86,17 @@ public class User {
     public String getUserCpf() {
         return userCpf;
     }
-
     public void setUserCpf(String userCpf) {
         this.userCpf = userCpf;
     }
 
-    public Set<Role> getRoles() { return roles; }
-
-    public void setRoles(Set<Role> roles) { this.roles = roles; }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
     public boolean isActive() { return isActive; }
-
     public void setActive(boolean active) { isActive = active; }
 
     public boolean isLocked() { return isLocked; }
-
     public void setLocked(boolean isLocked) { this.isLocked = isLocked; }
 
 }
