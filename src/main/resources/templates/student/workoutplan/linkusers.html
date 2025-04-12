@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Título da página -->
+<h1>Vincular Usuários à Ficha: <span th:text="${workoutPlan.workoutPlanName}"></span></h1>
+
+<!-- Link para voltar -->
+<a th:href="@{/student/workoutplan}">Voltar</a><br><br>
+
+<!-- Barra de pesquisa -->
+<label for="searchBar">Pesquisar Usuários:</label>
+<input type="text" id="searchBar" onkeyup="filterUsers()" placeholder="Digite o nome do usuário..."><br><br>
+
+
+<!-- Mensagens -->
+<div th:if="${successMessage}" style="color: green;">
+  <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+  <p th:text="${errorMessage}"></p>
+</div>
+
+
+<div th:if="${#lists.isEmpty(linkedUserIds)}">
+  <p>Nenhum usuário vinculado ainda.</p>
+</div>
+
+<!-- Tabela de usuários -->
+<form th:action="@{'/student/workoutplan/' + ${workoutPlan.workoutPlanId} + '/linkusers'}" method="post">
+  <div class="scrollable-table-big">
+    <table>
+      <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Vinculado</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="user : ${users}" class="user-row">
+        <td th:text="${user.userName}" class="user-name"></td>
+        <td th:text="${user.userEmail}"></td>
+        <td>
+          <input type="checkbox" name="userIds" th:value="${user.userId}"
+                 th:checked="${linkedUserIds.contains(user.userId)}" />
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+  <button type="submit">Salvar Alterações</button>
+</form>
+
+<script>
+  function filterUsers() {
+    let input = document.getElementById("searchBar");
+    let filter = input.value.toLowerCase();
+    let rows = document.getElementsByClassName("user-row");
+
+    for (let i = 0; i < rows.length; i++) {
+      let name = rows[i].getElementsByClassName("user-name")[0].innerText.toLowerCase();
+
+      if (name.includes(filter)) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  }
+</script>
+
+</body>
+</html>
