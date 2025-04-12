@@ -1,11 +1,10 @@
 package com.gymtutor.gymtutor.security;
 
-import com.gymtutor.gymtutor.user.UserRecoveryPasswordDTO;
-import com.gymtutor.gymtutor.user.UserRegistrationDTO;
-import com.gymtutor.gymtutor.user.UserService;
+import com.gymtutor.gymtutor.user.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +16,8 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/login")
     public String login() {
@@ -76,6 +77,10 @@ public class AuthController {
         }
         return handleRequest(redirectAttributes, model, "password-recovery", userRecoveryPasswordDTO, () -> {
             // TODO: incluir a lógica para recuperação de senha
+            User user = userRepository.findByUserEmail(userRecoveryPasswordDTO.getUserEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+            // Reativa o usuario ao solicitar recuperação de senha
+            user.setActive(true);
             redirectAttributes.addFlashAttribute("successMessage","Um E-mail foi enviado para a sua conta!");
             return "redirect:/login";
         });
