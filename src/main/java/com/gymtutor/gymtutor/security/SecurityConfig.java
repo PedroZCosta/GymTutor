@@ -28,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/registration", "/login").permitAll() // Páginas públicas
+                        .requestMatchers("/", "/registration", "/password-recovery", "/login").permitAll() // Páginas públicas
                         .requestMatchers("/images/activities/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // Permitir acesso a arquivos estáticos
                         .requestMatchers("/student/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN") // STUDENT e PERSONAL podem acessar /student
