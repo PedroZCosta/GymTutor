@@ -21,25 +21,28 @@ public class UserService {
     }
 
     @Transactional
-    public void createUser(User user, boolean isPersonal, String CREEF) {
+    public void createUser(UserRegistrationDTO userRegistrationDTO) {
         // Criptografando a senha
-        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
+
+        userRepository.findByUserEmail(userRegistrationDTO.getUserEmail())
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("Já existe um Usuário com este e-mail cadastrado.");
+                });
+
+        userRepository.findByUserCpf(userRegistrationDTO.getUserCpf())
+                .ifPresent( user -> {
+                    throw new IllegalArgumentException("Já existe um Usuário com este CPF cadastrado.");
+                });
+
+        User user = new User();
+        user.setUserPassword(passwordEncoder.encode(userRegistrationDTO.getUserPassword()));
+        user.setUserName(userRegistrationDTO.getUserName());
+        user.setUserEmail(userRegistrationDTO.getUserEmail());
+        user.setUserCpf(userRegistrationDTO.getUserCpf());
 
         // Associando a role 'STUDENT' por padrão
         Role studentRole = roleRepository.findByRoleName(RoleName.STUDENT);
         user.getRoles().add(studentRole);
-
-        // Se o usuário for um 'PERSONAL', associa a role 'PERSONAL' e o CREEF
-        if (isPersonal) {
-            Role personalRole = roleRepository.findByRoleName(RoleName.PERSONAL);
-            user.getRoles().add(personalRole);
-
-            // Criando e associando o Personal
-            Personal personal = new Personal();
-            personal.setUser(user);
-            personal.setPersonalCREEF(CREEF);
-            personalRepository.save(personal);
-        }
 
         // Salvando o usuário
         userRepository.save(user);
