@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+
+    <head>
+        <!-- Título da página, exibido na aba do navegador -->
+        <title>GymTutor</title>
+        <link rel="stylesheet" href="/css/pages/registration.css">
+    </head>
+
+    <body>
+
+        <h2>Crie Sua Conta</h2>
+
+        <a href="/login">Voltar</a><br>
+
+        <form th:action="@{/registration}" th:method="post" th:object="${userRegistrationDTO}">
+            <label for="userName">Nome</label>
+            <input type="text" id="userName" th:field="*{userName}"
+                   min="2" max="100" required/>
+
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('userName')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('userName')}" th:text="${err}"></p>
+            </div>
+
+            <label for="userEmail">Email</label>
+            <input type="email" id="userEmail" th:field="*{userEmail}"
+                   required/>
+
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('userEmail')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('userEmail')}" th:text="${err}"></p>
+            </div>
+
+            <label for="confirmEmail">Confirme o Email</label>
+            <input type="email" id="confirmEmail" th:field="*{confirmEmail}"
+                   required/>
+            <div id="confirmEmailError" class="validation-error"></div>
+
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('confirmEmail')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('confirmEmail')}" th:text="${err}"></p>
+            </div>
+
+            <label for="userPassword">Senha</label>
+            <input type="password" id="userPassword" th:field="*{userPassword}"
+                   min="5" required/>
+
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('userPassword')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('userPassword')}" th:text="${err}"></p>
+            </div>
+
+            <label for="confirmPassword">Confirme a Senha</label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
+                   min="5" required/>
+            <div id="confirmPasswordError" class="validation-error"></div>
+
+            <!-- Exibe erro se houver -->
+            <div th:if="${#fields.hasErrors('confirmPassword')}" style="color: red;">
+                <p th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"></p>
+            </div>
+
+
+            <label for="userCpf">CPF (Opcional)</label>
+            <input type="text" id="userCpf" th:field="*{userCpf}"
+                   th:classappend="${#fields.hasErrors('userCpf')} ? 'is-invalid' : ''"
+                   oninput="mascaraCpf(this)" maxlength="14" required/>
+
+            <!-- Exibe mensagem de erro -->
+            <div th:if="${#fields.hasErrors('userCpf')}" class="error-message">
+                <p th:each="err : ${#fields.errors('userCpf')}" th:text="${err}"></p>
+            </div>
+
+            <br>
+            <button type="submit">Criar Conta</button>
+
+        </form>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const email = document.getElementById("userEmail");
+                const confirmEmail = document.getElementById("confirmEmail");
+                const emailError = document.getElementById("confirmEmailError");
+
+                const password = document.getElementById("userPassword");
+                const confirmPassword = document.getElementById("confirmPassword");
+                const passwordError = document.getElementById("confirmPasswordError");
+
+                function validateMatch(field1, field2, errorDiv, message) {
+                    if (field2.value === "") {
+                        field2.classList.remove("is-valid", "is-invalid");
+                        errorDiv.textContent = "";
+                        return;
+                    }
+
+                    if (field1.value === field2.value) {
+                        field2.classList.add("is-valid");
+                        field2.classList.remove("is-invalid");
+                        errorDiv.textContent = "";
+                    } else {
+                        field2.classList.add("is-invalid");
+                        field2.classList.remove("is-valid");
+                        errorDiv.textContent = message;
+                    }
+                }
+
+                confirmEmail.addEventListener("input", () => {
+                    validateMatch(email, confirmEmail, emailError, "Os e-mails não coincidem.");
+                });
+
+                confirmPassword.addEventListener("input", () => {
+                    validateMatch(password, confirmPassword, passwordError, "As senhas não coincidem.");
+                });
+
+                document.querySelector("form").addEventListener("submit", function (e) {
+                    let valid = true;
+
+                    if (email.value !== confirmEmail.value) {
+                        validateMatch(email, confirmEmail, emailError, "Os e-mails não coincidem.");
+                        valid = false;
+                    }
+
+                    if (password.value !== confirmPassword.value) {
+                        validateMatch(password, confirmPassword, passwordError, "As senhas não coincidem.");
+                        valid = false;
+                    }
+
+                    if (!valid) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        </script>
+
+        <script>
+            function mascaraCpf(campo) {
+                let v = campo.value.replace(/\D/g, "");
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d)/, "$1.$2");
+                v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+                campo.value = v;
+            }
+        </script>
+
+    </body>
+
+</html>
