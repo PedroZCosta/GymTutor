@@ -18,7 +18,6 @@ body {
     position: relative;
     background-color: rgba(0, 0, 0, 0.08); /* Fundo preto semi-transparente */
     padding: 50px;
-    border-radius: 0px; /* Bordas arredondadas */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.88); /* Sombra suave */
     display: flex;
     flex-direction: column;
@@ -89,4 +88,17 @@ button[type="submit"]:hover {
     form {
         width: 90%; /* Ajusta a largura do formulário para telas pequenas */
     }
+}
+
+
+a {
+    color: rebeccapurple;       /* roxo bonito */
+    font-weight: bold;          /* negrito */
+    text-decoration: none;      /* remove sublinhado */
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: darkviolet;          /* muda de cor ao passar o mouse */
+    text-decoration: underline; /* sublinhado no hover */
 }
