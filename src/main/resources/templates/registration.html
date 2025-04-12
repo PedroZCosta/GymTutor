@@ -62,7 +62,7 @@
             </div>
 
 
-            <label for="userCpf">CPF (Opcional)</label>
+            <label for="userCpf">CPF</label>
             <input type="text" id="userCpf" th:field="*{userCpf}"
                    th:classappend="${#fields.hasErrors('userCpf')} ? 'is-invalid' : ''"
                    oninput="mascaraCpf(this)" maxlength="14" required/>
