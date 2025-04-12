@@ -20,10 +20,16 @@ public class WorkoutPlanController {
     @Autowired
     private WorkoutPlanService workoutPlanService;
 
+
     @GetMapping
-    public String listWorkoutPlan(Model model, RedirectAttributes redirectAttributes) {
+    public String listWorkoutPlan(
+            Model model,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
         return handleRequest(redirectAttributes, model, null, null, () -> {
-            var workoutPlanList = workoutPlanService.findAll();
+            int userId = userDetails.getUser().getUserId();
+            var workoutPlanList = workoutPlanService.findAllByUserUserId(userId);
             model.addAttribute("workoutPlan", workoutPlanList);
             model.addAttribute("body", "student/workoutplan/list");
             return "/fragments/layout";

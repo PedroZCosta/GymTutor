@@ -33,7 +33,9 @@ public class WorkoutPlanService {
         return optionalWorkoutPlanModel.orElseThrow(() -> new RuntimeException("workoutPlan not found with id " + workoutPlanId));
     }
 
-    public List<WorkoutPlanModel> findAll(){return workoutPlanRepository.findAll();}
+    public List<WorkoutPlanModel> findAllByUserUserId(int userId) {
+        return workoutPlanRepository.findAllByUserUserId(userId);
+    }
 
     public void updateWorkoutPlan(WorkoutPlanModel workoutPlanModel, int workoutPlanId){
 

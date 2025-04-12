@@ -12,4 +12,5 @@ import java.util.List;
 public interface WorkoutPlanRepository extends JpaRepository<WorkoutPlanModel, Integer> {
     List<WorkoutPlanModel> findAllByUser(User user); // Busca todas as fichas de treino associadas ao usuario
 
+    List<WorkoutPlanModel> findAllByUserUserId(int userId);
 }
