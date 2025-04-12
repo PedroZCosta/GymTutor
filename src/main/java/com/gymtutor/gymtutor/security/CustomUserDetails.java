@@ -1,10 +1,12 @@
 package com.gymtutor.gymtutor.security;
 
+import com.gymtutor.gymtutor.user.Role;
 import com.gymtutor.gymtutor.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
@@ -34,11 +36,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Pega a lista de papéis (roles) do usuário e transforma em uma lista de "autoridades" do Spring Security
-        return user.getRoles().stream()
-                // Para cada role, cria uma implementação de GrantedAuthority (com lambda)
-                .map(role -> (GrantedAuthority) () -> "ROLE_" + role.getRoleName().name())
-                // Coleta todos os GrantedAuthority em uma lista
-                .collect(Collectors.toList());
+        Role role = user.getRole();
+        GrantedAuthority authority = () -> "ROLE_" + role.getRoleName().name();
+        return List.of(authority);
     }
 
 
