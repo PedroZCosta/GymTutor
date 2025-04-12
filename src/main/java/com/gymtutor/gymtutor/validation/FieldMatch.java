@@ -9,6 +9,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Repeatable(FieldMatchList.class)
 public @interface FieldMatch {
     String message() default "Os campos não coincidem.";
 
