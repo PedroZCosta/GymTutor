@@ -13,8 +13,23 @@
       <p th:text="${errorMessage}"></p>
     </div>
 
-    <h2>Nome: th:text="${user.userName}" </h2>
+    <!-- Informações do usuário -->
+    <h2 th:text="'Nome: ' + ${user.userName}"></h2>
+    <p th:text="'Email: ' + ${user.userEmail}"></p>
+    <p th:text="'CPF: ' + ${user.userCpf}"></p>
 
+    <!-- Exibir roles -->
+    <div>
+      <p><strong>Papel:</strong></p>
+      <ul>
+        <li th:each="role : ${user.roles}" th:text="${role.roleName.displayName}"></li>
+      </ul>
+    </div>
+
+    <!-- Exibir CREEF se for Personal -->
+    <div th:if="${personal != null}">
+      <p th:text="'CREEF: ' + ${personal.personalCREEF}"></p>
+    </div>
 
   </body>
 
