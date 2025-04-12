@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <body>
+
+    <h1>Meu Perfil</h1>
+
+    <!-- Mensagens de erro e sucesso -->
+    <div th:if="${successMessage}" style="color: green;">
+      <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" style="color: red;">
+      <p th:text="${errorMessage}"></p>
+    </div>
+
+    <h2>Nome: th:text="${user.userName}" </h2>
+
+
+  </body>
+
+
+</html>
