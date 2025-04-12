@@ -28,6 +28,7 @@ public class User {
     private String userName;
 
     // Email (obrigatório e precisa ser um email válido)
+    @Column(name = "email", unique = true)
     @NotBlank
     @Email(message = "Email inválido.")
     private String userEmail;
@@ -38,6 +39,7 @@ public class User {
     private String userPassword;
 
     // CPF
+    @Column(name = "cpf", unique = true)
     private String userCpf;
 
     // Usuario está ativo?
