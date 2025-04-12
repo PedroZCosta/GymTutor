@@ -18,6 +18,9 @@
       <p>Logue com suas credenciais.</p>
 
       <!-- Bloco condicional que mostra a mensagem de erro se houver falha na autenticação -->
+      <div th:if="${successMessage}" style="color: green;">
+        <p th:text="${successMessage}"></p>
+      </div>
       <div th:if="${session.errorMessage}">
         <p style="color: red;" th:text="${session.errorMessage}"></p>
       </div>
@@ -38,7 +41,10 @@
 
       </form>
 
-      <p>Crie uma conta</p>
+      <br><br>
+      <a th:href="@{/password-recovery}">Esqueci Minha Senha</a>
+      <p>Não tem uma conta? <a th:href="@{/registration}">Crie uma conta</a></p>
+
 
     </div>
 
