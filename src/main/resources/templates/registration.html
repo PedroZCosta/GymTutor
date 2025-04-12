@@ -13,6 +13,14 @@
 
         <a href="/login">Voltar</a><br>
 
+        <!-- Mensagens de erro e sucesso -->
+        <div th:if="${successMessage}" style="color: green;">
+            <p th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${errorMessage}" style="color: red;">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
         <form th:action="@{/registration}" th:method="post" th:object="${userRegistrationDTO}">
             <label for="userName">Nome</label>
             <input type="text" id="userName" th:field="*{userName}"
