@@ -1,8 +1,10 @@
 package com.gymtutor.gymtutor.user;
 
+import com.gymtutor.gymtutor.validation.FieldMatch;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@FieldMatch(first = "userPassword", second = "confirmPassword", message = "As senhas não coincidem.")
 public class UserChangePasswordDTO {
 
     @NotBlank
