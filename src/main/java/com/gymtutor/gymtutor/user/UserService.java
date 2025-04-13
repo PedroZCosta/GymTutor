@@ -72,6 +72,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void changeRole(User user, RoleName newRoleName) {
+        Role newRole = roleRepository.findByRoleName(newRoleName);
+        user.setRole(newRole);
+        userRepository.save(user);
+    }
+
     public void disableUser(User user) {
         user.setActive(false);
         userRepository.save(user);
