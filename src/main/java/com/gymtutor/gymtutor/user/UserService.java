@@ -67,6 +67,11 @@ public class UserService {
         return passwordEncoder.matches(rawPassword, user.getUserPassword());
     }
 
+    public void changePassword(User user, String newPassword) {
+        user.setUserPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
     public void disableUser(User user) {
         user.setActive(false);
         userRepository.save(user);
