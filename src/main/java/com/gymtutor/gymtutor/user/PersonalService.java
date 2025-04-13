@@ -16,4 +16,9 @@ public class PersonalService {
         Optional<Personal> optionalPersonal = personalRepository.findByUser(user);
         return optionalPersonal.orElse(null);
     }
+
+    public void save(Personal personal) {
+        personalRepository.save(personal);
+    }
+
 }
