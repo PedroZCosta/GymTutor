@@ -51,7 +51,8 @@ public class ProfileController {
             @Valid @ModelAttribute UserChangePasswordDTO userChangePasswordDTO,
             BindingResult bindingResult,
             Model model,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails loggedUser
     ) {
         if(bindingResult.hasErrors()) {
             model.addAttribute("errorMessage", "Há erros no formulário!");
@@ -60,11 +61,11 @@ public class ProfileController {
             model.addAttribute("body", "profile/change-password");
             return "/fragments/layout";
         }
-
-
-        model.addAttribute("userChangePasswordDTO", new UserChangePasswordDTO());
-        model.addAttribute("body", "profile/change-password");
-        return "/fragments/layout";
+        //TODO: Adicionar a validação de erros ao salvar a senha
+        User user = loggedUser.getUser();
+        userService.changePassword(user, userChangePasswordDTO.getUserPassword());
+        redirectAttributes.addFlashAttribute("successMessage", "Sua senha foi alterada com sucesso!");
+        return "redirect:/profile";
     }
 
     @PostMapping("/disable-account")
