@@ -2,6 +2,7 @@ package com.gymtutor.gymtutor.commonusers.profile;
 
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.user.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -67,6 +68,29 @@ public class ProfileController {
         redirectAttributes.addFlashAttribute("successMessage", "Sua senha foi alterada com sucesso!");
         return "redirect:/profile";
     }
+
+    @Transactional
+    @PostMapping("/save-creef")
+    public String saveCreef(
+            @RequestParam("personalCREEF") String creef,
+            @AuthenticationPrincipal CustomUserDetails loggedUser,
+            RedirectAttributes redirectAttributes
+    ) {
+        User user = loggedUser.getUser();
+
+        // Cria um novo Personal e vincula ao usuário
+        Personal personal = new Personal();
+        personal.setPersonalCREEF(creef);
+        personal.setUser(user);
+        personalService.save(personal);
+
+        // Troca o papel para PERSONAL
+        userService.changeRole(user, RoleName.PERSONAL);
+
+        redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!");
+        return "redirect:/profile";
+    }
+
 
     @PostMapping("/disable-account")
     public String disableAccount(
