@@ -62,4 +62,20 @@ public class UserService {
             userRepository.save(admin);
         }
     }
+
+    public boolean checkPassword(User user, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, user.getUserPassword());
+    }
+
+    public void disableUser(User user) {
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
+    public void enableUser(User user) {
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+
 }
