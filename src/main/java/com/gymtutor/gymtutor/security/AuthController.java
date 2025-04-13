@@ -79,8 +79,8 @@ public class AuthController {
             // TODO: incluir a lógica para recuperação de senha
             User user = userRepository.findByUserEmail(userRecoveryPasswordDTO.getUserEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-            // Reativa o usuario ao solicitar recuperação de senha
-            user.setActive(true);
+            // Reativa o usuário ao solicitar recuperação de senha
+            userService.enableUser(user);
             redirectAttributes.addFlashAttribute("successMessage","Um E-mail foi enviado para a sua conta!");
             return "redirect:/login";
         });
