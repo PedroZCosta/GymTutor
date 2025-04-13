@@ -26,7 +26,37 @@
       <p th:text="'CREEF: ' + ${personal.personalCREEF}"></p>
     </div>
 
-  </body>
 
+  <div class="actions-cell">
+
+    <form th:action="@{/profile/change-password}" th:method="get" style="display: inline;">
+      <button type="submit">Alterar Senha</button>
+    </form>
+
+
+    <form id="disableForm" th:action="@{/profile/disable-account}" th:method="post" style="display: inline;">
+      <input type="hidden" name="confirmPassword" id="confirmPassword">
+      <button type="button" onclick="confirmDisable()">Desativar Conta</button>
+    </form>
+
+  </div>
+
+  <script>
+    function confirmDisable() {
+      const senha = prompt("Por favor, digite sua senha para confirmar:");
+
+      if (senha !== null && senha.trim() !== "") {
+        document.getElementById("confirmPassword").value = senha;
+        if (confirm("Você tem certeza de que deseja desativar sua conta?")) {
+          document.getElementById("disableForm").submit();
+        }
+      } else {
+        alert("A senha é obrigatória para desativar a conta.");
+      }
+    }
+  </script>
+
+
+  </body>
 
 </html>
