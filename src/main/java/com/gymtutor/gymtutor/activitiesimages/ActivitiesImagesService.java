@@ -14,8 +14,8 @@ import java.io.File;
 public class ActivitiesImagesService {
 
     // pegando caminho absoluto (Config WebConfig e UploadProperties + injeção pelo Application.Properties)
-    @Value("${upload.dir}")
-    private String uploadDir;
+    @Value("${upload.dir.activities}")
+    private String uploadDirActivities;
 
     private final ActivitiesImagesRepository imagesRepository;
     private final ActivitiesRepository activitiesRepository; // Repositório dos exercícios
@@ -53,7 +53,7 @@ public class ActivitiesImagesService {
         // Remove a imagem física do disco
         String relativePath = image.getImagePath();
         String imageFileName = relativePath.substring(relativePath.lastIndexOf('/') + 1);
-        String fullPath = new File(uploadDir, imageFileName).getAbsolutePath();
+        String fullPath = new File(uploadDirActivities, imageFileName).getAbsolutePath();
 
         // Exclui o arquivo do sistema
         File file = new File(fullPath);
