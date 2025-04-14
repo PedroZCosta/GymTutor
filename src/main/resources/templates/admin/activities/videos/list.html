@@ -29,7 +29,15 @@
     <tr th:each="video : ${videosList}">
         <td th:text="${video.videoId}"></td>
         <td th:text="${video.videoName}"></td>
-        <td th:text="${video.videoLink}"></td>
+
+        <td>
+            <iframe th:if="${video.videoLink != null and video.videoLink.contains('v=')}"
+                    th:src="'https://www.youtube.com/embed/' + ${#strings.substring(video.videoLink, video.videoLink.indexOf('v=') + 2)}"
+                    width="200" height="113" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </td>
 
         <td class="actions-cell">
             <div class="actions-cell-row">
