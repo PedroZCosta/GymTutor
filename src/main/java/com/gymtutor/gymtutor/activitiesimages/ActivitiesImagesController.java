@@ -24,8 +24,8 @@ import java.util.Objects;
 public class ActivitiesImagesController {
 
     // pegando caminho absoluto (Config WebConfig e UploadProperties + Application.Properties)
-    @Value("${upload.dir}")
-    private String uploadDir;
+    @Value("${upload.dir.activities}")
+    private String uploadDirActivities;
 
     private final ActivitiesImagesService imagesService;
 
@@ -91,7 +91,7 @@ public class ActivitiesImagesController {
 
 //            String directory = uploadProperties.getUploadDir();
             //utilizando caminho absoluto (Caminho relativo não está salvando a imagem)
-            String directory = new File(uploadDir).getAbsolutePath();
+            String directory = new File(uploadDirActivities).getAbsolutePath();
 
             // Cria a pasta se não existir,
             // metodo não funciona, o Security não permite criação e validação de diretórios, verificar permissões futuras
