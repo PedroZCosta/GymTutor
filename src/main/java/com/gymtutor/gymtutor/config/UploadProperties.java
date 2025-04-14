@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UploadProperties {
 
-    @Value("${upload.dir}")
-    private String uploadDir;
+    @Value("${upload.dir.activities}")
+    private String uploadDirActivities;
 
-    public String getUploadDir() {
-        return uploadDir;
+    public String getUploadDirActivities() {
+        return uploadDirActivities;
     }
 }
