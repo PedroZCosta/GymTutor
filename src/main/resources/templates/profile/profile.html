@@ -14,40 +14,51 @@
     </div>
 
     <!-- Informações do usuário -->
-    <h2 th:text="'Nome: ' + ${user.userName}"></h2>
-    <p th:text="'Email: ' + ${user.userEmail}"></p>
-    <p th:text="'CPF: ' + ${user.userCpf}"></p>
+    <div style="display: flex; flex-direction: column; align-items: center">
 
-    <!-- Exibir roles -->
-    <h3 th:text="'Papel do usuário: ' + ${user.role.roleName.displayName}"></h3>
+      <img th:src="@{/images/users/{id}/profile.jpg(id=${user.userId})}"
+           alt="Imagem de perfil"
+           onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
+           style="width: 150px; height: 150px; object-fit: cover;" />
 
-    <!-- Se o usuário já tem CREEF e não for Administrador -->
-    <div th:if="${personal != null}">
-        <p th:text="'CREEF: ' + ${personal.personalCREEF}"></p>
+      <div style="display: flex; flex-direction: column">
+        <button onclick="openPhotoModal()">Alterar Foto</button>
+
+        <h2 th:text="'Nome: ' + ${user.userName}"></h2>
+        <h2 th:text="'Tipo de Conta: ' + ${user.role.roleName.displayName}"></h2>
+        <h3 th:text="'Login: ' + ${user.userEmail}"></h3>
+        <H3 th:text="'CPF: ' + ${user.userCpf}"></H3>
+
+        <!-- Se o usuário já tem CREEF e não for Administrador -->
+        <div th:if="${personal != null}">
+            <h3 th:text="'CREEF: ' + ${personal.personalCREEF}"></h3>
+        </div>
+
+        <!-- Se o usuário ainda NÃO tem CREEF -->
+        <div th:if="${personal == null and user.role.roleName.displayName == 'Aluno'}">
+          <button onclick="openCreefModal()">Cadastrar CREEF</button>
+        </div>
+
+
+        <div class="actions-cell">
+
+          <form th:action="@{/profile/change-password}" th:method="get" style="display: inline;">
+            <button type="submit">Alterar Senha</button>
+          </form>
+
+
+          <form id="disableForm" th:action="@{/profile/disable-account}" th:method="post" style="display: inline;">
+            <input type="hidden" name="confirmPassword" id="confirmPassword">
+            <button type="button" onclick="confirmDisable()">Desativar Conta</button>
+          </form>
+
+        </div>
+      </div>
+
     </div>
 
-    <!-- Se o usuário ainda NÃO tem CREEF -->
-    <div th:if="${personal == null and user.role.roleName.displayName == 'Aluno'}">
-      <button onclick="openCreefModal()">Cadastrar CREEF</button>
-    </div>
 
-
-  <div class="actions-cell">
-
-    <form th:action="@{/profile/change-password}" th:method="get" style="display: inline;">
-      <button type="submit">Alterar Senha</button>
-    </form>
-
-
-    <form id="disableForm" th:action="@{/profile/disable-account}" th:method="post" style="display: inline;">
-      <input type="hidden" name="confirmPassword" id="confirmPassword">
-      <button type="button" onclick="confirmDisable()">Desativar Conta</button>
-    </form>
-
-  </div>
-
-
-  <!-- Modal -->
+  <!-- Modal para adicionar CREF -->
   <div id="creefModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
                            background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
     <h3>Insira seu CREEF</h3>
@@ -64,7 +75,7 @@
                              height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closeCreefModal()"></div>
 
 
-    <!-- Script do Modal -->
+    <!-- Script do Modal para adicionar Cref -->
   <script>
     function openCreefModal() {
       document.getElementById("creefModal").style.display = "block";
@@ -76,6 +87,60 @@
       document.getElementById("creefOverlay").style.display = "none";
     }
   </script>
+
+
+    <!-- Modal de Upload de Foto -->
+    <div id="photoModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
+                           background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+      <h3>Alterar Foto de Perfil</h3>
+      <form th:action="@{/profile/upload-photo}" method="post" enctype="multipart/form-data">
+        <img id="imagePreview"
+             th:src="@{/images/users/{id}/profile.jpg(id=${user.userId})}"
+             alt="Pré-visualização da imagem"
+             style="max-width: 150px; max-height: 150px; object-fit: cover; display: block; margin-bottom: 10px;"
+             onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';" />
+        <input type="file" name="image" accept="image/*" required onchange="previewImage(event)" />
+        <br><br>
+        <button type="submit">Enviar</button>
+        <button type="button" onclick="closePhotoModal()">Cancelar</button>
+      </form>
+    </div>
+
+    <!-- Overlay -->
+    <div id="photoOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
+                             height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closePhotoModal()"></div>
+
+    <script>
+      function openPhotoModal() {
+        document.getElementById("photoModal").style.display = "block";
+        document.getElementById("photoOverlay").style.display = "block";
+      }
+
+      function closePhotoModal() {
+        document.getElementById("photoModal").style.display = "none";
+        document.getElementById("photoOverlay").style.display = "none";
+      }
+
+      function previewImage(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          var preview = document.getElementById('imagePreview');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          alert("O tamanho da imagem não pode exceder 5MB.");
+          document.getElementById('imagePreview').style.display = 'none';
+          event.target.value = ""; // limpa o input de arquivo
+        } else {
+          reader.readAsDataURL(file);
+        }
+      }
+    </script>
+
 
     <!-- Script da desativação de conta -->
   <script>
@@ -92,6 +157,7 @@
       }
     }
   </script>
+
 
   </body>
 
