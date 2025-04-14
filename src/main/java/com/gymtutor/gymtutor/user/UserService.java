@@ -72,7 +72,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    //TODO: Adicionar validação para impedir administradores de virarem personal
     public void changeRole(User user, RoleName newRoleName) {
+        if (user.getRole().getRoleName() == RoleName.ADMIN && newRoleName == RoleName.PERSONAL) {
+            throw new IllegalArgumentException("Administrador não pode ser um Personal Trainer.");
+        }
+
         Role newRole = roleRepository.findByRoleName(newRoleName);
         user.setRole(newRole);
         userRepository.save(user);
