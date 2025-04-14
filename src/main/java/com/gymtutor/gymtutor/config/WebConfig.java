@@ -13,9 +13,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${upload.dir.activities}")
     private String uploadDirActivities;
 
+    @Value("${upload.dir.users}")
+    private String uploadDirUsers;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/activities/**")
                 .addResourceLocations("file:" + new File(uploadDirActivities).getAbsolutePath() + "/");
+
+        registry.addResourceHandler("/images/users/**")
+                .addResourceLocations("file:" + new File(uploadDirUsers).getAbsolutePath() + "/");
     }
+
 }
