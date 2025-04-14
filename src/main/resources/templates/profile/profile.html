@@ -21,13 +21,13 @@
     <!-- Exibir roles -->
     <h3 th:text="'Papel do usuário: ' + ${user.role.roleName.displayName}"></h3>
 
-    <!-- Se o usuário já tem CREEF -->
+    <!-- Se o usuário já tem CREEF e não for Administrador -->
     <div th:if="${personal != null}">
-      <p th:text="'CREEF: ' + ${personal.personalCREEF}"></p>
+        <p th:text="'CREEF: ' + ${personal.personalCREEF}"></p>
     </div>
 
     <!-- Se o usuário ainda NÃO tem CREEF -->
-    <div th:if="${personal == null}">
+    <div th:if="${personal == null and user.role.roleName.displayName == 'Aluno'}">
       <button onclick="openCreefModal()">Cadastrar CREEF</button>
     </div>
 
