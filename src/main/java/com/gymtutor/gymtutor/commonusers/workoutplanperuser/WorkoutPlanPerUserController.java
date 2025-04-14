@@ -1,5 +1,9 @@
 package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 
+import com.gymtutor.gymtutor.activities.ActivitiesController;
+import com.gymtutor.gymtutor.activities.ActivitiesModel;
+import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
@@ -8,11 +12,14 @@ import com.gymtutor.gymtutor.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 
 // Controlador para gerenciar as operações relacionadas a WorkoutPlanPerUser.
@@ -86,7 +93,8 @@ public class WorkoutPlanPerUserController {
             @PathVariable int workoutPlanId,
             @RequestParam(value = "userIds", required = false) List<Integer> userIds,
             RedirectAttributes redirectAttributes,
-            @AuthenticationPrincipal CustomUserDetails loggedUser
+            @AuthenticationPrincipal CustomUserDetails loggedUser,
+            Model model
     ) {
         // Se nada foi selecionado, tratamos como lista vazia
         if (userIds == null) {
@@ -98,10 +106,11 @@ public class WorkoutPlanPerUserController {
         var linkedUserIds = currentLinks.stream()
                 .map(link -> link.getUser().getUserId())
                 .toList();
-
-        try {
+        // Usando seu tratamento genérico
+        List<Integer> finalUserIds = userIds;
+        return handleRequest(redirectAttributes, model, "student/workoutplan/linkusers", null, () -> {
             // Vincular novos usuários
-            for (Integer userId : userIds) {
+            for (Integer userId : finalUserIds) {
                 if (!linkedUserIds.contains(userId)) {
                     var user = userRepository.findById(userId).orElse(null);
                     if (user != null) {
@@ -112,7 +121,7 @@ public class WorkoutPlanPerUserController {
 
             // Desvincular usuários que foram desmarcados
             for (Integer linkedUserId : linkedUserIds) {
-                if (!userIds.contains(linkedUserId)) {
+                if (!finalUserIds.contains(linkedUserId)) {
                     var user = userRepository.findById(linkedUserId).orElse(null);
                     if (user != null) {
                         workoutPlanPerUserService.unlinkWorkoutPlanPerUser(workoutPlan, user);
@@ -121,12 +130,70 @@ public class WorkoutPlanPerUserController {
             }
 
             redirectAttributes.addFlashAttribute("successMessage", "Vínculos atualizados com sucesso!");
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ocorreu um erro ao atualizar os vínculos.");
-        }
-
-        return "redirect:/student/workoutplan/{workoutPlanId}/linkusers";
+            return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
+        });
     }
+    private String handleValidationErrors(Model model, String view, WorkoutPlanPerUserModel workoutPlanPerUserModel, BindingResult bindingResult, Integer workoutPerWorkoutPlanId){
+        model.addAttribute("errorMessage", "Há erros no formulário!");
+        model.addAttribute("org.springframework.validation.BindingResult.WorkoutPlanPerUserModel", bindingResult);
+        model.addAttribute("workoutPlanPerUserModel", workoutPlanPerUserModel);
+
+        if(workoutPerWorkoutPlanId != null){
+            model.addAttribute("workoutPerWorkoutPlanId", workoutPerWorkoutPlanId);
+        }
+        model.addAttribute("body", view);
+
+        return "/fragments/layout";
+    }
+    private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, WorkoutPlanPerUserModel workoutPlanPerUserModel, ActivitiesController.RequestHandler block
+    ){
+        try{
+            return block.execute();
+        }catch (Exception ex) {
+            return handleException(ex, model, workoutPlanPerUserModel, view, redirectAttributes);
+        }
+    }
+    private String handleException(Exception ex, Model model, WorkoutPlanPerUserModel workoutPlanPerUserModel, String view, RedirectAttributes redirectAttributes){
+        return switch (ex) {
+            case IllegalArgumentException illegalArgumentException ->
+                    handleIllegalArgumentException(illegalArgumentException, model, workoutPlanPerUserModel, view);
+            case IllegalAccessException illegalAccessException ->
+                    handleIllegalAccessException(illegalAccessException, redirectAttributes);
+            case DataIntegrityViolationException ignored ->
+                    handleDataIntegrityViolationException(model, workoutPlanPerUserModel, view);
+            case null, default -> handleUnexpectedException(model, workoutPlanPerUserModel, view);
+        };
+    }
+    private String handleIllegalArgumentException(IllegalArgumentException ex, Model model, WorkoutPlanPerUserModel workoutPlanPerUserModel , String view){
+        return handleError(ex.getMessage(), model, workoutPlanPerUserModel, view);
+    }
+    private String handleIllegalAccessException(IllegalAccessException ex, RedirectAttributes redirectAttributes){
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        return "redirect:/student/workoutplan/linkusers";
+    }
+    private String handleDataIntegrityViolationException(Model model, WorkoutPlanPerUserModel workoutPlanPerUserModel, String view){
+        return handleError("Erro de integridade de dados.", model, workoutPlanPerUserModel, view);
+    }
+
+    private String handleUnexpectedException(Model model, WorkoutPlanPerUserModel workoutPlanPerUserModel, String view){
+        return handleError("Erro inesperado. Tente novamente.", model, workoutPlanPerUserModel, view);
+
+    }
+
+    private String handleError(String errorMessage, Model model, WorkoutPlanPerUserModel workoutPlanPerUserModel, String view){
+        if (model != null) {
+            model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("workoutPlanPerUserModel", workoutPlanPerUserModel);
+        }
+        if(view != null){
+            assert model != null;
+            model.addAttribute("body", view);
+            return "/fragments/layout";
+        }else{
+            return "redirect:/student/workoutplan/linkusers";
+        }
+    }
+
+
 
 }
