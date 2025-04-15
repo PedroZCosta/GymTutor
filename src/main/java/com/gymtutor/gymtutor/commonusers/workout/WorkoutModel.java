@@ -49,6 +49,10 @@ public class WorkoutModel {
     // Getters e setters
 
 
+    public void setWorkoutId(int workoutId) {
+        this.workoutId = workoutId;
+    }
+
     public int getWorkoutId() {
         return workoutId;
     }

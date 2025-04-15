@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- todo: implementar min e maximo de caracteres nos campos -->
+
+<body>
+<h1>Criar Novo treino</h1>
+<!-- Link de Voltar -->
+<a href="/student/workout">Voltar</a><br>
+
+<!-- Mensagens de erro e sucesso -->
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- Formulário -->
+<form th:action="@{/student/workout}" th:method="post" th:object="${workoutModel}">
+
+    <!-- Campo para nome do setor -->
+    <label for="workoutName">Nome do treino:</label>
+    <input type="text" id="workoutName" name="workoutName" th:value="*{workoutName}" required />
+
+    <!-- Exibe erro se houver -->
+    <div th:if="${#fields.hasErrors('workoutName')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('workoutName')}" th:text="${err}"></p>
+    </div>
+
+    <label for="restTime">Tempo de descanço entre series</label>
+    <input type="text" id="restTime" name="restTime" th:value="*{restTime}" required />
+
+    <!-- Exibe erro se houver -->
+    <div th:if="${#fields.hasErrors('restTime')}" style="color: red;">
+        <p th:each="err : ${#fields.errors('restTime')}" th:text="${err}"></p>
+    </div>
+
+    <button type="submit">Criar ficha</button>
+
+</form>
+</body>
+
+</html>

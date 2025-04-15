@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<h1>Gerenciamento de Treino</h1>
+
+<!-- Mensagens de erro e sucesso -->
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<!-- Lista dos treinos -->
+<a href="/student/workout/new">Criar Novos Treinos</a>
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nome do treino</th>
+            <th>Descanço entre exercicios</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="workout : ${workout}">
+            <td th:text="${workout.workoutId}"></td>
+            <td th:text="${workout.workoutName}"></td>
+            <td th:text="${workout.restTime}"></td>
+            <td class="actions-cell">
+                <div class="actions-cell-row">
+                    <form th:action="@{/student/workout/{id}/edit(id=${workout.workoutId})}" th:method="get" style="display: inline;">
+                        <button type="submit">Editar</button>
+                    </form>
+                    <form th:action="@{/student/workout/delete/{id}(id=${workout.workoutId})}" th:method="post" style="display: inline;">
+                        <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir esta ficha?')">Excluir</button>
+                    </form>
+                    <form th:action="@{/student/workout/{workoutId}/linkactivities(workoutId=${workout.workoutId})}" th:method="get" style="display: inline;">
+                        <button type="submit">Vincular exercícios</button>
+                </form>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

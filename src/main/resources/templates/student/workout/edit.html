@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <h1>Editar ficha de treino</h1>
+
+  <!-- Link de Voltar -->
+  <a href="/student/workoutplan">Voltar</a><br>
+
+  <!-- Mensagens de erro e sucesso -->
+  <div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+  </div>
+  <div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+  </div>
+
+  <form th:action="@{/student/workout/{workoutId}/edit(workoutId=${workoutId})}" th:method="post" th:object="${workoutModel}">
+    <!-- Campo para nome do treino -->
+    <label for="WorkoutName">Nome da ficha de treino:</label>
+    <input type="text" id="WorkoutName" name="WorkoutName" th:value="*{WorkoutName}" required />
+
+    <label for="restTime">Descrição</label>
+    <input type="text" id="restTime" name="restTime" th:value="*{restTime}" required />
+
+    <button type="submit">Atualizar</button>
+  </form>
+</body>
+</html>
