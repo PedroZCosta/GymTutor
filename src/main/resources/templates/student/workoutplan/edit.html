@@ -17,7 +17,7 @@
 
 <!-- Formulário de edição -->
 <form th:action="@{/student/workoutplan/{workoutPlanId}/edit(workoutPlanId=${workoutPlanId})}" th:method="post" th:object="${workoutPlanModel}">
-    <!-- Campo para nome do setor -->
+    <!-- Campo para nome da ficha de treino -->
     <label for="WorkoutPlanName">Nome da ficha de treino:</label>
     <input type="text" id="WorkoutPlanName" name="WorkoutPlanName" th:value="*{WorkoutPlanName}" required />
 

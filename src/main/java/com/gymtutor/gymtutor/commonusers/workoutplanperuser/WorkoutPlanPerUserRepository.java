@@ -14,11 +14,6 @@ public interface WorkoutPlanPerUserRepository extends JpaRepository<WorkoutPlanP
     // Buscar todos os vínculos por workoutPlanId
     List<WorkoutPlanPerUserModel> findByWorkoutPlanWorkoutPlanId(int workoutPlanId);
 
-    // Buscar todos os vínculos por workoutId
-    List<User> findByUserUserId(int userId);
-
-    Optional<WorkoutPlanPerUserModel> findByUserUserIdAndWorkoutPlanWorkoutPlanId(Integer userId, Integer workoutPlanId);
-
     Optional<WorkoutPlanPerUserModel> findByWorkoutPlanPerUserId(WorkoutPlanPerUserId id);
 
 }

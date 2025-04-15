@@ -18,8 +18,6 @@ public class WorkoutPlanPerUserService {
     // Vincular ficha de treino a um usuario
     @Transactional
     public void linkWorkoutPlanToUser(WorkoutPlanModel workoutPlan, User user){
-        // Verifica se já existe o vínculo
-        Optional<WorkoutPlanPerUserModel> existingLink = workoutPlanPerUserRepository.findByUserUserIdAndWorkoutPlanWorkoutPlanId(workoutPlan.getWorkoutPlanId(), user.getUserId());
 
         WorkoutPlanPerUserId id = new WorkoutPlanPerUserId();
         id.setWorkoutPlanId(workoutPlan.getWorkoutPlanId());
