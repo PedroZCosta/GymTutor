@@ -5,6 +5,7 @@ import com.gymtutor.gymtutor.activities.ActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -25,8 +26,8 @@ public class WorkoutActivitiesModel {
     @Size(min = 1, max=20 , message = "Este campo deve ter entre 1 e 20 caracteres.")
     private String reps; // Número de repetições
 
-    @NotBlank(message = "Sequencia não pode estar vazio!")
-    private byte sequence; // Número de sequências
+    @NotNull(message = "Sequência não pode estar vazia!")
+    private Byte sequence; // Número de sequências
 
 
 
@@ -39,11 +40,19 @@ public class WorkoutActivitiesModel {
         this.sequence = sequence;
     }
 
+    public WorkoutActivitiesId getWorkoutActivitiesId() {
+        return workoutActivitiesId;
+    }
+
+    public void setWorkoutActivitiesId(WorkoutActivitiesId workoutActivitiesId) {
+        this.workoutActivitiesId = workoutActivitiesId;
+    }
+
     public String getReps() { return reps; }
     public void setReps(String reps) { this.reps = reps; }
 
-    public byte getSequence() { return sequence; }
-    public void setSequence(byte sequence) { this.sequence = sequence; }
+    public Byte getSequence() { return sequence; }
+    public void setSequence(Byte sequence) { this.sequence = sequence; }
 
     public WorkoutModel getWorkout() { return workout; }
     public void setWorkout(WorkoutModel workout) { this.workout = workout; }

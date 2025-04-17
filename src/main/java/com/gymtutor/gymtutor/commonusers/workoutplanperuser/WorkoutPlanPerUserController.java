@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+//todo : handle validation erros no posts
 
 
 // Controlador para gerenciar as operações relacionadas a WorkoutPlanPerUser.

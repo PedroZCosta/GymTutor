@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Título da página -->
+<h1>Vincular Atividades ao Treino: <span th:text="${workout.workoutName}"></span></h1>
+
+<!-- Link para voltar -->
+<a th:href="@{/student/workout}">Voltar</a><br><br>
+
+<!-- Barra de pesquisa -->
+<label for="searchBar">Pesquisar Atividades:</label>
+<input type="text" id="searchBar" onkeyup="filterActivities()" placeholder="Digite o nome da atividade..."><br><br>
+
+<!-- Mensagens -->
+<div th:if="${successMessage}" style="color: green;">
+  <p th:text="${successMessage}"></p>
+</div>
+<div th:if="${errorMessage}" style="color: red;">
+  <p th:text="${errorMessage}"></p>
+</div>
+
+<div th:if="${#lists.isEmpty(linkedActivitiesIds)}">
+  <p>Nenhuma atividade vinculada ainda.</p>
+</div>
+
+<!-- Tabela de atividades -->
+<form th:object="${workoutActivities}" th:action="@{'/student/workout/' + ${workout.workoutId} + '/linkactivities'}" id="activityForm" method="post">
+  <div class="scrollable-table-big">
+    <table>
+      <thead>
+      <tr>
+        <th>Nome da Atividade</th>
+        <th>Descrição</th>
+        <th>Vinculada</th>
+        <th>Sequência</th>
+        <th>Repetições</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="activity, stat : ${activities}" class="activity-row">
+        <td th:text="${activity.activityName}" class="activity-name"></td>
+        <td th:text="${activity.activityDescription}"></td>
+
+        <!-- Checkbox: vincular ou não -->
+        <td>
+          <!-- checkbox (com o valor sendo enviado diretamente quando desmarcado) -->
+          <input type="checkbox"
+                 th:field="*{workoutActivities[__${stat.index}__].selected}"
+                 th:checked="${linkedActivitiesIds.contains(activity.activitiesId)}" />
+
+          <!-- ID da atividade -->
+          <input type="hidden"
+                 th:field="*{workoutActivities[__${stat.index}__].activitiesId}"
+                 th:value="${activity.activitiesId}" />
+        </td>
+
+        <!-- Sequência -->
+        <td>
+          <input type="number" min="1"
+                 th:field="*{workoutActivities[__${stat.index}__].sequences}"
+                 th:value="*{workoutActivities[__${stat.index}__].sequences}" />
+        </td>
+
+        <!-- Repetições -->
+        <td>
+          <input type="text"
+                 th:field="*{workoutActivities[__${stat.index}__].reps}"
+                 th:value="*{workoutActivities[__${stat.index}__].reps}" />
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+  <button type="submit">Salvar Alterações</button>
+</form>
+
+<script>
+  function filterActivities() {
+    let input = document.getElementById("searchBar");
+    let filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll(".activity-row");
+    for (let i = 0; i < rows.length; i++) {
+      let name = rows[i].getElementsByClassName("activity-name")[0].innerText.toLowerCase();
+      rows[i].style.display = name.includes(filter) ? "" : "none";
+    }
+  };
+
+</script>
+
+
+</body>
+</html>

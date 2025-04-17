@@ -1,9 +1,11 @@
 package com.gymtutor.gymtutor.commonusers.workoutactivities;
 
+import com.gymtutor.gymtutor.activities.ActivitiesModel;
+import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 // Serviço para gerenciar a lógica de negócios relacionada a entidades WorkoutActivities (WorkoutActivitiesService),
@@ -15,39 +17,43 @@ public class WorkoutActivitiesService {
     @Autowired
     private WorkoutActivitiesRepository workoutActivitiesRepository;
 
-    public void createWorkoutActivities(WorkoutActivitiesModel workoutActivitiesModel){
-        workoutActivitiesRepository.save(workoutActivitiesModel);
-    }
+    // Vincular atividade a um treino
+    @Transactional
+    public void linkWorkoutActivityToWorkout(WorkoutModel workout, ActivitiesModel activities, Byte sequence, String reps) {
+        WorkoutActivitiesId id = new WorkoutActivitiesId();
+        id.setWorkoutId(workout.getWorkoutId());
+        id.setActivitiesId(activities.getActivitiesId());
 
-    public WorkoutActivitiesModel findById(int workoutActivitiesId){
-        Optional<WorkoutActivitiesModel> optionalWorkoutActivitiesModel = workoutActivitiesRepository.findById(workoutActivitiesId);
-        return optionalWorkoutActivitiesModel.orElseThrow(() -> new RuntimeException("workoutActivity not found with id " + workoutActivitiesId));
-    }
+        Optional<WorkoutActivitiesModel> existingLink = workoutActivitiesRepository.findByWorkoutActivitiesId(id);
+        if (existingLink.isEmpty()) {
+            WorkoutActivitiesModel link = new WorkoutActivitiesModel();
+            link.setWorkoutActivitiesId(id);
+            link.setWorkout(workout);
+            link.setActivity(activities);
+            link.setSequence(sequence);
+            link.setReps(reps);
 
-    public List<WorkoutActivitiesModel> findAll() {return workoutActivitiesRepository.findAll();}
-
-    public void updateWorkoutActivities(WorkoutActivitiesModel workoutActivitiesModel, int workoutActivitiesId){
-        // Busca a o exercios do treino existente pelo ID
-        Optional<WorkoutActivitiesModel> existingWorkoutActivities = workoutActivitiesRepository.findById(workoutActivitiesId);
-
-
-        // Se o exercios do treino for encontrado, atualiza os dados
-        if (existingWorkoutActivities.isPresent()){
-            WorkoutActivitiesModel workout = existingWorkoutActivities.get();
-
-            // todo: verificar se esta correto
-            // Atualiza os campos do  exercios do treino
-            workout.setActivity(workoutActivitiesModel.getActivity());
-            workout.setWorkout(workoutActivitiesModel.getWorkout());
-            workout.setReps(workoutActivitiesModel.getReps());
-            workout.setSequence(workoutActivitiesModel.getSequence());
-
-            // Salva o  exercios do treino atualizado no banco de dados
-            workoutActivitiesRepository.save(workout);
+            workoutActivitiesRepository.save(link);
         }
     }
 
-    public void deleteWorkoutActivities(int workoutId){
-        workoutActivitiesRepository.deleteById(workoutId);
+    // Desvincular atividade de um treino
+    @Transactional
+    public void unlinkWorkoutActivityFromWorkout(WorkoutModel workout, ActivitiesModel activities) {
+        WorkoutActivitiesId id = new WorkoutActivitiesId();
+        id.setWorkoutId(workout.getWorkoutId());
+        id.setActivitiesId(activities.getActivitiesId());
+
+        System.out.println("Tentando desvincular:");
+        System.out.println("Workout ID: " + workout.getWorkoutId());
+        System.out.println("Activity ID: " + activities.getActivitiesId());
+
+        Optional<WorkoutActivitiesModel> existingLink = workoutActivitiesRepository.findByWorkoutActivitiesId(id);
+        if (existingLink.isPresent()) {
+            System.out.println("Encontrou o vínculo! Vai remover.");
+            workoutActivitiesRepository.delete(existingLink.get());
+        } else {
+            System.out.println("NÃO encontrou o vínculo...");
+        }
     }
 }
