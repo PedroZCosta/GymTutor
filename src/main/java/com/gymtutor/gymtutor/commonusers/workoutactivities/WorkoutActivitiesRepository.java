@@ -11,10 +11,18 @@ import java.util.Optional;
 @Repository
 public interface WorkoutActivitiesRepository extends JpaRepository<WorkoutActivitiesModel, Integer> {
 
+    Optional<WorkoutActivitiesModel> findByWorkoutActivitiesId_WorkoutIdAndWorkoutActivitiesId_ActivitiesId(
+            Integer workoutId,
+            Integer activitiesId
+    );
 
     // Seguindo a convenção do JPA Optional<Entity> findByIdType(IdType id);
     Optional<WorkoutActivitiesModel> findByWorkoutActivitiesId(WorkoutActivitiesId id);
 
     @Query("SELECT a.activitiesId FROM ActivitiesModel a")
     List<Integer> findAllIds();
+
+
+    // Novo metodo para contar quantas atividades estão vinculadas a um treino
+    int countByWorkout_WorkoutId(int workoutId);
 }

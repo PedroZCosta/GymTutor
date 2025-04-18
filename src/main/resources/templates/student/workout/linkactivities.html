@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Vincular Atividades</title>
+</head>
 <body>
 
-<!-- Título da página -->
 <h1>Vincular Atividades ao Treino: <span th:text="${workout.workoutName}"></span></h1>
 
-<!-- Link para voltar -->
 <a th:href="@{/student/workout}">Voltar</a><br><br>
 
-<!-- Barra de pesquisa -->
-<label for="searchBar">Pesquisar Atividades:</label>
-<input type="text" id="searchBar" onkeyup="filterActivities()" placeholder="Digite o nome da atividade..."><br><br>
-
 <!-- Mensagens -->
+
+<p id="successMessage" style="color: green; display: none;">Ordem alterada com sucesso!</p>
+
 <div th:if="${successMessage}" style="color: green;">
   <p th:text="${successMessage}"></p>
 </div>
@@ -20,62 +22,89 @@
   <p th:text="${errorMessage}"></p>
 </div>
 
+<!-- Lista de atividades já vinculadas -->
+<h2>Atividades já vinculadas</h2>
 <div th:if="${#lists.isEmpty(linkedActivitiesIds)}">
   <p>Nenhuma atividade vinculada ainda.</p>
 </div>
 
-<!-- Tabela de atividades -->
-<form th:object="${workoutActivities}" th:action="@{'/student/workout/' + ${workout.workoutId} + '/linkactivities'}" id="activityForm" method="post">
-  <div class="scrollable-table-big">
-    <table>
-      <thead>
-      <tr>
-        <th>Nome da Atividade</th>
-        <th>Descrição</th>
-        <th>Vinculada</th>
-        <th>Sequência</th>
-        <th>Repetições</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="activity, stat : ${activities}" class="activity-row">
-        <td th:text="${activity.activityName}" class="activity-name"></td>
-        <td th:text="${activity.activityDescription}"></td>
+<button onclick="openModal()">Vincular um novo exercício</button><br><br>
 
-        <!-- Checkbox: vincular ou não -->
-        <td>
-          <!-- checkbox (com o valor sendo enviado diretamente quando desmarcado) -->
-          <input type="checkbox"
-                 th:field="*{workoutActivities[__${stat.index}__].selected}"
-                 th:checked="${linkedActivitiesIds.contains(activity.activitiesId)}" />
+<div th:if="${!#lists.isEmpty(linkedActivitiesIds)}" class="scrollable-table-small">
+  <table>
+    <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Sequencia</th>
+      <th>Repetições</th>
+      <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody class="linked-activities">
+    <tr th:each="link : ${linkedActivities}"
+        th:attr="data-activities-id=${link.activity.activitiesId}">
+      <td th:text="${link.activity.activityName}"></td>
+      <td th:text="${link.activity.activityDescription}"></td>
+      <td th:text="${link.sequence}"></td>
+      <td th:text="${link.reps}"></td>
+      <td>
+        <form th:action="@{'/student/workout/' + ${workout.workoutId} + '/linkactivities/unlink'}" method="post">
+          <input type="hidden" name="activitiesId" th:value="${link.activity.activitiesId}" />
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button type="submit">Desvincular</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
-          <!-- ID da atividade -->
-          <input type="hidden"
-                 th:field="*{workoutActivities[__${stat.index}__].activitiesId}"
-                 th:value="${activity.activitiesId}" />
-        </td>
+<!-- Modal -->
+<div id="activityModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Vincular Nova Atividade</h2>
+    <p>Selecione uma atividade e configure suas informações antes de salvar.</p>
 
-        <!-- Sequência -->
-        <td>
-          <input type="number" min="1"
-                 th:field="*{workoutActivities[__${stat.index}__].sequences}"
-                 th:value="*{workoutActivities[__${stat.index}__].sequences}" />
-        </td>
+    <label for="searchBar">Pesquisar Atividades:</label>
+    <input type="text" id="searchBar" onkeyup="filterActivities()" placeholder="Digite o nome da atividade..."><br><br>
 
-        <!-- Repetições -->
-        <td>
-          <input type="text"
-                 th:field="*{workoutActivities[__${stat.index}__].reps}"
-                 th:value="*{workoutActivities[__${stat.index}__].reps}" />
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="scrollable-table-big">
+      <table>
+        <thead>
+        <tr>
+          <th>Nome da Atividade</th>
+          <th>Descrição</th>
+          <th>Repetições</th>
+          <th>Ação</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="activity : ${activities}" class="activity-row"
+            th:if="${!linkedActivitiesIds.contains(activity.activitiesId)}"
+            th:attr="data-activities-id=${activity.activitiesId}">
+          <form th:action="@{'/student/workout/' + ${workout.workoutId} + '/linkactivities/link'}" method="post">
+            <td th:text="${activity.activityName}" class="activity-name"></td>
+            <td th:text="${activity.activityDescription}"></td>
+            <td><input type="text" name="reps" placeholder="Ex: 3x10" required /></td>
+            <td>
+              <input type="hidden" name="sequences" min="1" value="1" required />
+              <input type="hidden" name="activitiesId" th:value="${activity.activitiesId}" />
+              <button type="submit">Vincular</button>
+            </td>
+          </form>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
 
-  <br>
-  <button type="submit">Salvar Alterações</button>
-</form>
+<!-- Scripts -->
+<script th:inline="javascript">
+  const workoutId = [[${workout.workoutId}]];
+</script>
 
 <script>
   function filterActivities() {
@@ -86,10 +115,61 @@
       let name = rows[i].getElementsByClassName("activity-name")[0].innerText.toLowerCase();
       rows[i].style.display = name.includes(filter) ? "" : "none";
     }
-  };
+  }
 
+  function openModal() {
+    document.getElementById("activityModal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("activityModal").style.display = "none";
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById("activityModal");
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  }
+
+  new Sortable(document.querySelector("tbody.linked-activities"), {
+    animation: 150,
+    onEnd: function (evt) {
+      const rows = document.querySelectorAll("tbody.linked-activities tr");
+      const order = Array.from(rows).map((row, index) => ({
+        activitiesId: row.getAttribute("data-activities-id"),
+        sequence: index + 1,
+      }));
+
+      fetch(`/student/workout/${workoutId}/linkactivities/reorder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector("input[name='_csrf']").value
+        },
+        body: JSON.stringify(order)
+      })
+              .then(response => {
+                if (response.ok) {
+                  document.getElementById("successMessage").style.display = "block";
+
+                  location.reload();
+
+                  // Esconde depois de 3 segundos (padrãozinho)
+                  setTimeout(() => {
+                    document.getElementById("successMessage").style.display = "none";
+                  }, 3000);
+                } else {
+                  console.error("Erro na resposta do servidor", response); // 👈 E ESSE TAMBÉM
+                  alert("Erro ao reordenar");
+                }
+              })
+              .catch(err => {
+                console.error("Erro na requisição", err); // 👈 MAIS ESTE
+              });
+    }
+  });
 </script>
-
 
 </body>
 </html>

@@ -19,7 +19,7 @@ public class WorkoutActivitiesService {
 
     // Vincular atividade a um treino
     @Transactional
-    public void linkWorkoutActivityToWorkout(WorkoutModel workout, ActivitiesModel activities, Byte sequence, String reps) {
+    public void linkWorkoutActivityToWorkout(WorkoutModel workout, ActivitiesModel activities, String reps) {
         WorkoutActivitiesId id = new WorkoutActivitiesId();
         id.setWorkoutId(workout.getWorkoutId());
         id.setActivitiesId(activities.getActivitiesId());
@@ -30,7 +30,11 @@ public class WorkoutActivitiesService {
             link.setWorkoutActivitiesId(id);
             link.setWorkout(workout);
             link.setActivity(activities);
-            link.setSequence(sequence);
+
+            // Define a sequência automaticamente com base nas atividades já vinculadas
+            int nextSequence = workoutActivitiesRepository.countByWorkout_WorkoutId(workout.getWorkoutId()) + 1;
+            link.setSequence((byte) nextSequence);
+
             link.setReps(reps);
 
             workoutActivitiesRepository.save(link);
@@ -44,16 +48,23 @@ public class WorkoutActivitiesService {
         id.setWorkoutId(workout.getWorkoutId());
         id.setActivitiesId(activities.getActivitiesId());
 
-        System.out.println("Tentando desvincular:");
-        System.out.println("Workout ID: " + workout.getWorkoutId());
-        System.out.println("Activity ID: " + activities.getActivitiesId());
 
         Optional<WorkoutActivitiesModel> existingLink = workoutActivitiesRepository.findByWorkoutActivitiesId(id);
         if (existingLink.isPresent()) {
-            System.out.println("Encontrou o vínculo! Vai remover.");
             workoutActivitiesRepository.delete(existingLink.get());
         } else {
             System.out.println("NÃO encontrou o vínculo...");
+        }
+    }
+
+    public void updateSequence(int workoutId, int activityId, byte sequence) {
+        Optional<WorkoutActivitiesModel> relation = workoutActivitiesRepository
+                .findByWorkoutActivitiesId_WorkoutIdAndWorkoutActivitiesId_ActivitiesId(workoutId, activityId);
+
+        if (relation.isPresent()) {
+            WorkoutActivitiesModel model = relation.get();
+            model.setSequence(sequence);
+            workoutActivitiesRepository.save(model); // isso atualiza
         }
     }
 }
