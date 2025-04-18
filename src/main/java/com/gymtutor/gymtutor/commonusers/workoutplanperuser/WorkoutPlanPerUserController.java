@@ -193,7 +193,4 @@ public class WorkoutPlanPerUserController {
             return "redirect:/student/workoutplan/linkusers";
         }
     }
-
-
-
 }
