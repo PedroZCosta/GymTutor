@@ -90,7 +90,8 @@ public class ProfileController {
             @AuthenticationPrincipal CustomUserDetails loggedUser,
             RedirectAttributes redirectAttributes
     ) {
-        User user = loggedUser.getUser();
+        User user = userService.findById(loggedUser.getUser().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         // Cria um novo Personal e vincula ao usuário
         Personal personal = new Personal();
@@ -101,7 +102,7 @@ public class ProfileController {
         // Troca o papel para PERSONAL
         userService.changeRole(user, RoleName.PERSONAL);
 
-        redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!");
+        redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!, logue novamente para acessar as funções de Personal!");
         return "redirect:/profile";
     }
 
@@ -148,8 +149,28 @@ public class ProfileController {
             redirectAttributes.addFlashAttribute("errorMessage", "Senha incorreta. Conta não desativada.");
             return "redirect:/profile";
         }
-
     }
+
+    @Transactional
+    @PostMapping("/remove-cref")
+    public String removeCref(
+            @RequestParam("confirmPassword2") String password,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails loggedUser
+    ) {
+        User user = loggedUser.getUser();
+
+        if (userService.checkPassword(user, password)) {
+            personalService.delete(user);
+            userService.changeRole(user, RoleName.STUDENT);
+            redirectAttributes.addFlashAttribute("successMessage", "Seu CREF foi removido com sucesso!, logue novamente!");
+            return "redirect:/login";
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Senha incorreta. CREF não removido.");
+            return "redirect:/profile";
+        }
+    }
+
 
     private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, Object anyModel, RequestHandler block
     ){
