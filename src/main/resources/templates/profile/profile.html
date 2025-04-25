@@ -31,12 +31,16 @@
 
         <!-- Se o usuário já tem CREEF e não for Administrador -->
         <div th:if="${personal != null}">
-            <h3 th:text="'CREEF: ' + ${personal.personalCREEF}"></h3>
+          <h3 th:text="'CREF: ' + ${personal.personalCREEF}"></h3>
+          <form id="removeCrefForm" th:action="@{/profile/remove-cref}" th:method="post" style="display: inline;">
+            <input type="hidden" name="confirmPassword2" id="confirmPassword2">
+            <button type="button" onclick="confirmRemoveCref()">Remover CREF</button>
+          </form>
         </div>
 
         <!-- Se o usuário ainda NÃO tem CREEF -->
         <div th:if="${personal == null and user.role.roleName.displayName == 'Aluno'}">
-          <button onclick="openCreefModal()">Cadastrar CREEF</button>
+          <button onclick="openCreefModal()">Cadastrar CREF</button>
         </div>
 
 
@@ -141,8 +145,7 @@
       }
     </script>
 
-
-    <!-- Script da desativação de conta -->
+  <!-- Script da desativação de conta -->
   <script>
     function confirmDisable() {
       const senha = prompt("Por favor, digite sua senha para confirmar:");
@@ -154,6 +157,23 @@
         }
       } else {
         alert("A senha é obrigatória para desativar a conta.");
+      }
+    }
+  </script>
+
+  <!-- Script da remoção do CREF -->
+  <script>
+    function confirmRemoveCref() {
+      const senha = prompt("Por favor, digite sua senha para confirmar:");
+
+      if (senha !== null && senha.trim() !== "") {
+        document.getElementById("confirmPassword2").value = senha;
+        if (confirm("Você tem certeza de que deseja remover seu CREF? você pode cadastra-lo novamente depois, " +
+                "mas sem CREF sua conta voltará a ser de Aluno")) {
+          document.getElementById("removeCrefForm").submit();
+        }
+      } else {
+        alert("A senha é obrigatória para remover seu CREF.");
       }
     }
   </script>
