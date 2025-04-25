@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -11,6 +13,10 @@ public class UserService {
     private final PersonalRepository personalRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    public Optional<User> findById(int userId) {
+        return userRepository.findById(userId);
+    }
 
     //Construtor
     public UserService(UserRepository userRepository, PersonalRepository personalRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {

@@ -21,4 +21,9 @@ public class PersonalService {
         personalRepository.save(personal);
     }
 
+    public void delete(User user) {
+        Personal personal = findByUser(user);
+        personalRepository.delete(personal);
+    }
+
 }

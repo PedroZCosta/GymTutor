@@ -8,15 +8,14 @@ import jakarta.validation.constraints.NotBlank;
 public class Personal {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int personalId;
 
     @NotBlank
     private String personalCREEF;
 
-
-    //todo: repensar na relacao entre essas tabelas
     @OneToOne
+    @MapsId
+    @JoinColumn(name = "personalId") // mapeia o mesmo id do User
     private User user;
 
     // Getters and Setters
