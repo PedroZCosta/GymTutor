@@ -40,10 +40,10 @@
                                 <button type="submit" onclick="return confirm('Você tem certeza de que deseja excluir esta atividade?')">Excluir</button>
                             </form>
                             <form th:action="@{/admin/activities/{id}/videos(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
-                                <button type="submit">Link</button>
+                                <button type="submit">Vídeos</button>
                             </form>
                             <form th:action="@{/admin/activities/{id}/images(id=${activity.activitiesId})}" th:method="get" style="display: inline;">
-                                <button type="submit">imagem</button>
+                                <button type="submit">Imagens</button>
                             </form>
                         </div>
                     </td>
