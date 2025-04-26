@@ -48,9 +48,6 @@ public class WorkoutActivitiesController {
         });
     }
 
-    // print dentro do post dos objetos do dto
-    // utilizar apenas um array list com as dtos contendo as informacoes de vinculacao
-    //
     @PostMapping("/link")
     public String linkActivity(
             @PathVariable int workoutId,
