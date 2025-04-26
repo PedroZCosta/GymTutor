@@ -20,6 +20,7 @@
         <th>ID</th>
         <th>Nome da ficha</th>
         <th>Descrição</th>
+        <th>Treinos</th>
         <th>Ações</th>
     </tr>
     </thead>
@@ -28,6 +29,19 @@
         <td th:text="${workoutPlan.workoutPlanId}"></td>
         <td th:text="${workoutPlan.workoutPlanName}"></td>
         <td th:text="${workoutPlan.workoutPlanDescription}"></td>
+        <td>
+            <ul>
+                <li th:each="workout : ${workoutPlan.workoutPerWorkoutPlans}"
+                    th:text="${workout.workout.workoutName}">
+                    <ul>
+                        <li th:each="activity : ${workout.workout.workoutActivities}"
+                            th:text=" ${activity.sequence} + ' - ' + ${activity.activity.activityName} +
+                                ' - Repetições: ' + ${activity.reps}  ">
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </td>
         <td class="actions-cell">
             <div class="actions-cell-row">
                 <form th:action="@{/student/workoutplan/{id}/edit(id=${workoutPlan.workoutPlanId})}" th:method="get" style="display: inline;">
