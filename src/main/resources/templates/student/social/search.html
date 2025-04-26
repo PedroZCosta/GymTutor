@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <h2>Buscar usuários</h2>
+    <!-- Link de Voltar -->
+    <a th:href="@{/student/social}">Voltar</a><br>
+
+    <div th:if="${successMessage}" style="color: green;">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="@{/student/social/search}" method="get">
+        <input type="text" name="query" placeholder="Digite nome..." th:value="${query}">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <br>
+
+    <table th:if="${results}">
+        <thead>
+        <tbody>
+            <tr th:each="user : ${results}">
+                <td>
+                    <img th:src="@{/images/users/{userId}/profile.jpg(id=${user.userId})}"
+                         alt="Imagem de perfil"
+                         onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
+                         style="width: 75px; height: 75px; object-fit: cover;" />
+                </td>
+                <td th:text="${user.userName}"></td>
+                <td class="actions-cell">
+                    <div class="actions-cell-row">
+
+                        <th:block th:switch="${relationMap[user.userId]?.name()}">
+
+                            <form th:case="'CONNECTED'" th:action="@{/student/social/unfriend/{id}(id=${user.userId})}" method="post" style="display:inline;">
+                                <button type="submit" class="action-button" onclick="return confirm('Você tem certeza de que deseja desfazer conexão?')">Desfazer conexão</button>
+                            </form>
+
+                            <form th:case="'SENT_REQUEST'" th:action="@{/student/social/cancel/{id}(id=${user.userId})}" method="post" style="display:inline;">
+                                <button type="submit" class="action-button" onclick="return confirm('Você tem certeza de que deseja cancelar esta solicitação?')">Cancelar solicitação</button>
+                            </form>
+
+                            <th:block th:case="'RECEIVED_REQUEST'">
+                                <form th:action="@{/student/social/accept/{id}(id=${user.userId})}" method="post" style="display:inline;">
+                                    <button type="submit" class="action-button">Aceitar</button>
+                                </form>
+                                <form th:action="@{/student/social/reject/{id}(id=${user.userId})}" method="post" style="display:inline;">
+                                    <button type="submit" class="action-button" onclick="return confirm('Você tem certeza de que deseja rejeitar esta conexão?')">Recusar</button>
+                                </form>
+                            </th:block>
+
+                            <form th:case="'NONE'" th:action="@{/student/social/connect/{id}(id=${user.userId})}" method="post" style="display:inline;">
+                                <button type="submit" class="action-button">Enviar conexão</button>
+                            </form>
+
+                        </th:block>
+
+                        <form th:action="@{/student/social/message/{id}(id=${user.userId})}" method="get" style="display:inline;">
+                            <button type="submit">Enviar mensagem</button>
+                        </form>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
