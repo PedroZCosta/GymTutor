@@ -1,5 +1,6 @@
 package com.gymtutor.gymtutor.commonusers.workout;
 
+import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Comparator;
 
 
 @Controller
@@ -32,6 +34,10 @@ public class WorkoutController {
         return handleRequest(redirectAttributes, model, null, null, () -> {
             int userId = userDetails.getUser().getUserId();
             var workoutList = workoutService.findAll(); //todo: filtrar por usuario
+            //Função para colocar as atividades vinculadas em ordem sequencial
+            for (WorkoutModel workout : workoutList) {
+                workout.getWorkoutActivities().sort(Comparator.comparingInt(WorkoutActivitiesModel::getSequence));
+            }
             model.addAttribute("workout", workoutList);
             model.addAttribute("body", "student/workout/list");
             return "/fragments/layout";
