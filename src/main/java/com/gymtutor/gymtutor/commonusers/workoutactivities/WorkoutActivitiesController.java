@@ -15,10 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
-
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -188,6 +184,7 @@ public class WorkoutActivitiesController {
         model.addAttribute("activities", allActivities);
         model.addAttribute("linkedActivitiesIds", linkedActivitiesIds);
         model.addAttribute("linkedActivities", linkedActivities);
+        model.addAttribute("body", "/student/workout/linkactivities");
     }
 
 
