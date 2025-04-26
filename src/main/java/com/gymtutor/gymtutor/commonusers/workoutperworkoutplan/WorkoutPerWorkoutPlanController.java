@@ -3,6 +3,7 @@ package com.gymtutor.gymtutor.commonusers.workoutperworkoutplan;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutRepository;
 
+import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
@@ -160,15 +161,25 @@ public class WorkoutPerWorkoutPlanController {
 
     private void loadView(int workoutPlanId, Model model){
         WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
+
+
         List<WorkoutModel> allWorkouts = workoutRepository.findAll(); // todo: filtrar por usuario logado
+
+        //Colocando em ordem de sequencia dos exercícios
+        allWorkouts.forEach(workout ->
+                workout.getWorkoutActivities().sort(Comparator.comparingInt(WorkoutActivitiesModel::getSequence))
+        );
 
         List<Integer> linkedWorkoutIds = workoutPlan.getWorkoutPerWorkoutPlans().stream()
                 .map(link -> link.getWorkout().getWorkoutId())
                 .collect(Collectors.toList());
 
         List<WorkoutModel> linkedWorkouts = workoutPlan.getWorkoutPerWorkoutPlans().stream()
-                .sorted(Comparator.comparingInt(link -> link.getWorkout().getWorkoutId()))
                 .map(WorkoutPerWorkoutPlanModel::getWorkout)
+                .peek(workout -> workout.getWorkoutActivities().sort(
+                        Comparator.comparingInt(WorkoutActivitiesModel::getSequence)
+                ))
+                .sorted(Comparator.comparingInt(WorkoutModel::getWorkoutId))
                 .collect(Collectors.toList());
 
         model.addAttribute("workoutPlan", workoutPlan);
