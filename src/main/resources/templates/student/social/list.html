@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <h1>Conexões</h1>
+
+  <div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+  </div>
+  <div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+  </div>
+
+  <h2>Buscar usuários</h2>
+  <form th:action="@{/student/social/search}" method="get">
+    <input type="text" name="query" placeholder="Digite um nome">
+    <button type="submit">Buscar</button>
+  </form>
+
+  <!-- Pendentes -->
+  <h2>Solicitações recebidas</h2>
+
+  <div th:if="${#lists.isEmpty(pendingRequests)}">
+    <p>Você não recebeu nenhuma solicitação de conexão.</p>
+  </div>
+
+  <table th:if="${!#lists.isEmpty(pendingRequests)}">
+    <thead>
+    <tr>
+      <th>Foto</th>
+      <th>Nome</th>
+      <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="request : ${pendingRequests}">
+      <td>
+        <img th:src="@{/images/users/{userId}/profile.jpg(id=${request.sender.userId})}"
+             alt="Imagem de perfil"
+             onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
+             style="width: 75px; height: 75px; object-fit: cover;" />
+      </td>
+      <td th:text="${request.sender.userName}"></td>
+      <td class="actions-cell">
+        <div class="actions-cell-row">
+          <form th:action="@{/student/social/accept/{id}(id=${request.sender.userId})}" method="post" style="display: inline;">
+            <button type="submit">Aceitar</button>
+          </form>
+          <form th:action="@{/student/social/reject/{id}(id=${request.sender.userId})}" method="post" style="display: inline;">
+            <button type="submit" onclick="return confirm('Você tem certeza de que deseja rejeitar esta conexão?')">Rejeitar</button>
+          </form>
+          <form th:action="@{/student/social}" method="get" style="display: inline;">
+            <button type="submit">Enviar mensagem</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Conexões aprovadas -->
+  <h2>Usuários conectados</h2>
+
+  <div th:if="${#lists.isEmpty(connections)}">
+    <p>Você não tem conexões ainda.</p>
+  </div>
+
+  <table th:if="${!#lists.isEmpty(connections)}">
+    <thead>
+    <tr>
+      <th>Foto</th>
+      <th>Nome</th>
+      <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${connections}">
+      <td>
+        <img th:src="@{/images/users/{userId}/profile.jpg(id=${user.userId})}"
+             alt="Imagem de perfil"
+             onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
+             style="width: 75px; height: 75px; object-fit: cover;" />
+      </td>
+      <td th:text="${user.userName}"></td>
+      <td class="actions-cell">
+        <div class="actions-cell-row">
+        <form th:action="@{/student/social}" method="get" style="display: inline;">
+          <button type="submit">Enviar mensagem</button>
+        </form>
+        <form th:action="@{/student/social/unfriend/{id}(id=${user.userId})}" method="post" style="display: inline;">
+          <button type="submit" onclick="return confirm('Você tem certeza de que deseja desfazer conexão?')">Desfazer Conexão</button>
+        </form>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</body>
+</html>
