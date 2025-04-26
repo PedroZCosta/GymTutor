@@ -30,7 +30,12 @@ public class WorkoutPerWorkoutPlanService {
             throw new IllegalStateException("Este treino já está vinculado à ficha de treino.");
         }
 
+        WorkoutPerWorkoutPlanId id = new WorkoutPerWorkoutPlanId();
+        id.setWorkoutId(workout.getWorkoutId());
+        id.setWorkoutPlanId(workoutPlan.getWorkoutPlanId());
+
         WorkoutPerWorkoutPlanModel link = new WorkoutPerWorkoutPlanModel();
+        link.setWorkoutPerWorkoutPlanId(id);
         link.setWorkout(workout);
         link.setWorkoutPlan(workoutPlan);
 

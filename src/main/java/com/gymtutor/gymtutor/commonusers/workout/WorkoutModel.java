@@ -1,6 +1,7 @@
 package com.gymtutor.gymtutor.commonusers.workout;
 
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
+import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import com.gymtutor.gymtutor.user.User;
 import jakarta.persistence.*;
@@ -32,6 +33,9 @@ public class WorkoutModel {
     @NotBlank(message = "Repetição não pode estar vazio!")
     @Size(min = 1, max=20 , message = "Este campo deve ter entre 1 e 20 caracteres.")
     private String restTime;
+
+    @OneToMany(mappedBy = "workout")
+    private List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans;
 
     // Construtor padrão
     public WorkoutModel() {
@@ -87,5 +91,13 @@ public class WorkoutModel {
 
     public void setRestTime(String restTime) {
         this.restTime = restTime;
+    }
+
+    public List<WorkoutPerWorkoutPlanModel> getWorkoutPerWorkoutPlans() {
+        return workoutPerWorkoutPlans;
+    }
+
+    public void setWorkoutPerWorkoutPlans(List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans) {
+        this.workoutPerWorkoutPlans = workoutPerWorkoutPlans;
     }
 }
