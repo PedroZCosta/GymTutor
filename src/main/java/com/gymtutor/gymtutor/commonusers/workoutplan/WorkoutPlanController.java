@@ -64,23 +64,22 @@ public class WorkoutPlanController {
             redirectAttributes.addFlashAttribute("successMessage", "Ficha de treino criada com sucesso!");
             return "redirect:/student/workoutplan";
 
-        });}
+    });}
 
+    @GetMapping("/{workoutPlanId}/edit")
+    public String editWorkoutPlanForm(
+        @PathVariable int workoutPlanId,
+        Model model,
+        RedirectAttributes redirectAttributes
 
-        @GetMapping("/{workoutPlanId}/edit")
-        public String editWorkoutPlanForm(
-            @PathVariable int workoutPlanId,
-            Model model,
-            RedirectAttributes redirectAttributes
+    ){
+    return handleRequest(redirectAttributes, model, null, null, () ->{
+        WorkoutPlanModel workoutPlanModel = workoutPlanService.findById(workoutPlanId);
+        model.addAttribute("workoutPlanModel", workoutPlanModel);
+        model.addAttribute("body", "/student/workoutplan/edit");
+        return "/fragments/layout";
 
-        ){
-        return handleRequest(redirectAttributes, model, null, null, () ->{
-            WorkoutPlanModel workoutPlanModel = workoutPlanService.findById(workoutPlanId);
-            model.addAttribute("workoutPlanModel", workoutPlanModel);
-            model.addAttribute("body", "/student/workoutplan/edit");
-            return "/fragments/layout";
-
-        });}
+    });}
 
     @PostMapping("/{workoutPlanId}/edit")
     public String updateWorkoutPlan(
