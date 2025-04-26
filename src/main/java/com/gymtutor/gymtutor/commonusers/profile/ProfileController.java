@@ -1,6 +1,7 @@
 package com.gymtutor.gymtutor.commonusers.profile;
 
 import com.gymtutor.gymtutor.security.CustomUserDetails;
+import com.gymtutor.gymtutor.security.SecurityUtils;
 import com.gymtutor.gymtutor.user.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/profile")
@@ -32,9 +34,10 @@ public class ProfileController {
     private PersonalService personalService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleRepository roleRepository;
 
     // TODO: FAZER TODOS OS handlerequests  e bidingerros,
-    //  falta criar a remoção do cref para o usuario voltar a ser apenas Aluno
     // validar se a imagem e jpg??
     @GetMapping
     public String showProfile(
@@ -48,6 +51,9 @@ public class ProfileController {
             Personal personal = personalService.findByUser(user);
             if (personal != null) {
                 model.addAttribute("personal", personal);
+            }
+            if (!model.containsAttribute("changeNameForm")) {
+                model.addAttribute("changeNameForm", new ChangeNameDTO());
             }
             model.addAttribute("body", "profile/profile");
             return "/fragments/layout";
@@ -99,10 +105,13 @@ public class ProfileController {
         personal.setUser(user);
         personalService.save(personal);
 
-        // Troca o papel para PERSONAL
         userService.changeRole(user, RoleName.PERSONAL);
 
-        redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!, logue novamente para acessar as funções de Personal!");
+        // Atualiza o papel no CustomUserDetails
+        loggedUser.getUser().setRole(roleRepository.findByRoleName(RoleName.PERSONAL));
+        SecurityUtils.updateAuthenticatedUser(loggedUser);
+
+        redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!");
         return "redirect:/profile";
     }
 
@@ -163,13 +172,48 @@ public class ProfileController {
         if (userService.checkPassword(user, password)) {
             personalService.delete(user);
             userService.changeRole(user, RoleName.STUDENT);
-            redirectAttributes.addFlashAttribute("successMessage", "Seu CREF foi removido com sucesso!, logue novamente!");
-            return "redirect:/login";
+
+            // Atualiza o papel no CustomUserDetails
+            user.setRole(roleRepository.findByRoleName(RoleName.STUDENT));
+            SecurityUtils.updateAuthenticatedUser(loggedUser);
+
+
+            redirectAttributes.addFlashAttribute("successMessage", "Seu CREF foi removido com sucesso!");
+            return "redirect:/profile";
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Senha incorreta. CREF não removido.");
             return "redirect:/profile";
         }
     }
+
+    @PostMapping("/change-name")
+    public String changeName(
+            @Valid @ModelAttribute("changeNameForm") ChangeNameDTO changeNameDTO,
+            BindingResult result,
+
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails loggedUser
+    ){
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+            return "redirect:/profile";
+        }
+
+        User user = userService.findById(loggedUser.getUser().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        if (userService.checkPassword(user, changeNameDTO.getConfirmPassword3())) {
+            userService.changeName(user, changeNameDTO.getNewName());
+            loggedUser.getUser().setUserName(changeNameDTO.getNewName());
+            SecurityUtils.updateAuthenticatedUser(loggedUser);
+            redirectAttributes.addFlashAttribute("successMessage", "Seu nome foi alterado com sucesso!");
+            return "redirect:/profile";
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Senha incorreta. Não foi possível alterar o nome");
+            return "redirect:/profile";
+        }
+    }
+
 
 
     private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, Object anyModel, RequestHandler block
