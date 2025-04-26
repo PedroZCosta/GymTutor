@@ -2,13 +2,8 @@ package com.gymtutor.gymtutor.commonusers.workoutplan;
 
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.security.CustomUserDetailsService;
-import com.gymtutor.gymtutor.user.User;
-import com.gymtutor.gymtutor.user.UserDTO;
-import com.gymtutor.gymtutor.user.UserService;
-import com.gymtutor.gymtutor.user.UserWrapperDTO;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
