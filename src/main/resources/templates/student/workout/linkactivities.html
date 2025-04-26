@@ -160,12 +160,12 @@
                     document.getElementById("successMessage").style.display = "none";
                   }, 3000);
                 } else {
-                  console.error("Erro na resposta do servidor", response); // 👈 E ESSE TAMBÉM
+                  console.error("Erro na resposta do servidor", response);
                   alert("Erro ao reordenar");
                 }
               })
               .catch(err => {
-                console.error("Erro na requisição", err); // 👈 MAIS ESTE
+                console.error("Erro na requisição", err);
               });
     }
   });

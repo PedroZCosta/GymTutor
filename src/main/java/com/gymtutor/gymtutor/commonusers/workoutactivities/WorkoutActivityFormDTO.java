@@ -18,9 +18,6 @@ public class WorkoutActivityFormDTO {
     @NotBlank(message = "As repetições são obrigatórias.")
     private String reps;
 
-    private boolean selected; // Novo campo para controlar o estado do checkbox
-
-
     // Getters e setters obrigatórios
     public Integer getActivitiesId() {
         return activitiesId;
@@ -46,11 +43,4 @@ public class WorkoutActivityFormDTO {
         this.reps = reps;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
 }
