@@ -1,7 +1,9 @@
 package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
+import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanService;
 import com.gymtutor.gymtutor.user.User;
+import com.gymtutor.gymtutor.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,12 @@ public class WorkoutPlanPerUserService {
 
     @Autowired
     private WorkoutPlanPerUserRepository workoutPlanPerUserRepository;
+
+    @Autowired
+    private WorkoutPlanService workoutPlanService;
+
+    @Autowired
+    private UserService userService;
 
     // Vincular ficha de treino a um usuario
     @Transactional
@@ -52,6 +60,22 @@ public class WorkoutPlanPerUserService {
         return workoutPlanPerUserRepository.findByWorkoutPlanWorkoutPlanId(workoutPlanId);
     }
 
+    @Transactional
+    public void linkUserToPlan(int workoutPlanId, int userId) {
+        WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        WorkoutPlanPerUserId id = new WorkoutPlanPerUserId(
+                workoutPlanId, userId
+        );
+        WorkoutPlanPerUserModel link = new WorkoutPlanPerUserModel();
+        link.setWorkoutPlanPerUserId(id);
+        link.setWorkoutPlan(workoutPlan);
+        link.setUser(user);
+        workoutPlanPerUserRepository.save(link);
+
+
+    }
 
 
 

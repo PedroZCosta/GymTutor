@@ -1,14 +1,19 @@
 package com.gymtutor.gymtutor.commonusers.workoutplan;
 
 
+import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserId;
+import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserModel;
+import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserRepository;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.user.User;
 import com.gymtutor.gymtutor.user.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // Serviço para gerenciar a lógica de negócios relacionada a entidades WorkoutPlan (WorkoutPlanService),
 // incluindo operações de criação, atualização, exclusão e recuperação de entidades,
@@ -21,6 +26,9 @@ public class WorkoutPlanService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private WorkoutPlanPerUserRepository workoutPlanPerUserRepository;
 
 
     public void createWorkoutPlan(WorkoutPlanModel workoutPlanModel, CustomUserDetails loggedUser) {
@@ -58,6 +66,44 @@ public class WorkoutPlanService {
 
     public void deleteWorkoutPlan(int workoutPlanId){
         workoutPlanRepository.deleteById(workoutPlanId);
+    }
+
+    @Transactional
+    public void linkUserToPlan(WorkoutPlanModel workoutPlan, User user) {
+        WorkoutPlanPerUserId id = new WorkoutPlanPerUserId();
+        id.setWorkoutPlanId(workoutPlan.getWorkoutPlanId());
+        id.setUserId(user.getUserId());
+
+        Optional<WorkoutPlanPerUserModel> existingLink = workoutPlanPerUserRepository.findByWorkoutPlanPerUserId(id);
+        if (existingLink.isEmpty()) {
+            WorkoutPlanPerUserModel link = new WorkoutPlanPerUserModel();
+            link.setWorkoutPlanPerUserId(id);
+            link.setWorkoutPlan(workoutPlan);
+            link.setUser(user);
+
+            workoutPlanPerUserRepository.save(link);
+        }
+    }
+    public List<User> findUsersLinkedToWorkoutPlan(int workoutPlanId) {
+        return workoutPlanPerUserRepository
+                .findByWorkoutPlanWorkoutPlanId(workoutPlanId)
+                .stream()
+                .map(WorkoutPlanPerUserModel::getUser)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void unlinkUserFromPlan(WorkoutPlanModel workoutPlan, User user) {
+        WorkoutPlanPerUserId id = new WorkoutPlanPerUserId();
+        id.setWorkoutPlanId(workoutPlan.getWorkoutPlanId());
+        id.setUserId(user.getUserId());
+
+        Optional<WorkoutPlanPerUserModel> existingLink = workoutPlanPerUserRepository.findByWorkoutPlanPerUserId(id);
+        if (existingLink.isPresent()) {
+            workoutPlanPerUserRepository.delete(existingLink.get());
+        } else {
+            System.out.println("Vínculo não encontrado.");
+        }
     }
 
 }

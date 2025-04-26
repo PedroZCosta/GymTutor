@@ -3,12 +3,11 @@ package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 import com.gymtutor.gymtutor.activities.ActivitiesController;
 import com.gymtutor.gymtutor.activities.ActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
+import com.gymtutor.gymtutor.user.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
-import com.gymtutor.gymtutor.user.UserRepository;
-import com.gymtutor.gymtutor.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -133,6 +132,79 @@ public class WorkoutPlanPerUserController {
             return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
         });
     }
+
+
+//
+//    public String showUserLinkForm(
+//            @PathVariable Integer workoutPlanId,
+//            Model model,
+//            RedirectAttributes redirectAttributes,
+//            @AuthenticationPrincipal CustomUserDetails userDetails
+//    ) {
+//        return handleRequest(redirectAttributes, model, null, null, () -> {
+//            WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
+//            List<User> allUsers     = userService.findAll();
+//            List<User> linkedUsers  = workoutPlanService.findUsersLinkedToWorkoutPlan(workoutPlanId);
+//
+//            // **mapeia para seus DTOs**
+//            List<UserDTO> userDTOs = linkedUsers.stream()
+//                    .map(u -> {
+//                        UserDTO dto = new UserDTO();
+//                        dto.setUserId(u.getUserId());
+//                        dto.setWorkoutPlanId(workoutPlanId);
+//                        return dto;
+//                    })
+//                    .collect(Collectors.toList());
+//
+//            UserWrapperDTO wrapper = new UserWrapperDTO();
+//            wrapper.setUsers(userDTOs);
+//
+//            model.addAttribute("workoutPlan", workoutPlan);
+//            model.addAttribute("users", allUsers);
+//            model.addAttribute("userWrapperDTO", wrapper);
+//            model.addAttribute("body", "student/workoutplan/linkusers");
+//            return "/fragments/layout";
+//        });
+//    }
+
+    // --- NOVO: vincular um único usuário (modal) ---
+    @PostMapping("/link")
+    public String linkUser(
+            @PathVariable Integer workoutPlanId,
+            @RequestParam Integer userId,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        return handleRequest(redirectAttributes, model,
+                "/student/workoutplan/linkusers",
+                null, () ->{
+                    workoutPlanPerUserService.linkUserToPlan(workoutPlanId, userId);
+                    redirectAttributes.addFlashAttribute("successMessage", "Usuário vinculado com sucesso!");
+                    return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
+                });
+    }
+
+
+
+
+//    // --- NOVO: desvincular um único usuário ---
+//    @PostMapping("/{workoutPlanId}/linkusers/unlink")
+//    public String unlinkUser(
+//            @PathVariable Integer workoutPlanId,
+//            @RequestParam Integer userId,
+//            RedirectAttributes redirectAttributes,
+//            Model model
+//    ) {
+//        return handleRequest(redirectAttributes, model,
+//                "/student/workoutplan/" + workoutPlanId + "/linkusers",
+//                null, () -> {
+//                    workoutPlanService.unlinkUserFromPlan(plan, user);
+//                    redirectAttributes.addFlashAttribute("successMessage", "Usuário desvinculado com sucesso!");
+//                    return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
+//
+//                });
+//    }
+
     private String handleValidationErrors(Model model, String view, WorkoutPlanPerUserModel workoutPlanPerUserModel, BindingResult bindingResult, Integer workoutPerWorkoutPlanId){
         model.addAttribute("errorMessage", "Há erros no formulário!");
         model.addAttribute("org.springframework.validation.BindingResult.WorkoutPlanPerUserModel", bindingResult);

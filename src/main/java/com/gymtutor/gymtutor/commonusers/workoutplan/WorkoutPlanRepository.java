@@ -1,5 +1,6 @@
 package com.gymtutor.gymtutor.commonusers.workoutplan;
 
+import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserModel;
 import com.gymtutor.gymtutor.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,5 +11,7 @@ import java.util.List;
 // que irá gerenciar a entidade WorkoutPlan, permitindo operações CRUD (criação, leitura, atualização, remoção) no banco de dados.
 @Repository
 public interface WorkoutPlanRepository extends JpaRepository<WorkoutPlanModel, Integer> {
-    List<WorkoutPlanModel> findAllByUserUserId(int userId);  // Busca todas as fichas de treino associadas ao usuario
+    List<WorkoutPlanModel> findAllByUserUserId(int userId);
+    // ⬅️ Adicione esta linha aqui para buscar os vínculos por ID da ficha
+
 }

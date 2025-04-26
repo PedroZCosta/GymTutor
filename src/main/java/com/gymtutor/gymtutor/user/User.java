@@ -1,11 +1,15 @@
 package com.gymtutor.gymtutor.user;
 
+import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
+import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,6 +30,9 @@ public class User {
     // Nome do aluno (obrigatório e tamanho mínimo de 2 caracteres)
     @Size(min = 2, message = "O nome deve ter pelo menos 2 caracteres.")
     private String userName;
+
+    @OneToMany(mappedBy = "user")
+    private List<WorkoutPlanPerUserModel> workoutPlanPerUserModels = new ArrayList<>();
 
     // Email (obrigatório e precisa ser um email válido)
     @Column(name = "email", unique = true)
@@ -53,6 +60,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+
 
     // Getters and Setters
     public int getUserId() {
@@ -98,5 +107,6 @@ public class User {
 
     public boolean isLocked() { return isLocked; }
     public void setLocked(boolean isLocked) { this.isLocked = isLocked; }
+
 
 }
