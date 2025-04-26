@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -25,6 +26,15 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
+    public List<User> searchUsersByName(String query, User loggedUser) {
+        return userRepository
+                .findByUserNameContainingIgnoreCase(query)
+                .stream()
+                .filter(u -> u.getUserId() != loggedUser.getUserId())
+                .toList();
+    }
+
 
     @Transactional
     public void createUser(UserRegistrationDTO userRegistrationDTO) {
