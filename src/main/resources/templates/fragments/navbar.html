@@ -29,7 +29,7 @@
             </div>
 
             <!-- todo: confirmar se ele ira aparecer aqui mesmo KKKKK -->
-            <div th:if="${LoggedUserRole.contains('ROLE_STUDENT')or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+            <div th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
                 <h2>Seção do Aluno</h2>
                 <ul>
                     <h3>Social</h3>
@@ -47,6 +47,8 @@
                 <h2>Seção do Personal</h2>
                 <ul>
                     <!-- Adicione links conforme necessário -->
+                    <h3>Clientes</h3>
+                    <li><a href="/personal/linkclients">Adicionar clientes</a></li>
                 </ul>
             </div>
 
