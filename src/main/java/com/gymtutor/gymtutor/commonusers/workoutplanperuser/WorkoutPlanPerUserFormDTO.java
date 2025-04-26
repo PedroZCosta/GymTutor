@@ -4,7 +4,6 @@ package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 public class WorkoutPlanPerUserFormDTO {
 
     private int userId;
-    private boolean isLinked;
 
     // Getters e setters
     public int getUserId() {
@@ -15,11 +14,4 @@ public class WorkoutPlanPerUserFormDTO {
         this.userId = userId;
     }
 
-    public boolean isLinked() {
-        return isLinked;
-    }
-
-    public void setLinked(boolean linked) {
-        isLinked = linked;
-    }
 }

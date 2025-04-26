@@ -1,14 +1,12 @@
 package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 
 import com.gymtutor.gymtutor.activities.ActivitiesController;
-import com.gymtutor.gymtutor.activities.ActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
+import com.gymtutor.gymtutor.user.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
-import com.gymtutor.gymtutor.user.UserRepository;
-import com.gymtutor.gymtutor.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,19 +38,6 @@ public class WorkoutPlanPerUserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private WorkoutPlanPerUserRepository workoutPlanPerUserRepository;
-
-    public void WorkoutPlanUserLinkController(
-            WorkoutPlanService workoutPlanService,
-            UserService userService,
-            WorkoutPlanPerUserService workoutPlanPerUserService
-    ) {
-        this.workoutPlanService = workoutPlanService;
-        this.userService = userService;
-        this.workoutPlanPerUserService = workoutPlanPerUserService;
-    }
-
     @GetMapping
     public String showUserLinkForm(
             @PathVariable int workoutPlanId,
@@ -59,80 +45,70 @@ public class WorkoutPlanPerUserController {
             @AuthenticationPrincipal CustomUserDetails loggedUser
     ) {
         // Recupera a ficha de treino
-        var workoutPlan = workoutPlanService.findById(workoutPlanId);
+        WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
 
         // Recupera todos os usuários (ou filtre conforme necessário)
-        var allUsers = userRepository.findAll();
+        List<User> allUsers = userRepository.findAll();
 
         // Recupera os vínculos de usuários com essa ficha de treino
         var workoutPlanPerUsers = workoutPlanPerUserService.findAllByWorkoutPlanId(workoutPlanId);
 
-        // Lista de IDs de usuários já vinculados à ficha
-        var linkedUserIds = workoutPlanPerUsers.stream()
-                .map(link -> link.getUser().getUserId())
-                .toList();
+    // IDs dos usuários vinculados
+            List<Integer> linkedUserIds = workoutPlanPerUsers.stream()
+                    .map(link -> link.getUser().getUserId())
+                    .collect(Collectors.toList());
 
-        // Mapeia o ID do usuário para o objeto WorkoutPlanPerUserId
-        var workoutPlanUserMap = workoutPlanPerUsers.stream()
-                .collect(Collectors.toMap(
-                        link -> link.getUser().getUserId(),
-                        WorkoutPlanPerUserModel::getWorkoutPlanPerUserId
-                ));
+    // Objetos User completos, ordenados pelo ID
+            List<User> linkedUsers = workoutPlanPerUsers.stream()
+                    .sorted(Comparator.comparingInt(link -> link.getUser().getUserId()))
+                    .map(WorkoutPlanPerUserModel::getUser)
+                    .collect(Collectors.toList());
+
 
         model.addAttribute("workoutPlan", workoutPlan);
         model.addAttribute("users", allUsers);
         model.addAttribute("linkedUserIds", linkedUserIds);
-        model.addAttribute("workoutPlanUserMap", workoutPlanUserMap);
+        model.addAttribute("linkedUsers", linkedUsers);
         model.addAttribute("body", "student/workoutplan/linkusers");
 
         return "/fragments/layout";
     }
 
-    @PostMapping
-    public String linkOrUnlinkUsers(
-            @PathVariable int workoutPlanId,
-            @RequestParam(value = "userIds", required = false) List<Integer> userIds,
+    @PostMapping("/link")
+    public String linkUser(
+            @PathVariable Integer workoutPlanId,
+            @RequestParam Integer userId,
             RedirectAttributes redirectAttributes,
-            @AuthenticationPrincipal CustomUserDetails loggedUser,
             Model model
     ) {
-        // Se nada foi selecionado, tratamos como lista vazia
-        if (userIds == null) {
-            userIds = List.of();
-        }
-
-        var workoutPlan = workoutPlanService.findById(workoutPlanId);
-        var currentLinks = workoutPlanPerUserService.findAllByWorkoutPlanId(workoutPlanId);
-        var linkedUserIds = currentLinks.stream()
-                .map(link -> link.getUser().getUserId())
-                .toList();
-        // Usando seu tratamento genérico
-        List<Integer> finalUserIds = userIds;
-        return handleRequest(redirectAttributes, model, "student/workoutplan/linkusers", null, () -> {
-            // Vincular novos usuários
-            for (Integer userId : finalUserIds) {
-                if (!linkedUserIds.contains(userId)) {
-                    var user = userRepository.findById(userId).orElse(null);
-                    if (user != null) {
-                        workoutPlanPerUserService.linkWorkoutPlanToUser(workoutPlan, user);
-                    }
-                }
-            }
-
-            // Desvincular usuários que foram desmarcados
-            for (Integer linkedUserId : linkedUserIds) {
-                if (!finalUserIds.contains(linkedUserId)) {
-                    var user = userRepository.findById(linkedUserId).orElse(null);
-                    if (user != null) {
-                        workoutPlanPerUserService.unlinkWorkoutPlanPerUser(workoutPlan, user);
-                    }
-                }
-            }
-
-            redirectAttributes.addFlashAttribute("successMessage", "Vínculos atualizados com sucesso!");
-            return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
-        });
+        return handleRequest(redirectAttributes, model,
+                "/student/workoutplan/linkusers",
+                null, () ->{
+                    workoutPlanPerUserService.linkUserToPlan(workoutPlanId, userId);
+                    redirectAttributes.addFlashAttribute("successMessage", "Usuário vinculado com sucesso!");
+                    return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
+                });
     }
+
+
+
+    @PostMapping("/unlink")
+    public String unlinkUser(
+            @PathVariable Integer workoutPlanId,
+            @ModelAttribute WorkoutPlanPerUserFormDTO workoutPlanPerUserFormDTO,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        return handleRequest(redirectAttributes, model,
+                "/student/workoutplan/" + workoutPlanId + "/linkusers",
+                null, () -> {
+                    workoutPlanPerUserService.unlinkWorkoutPlanPerUser(workoutPlanId, workoutPlanPerUserFormDTO.getUserId());
+                    redirectAttributes.addFlashAttribute("successMessage", "Usuário desvinculado com sucesso!");
+                    return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
+
+                });
+    }
+
     private String handleValidationErrors(Model model, String view, WorkoutPlanPerUserModel workoutPlanPerUserModel, BindingResult bindingResult, Integer workoutPerWorkoutPlanId){
         model.addAttribute("errorMessage", "Há erros no formulário!");
         model.addAttribute("org.springframework.validation.BindingResult.WorkoutPlanPerUserModel", bindingResult);
@@ -193,7 +169,4 @@ public class WorkoutPlanPerUserController {
             return "redirect:/student/workoutplan/linkusers";
         }
     }
-
-
-
 }

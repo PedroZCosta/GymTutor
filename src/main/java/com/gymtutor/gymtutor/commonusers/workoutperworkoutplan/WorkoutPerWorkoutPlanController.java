@@ -30,6 +30,7 @@ public class WorkoutPerWorkoutPlanController {
 
     @Autowired
     private WorkoutRepository workoutRepository;
+
     @Autowired
     private WorkoutPerWorkoutPlanService workoutPerWorkoutPlanService;
 

@@ -41,7 +41,7 @@
                 <form th:action="@{'/student/workoutplan/' + ${workoutPlan.workoutPlanId} + '/linkworkout/unlink'}" method="post">
                     <input type="hidden" name="workoutId" th:value="${workout.workoutId}" />
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <button type="submit">Desvincular</button>
+                    <button type="submit" class="action-button" onclick="return confirm('Você tem certeza de que deseja desvincular esta conexão?')">Desvincular</button>
                 </form>
             </td>
         </tr>
