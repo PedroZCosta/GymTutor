@@ -28,7 +28,7 @@
             </div>
 
             <label for="videoLink">Link</label>
-            <input type="text" id="videoLink" name="videoLink" th:value="*{videoLink}" required />
+            <input type="url" id="videoLink" name="videoLink" th:value="*{videoLink}" required />
 
             <!-- Exibe erro se houver -->
             <div th:if="${#fields.hasErrors('videoLink')}" style="color: red;">
