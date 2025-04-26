@@ -1,11 +1,13 @@
 package com.gymtutor.gymtutor.commonusers.workoutplan;
 
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
+import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
 import com.gymtutor.gymtutor.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -30,6 +32,10 @@ public class WorkoutPlanModel {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "workoutPlan")
+    private List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans;
+
     // Construtor padrão
     public WorkoutPlanModel() {
     }
@@ -68,5 +74,13 @@ public class WorkoutPlanModel {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<WorkoutPerWorkoutPlanModel> getWorkoutPerWorkoutPlans() {
+        return workoutPerWorkoutPlans;
+    }
+
+    public void setWorkoutPerWorkoutPlans(List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans) {
+        this.workoutPerWorkoutPlans = workoutPerWorkoutPlans;
     }
 }

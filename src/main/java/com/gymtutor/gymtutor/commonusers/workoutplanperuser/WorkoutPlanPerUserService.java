@@ -41,10 +41,10 @@ public class WorkoutPlanPerUserService {
 
     // Desvincular treino da ficha de treino
     @Transactional
-    public void unlinkWorkoutPlanPerUser(WorkoutPlanModel workoutPlan, User user) {
+    public void unlinkWorkoutPlanPerUser(int workoutPlanId, int userId) {
         var id = new WorkoutPlanPerUserId();
-        id.setWorkoutPlanId(workoutPlan.getWorkoutPlanId());
-        id.setUserId(user.getUserId());
+        id.setWorkoutPlanId(workoutPlanId);
+        id.setUserId(userId);
 
         Optional<WorkoutPlanPerUserModel> existingLink = workoutPlanPerUserRepository.findByWorkoutPlanPerUserId(id);
 
