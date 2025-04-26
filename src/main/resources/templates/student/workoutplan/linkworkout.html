@@ -30,6 +30,7 @@
         <tr>
             <th>Nome do Treino</th>
             <th>Tempo de Descanso</th>
+            <th>Exercícios</th>
             <th>Ações</th>
         </tr>
         </thead>
@@ -37,6 +38,14 @@
         <tr th:each="workout : ${linkedWorkouts}">
             <td th:text="${workout.workoutName}"></td>
             <td th:text="${workout.restTime}"></td>
+            <td>
+                <ul>
+                    <li th:each="activity : ${workout.workoutActivities}"
+                        th:text=" ${activity.sequence} + ' - ' + ${activity.activity.activityName} +
+                        ' - Repetições: ' + ${activity.reps}  ">
+                    </li>
+                </ul>
+            </td>
             <td>
                 <form th:action="@{'/student/workoutplan/' + ${workoutPlan.workoutPlanId} + '/linkworkout/unlink'}" method="post">
                     <input type="hidden" name="workoutId" th:value="${workout.workoutId}" />
@@ -70,6 +79,7 @@
                 <tr>
                     <th>Nome</th>
                     <th>Tempo de Descanso</th>
+                    <th>Exercícios</th>
                     <th>Ação</th>
                 </tr>
                 </thead>
@@ -80,6 +90,14 @@
                     <form th:action="@{'/student/workoutplan/' + ${workoutPlan.workoutPlanId} + '/linkworkout/link'}" method="post">
                         <td th:text="${workout.workoutName}" class="workout-name"></td>
                         <td th:text="${workout.restTime}"></td>
+                        <td>
+                            <ul>
+                                <li th:each="activity : ${workout.workoutActivities}"
+                                    th:text=" ${activity.sequence} + ' - ' + ${activity.activity.activityName} +
+                        ' - Repetições: ' + ${activity.reps}  ">
+                                </li>
+                            </ul>
+                        </td>
                         <td>
                             <input type="hidden" name="workoutId" th:value="${workout.workoutId}" />
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
