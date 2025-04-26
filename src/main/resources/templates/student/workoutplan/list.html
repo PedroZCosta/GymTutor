@@ -39,6 +39,10 @@
                 <form th:action="@{/student/workoutplan/{workoutPlanId}/linkusers(workoutPlanId=${workoutPlan.workoutPlanId})}" th:method="get" style="display: inline;">
                     <button type="submit">Vincular Usuários</button>
                 </form>
+                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${workoutPlan.workoutPlanId})}" th:method="get" style="display: inline;">
+                    <button type="submit">Vincular Treinos</button>
+                </form>
+
             </div>
         </td>
     </tr>
