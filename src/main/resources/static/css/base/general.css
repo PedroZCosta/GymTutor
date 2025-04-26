@@ -112,6 +112,7 @@ body {
 .content input[type="text"],
 .content input[type="password"],
 .content input[type="number"],
+.content input[type="url"],
 .content select {
   padding: 10px;
   border: 1px solid #ccc;
