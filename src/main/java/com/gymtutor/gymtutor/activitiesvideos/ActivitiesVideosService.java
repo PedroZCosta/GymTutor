@@ -28,6 +28,8 @@ public class ActivitiesVideosService {
     }
 
     public void createVideo(@Valid ActivitiesVideosModel activitiesVideosModel, int activitiesId) {
+        validateYouTubeLink(activitiesVideosModel.getVideoLink());
+
         ActivitiesModel activity = activitiesRepository.findById(activitiesId).orElseThrow(() -> new EntityNotFoundException("Exercícios não Encontrados"));
         activitiesVideosModel.setActivity(activity);
         videosRepository.save(activitiesVideosModel);
@@ -43,6 +45,8 @@ public class ActivitiesVideosService {
     }
 
     public void updateVideo(ActivitiesVideosModel activitiesVideosModel, int videoId){
+        validateYouTubeLink(activitiesVideosModel.getVideoLink());
+
         Optional<ActivitiesVideosModel> existingVideo = videosRepository.findById(videoId);
         if(existingVideo.isPresent()){
             ActivitiesVideosModel video = existingVideo.get();
@@ -53,4 +57,13 @@ public class ActivitiesVideosService {
             videosRepository.save(video);
         }
     }
+
+    //Validar para ser somente do youtube
+    private void validateYouTubeLink(String videoLink) {
+        if (videoLink == null ||
+                !(videoLink.contains("youtube.com/watch?v=") || videoLink.contains("youtu.be/"))) {
+            throw new IllegalArgumentException("O link precisa ser um vídeo do YouTube.");
+        }
+    }
+
 }
