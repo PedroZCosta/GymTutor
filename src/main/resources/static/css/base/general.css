@@ -15,7 +15,7 @@ body {
 .content {
   width: 80vw; /* 80% da largura da tela */
   height: 96vh; /* Ocupa toda a altura da tela */
-  background-color: #F0F3F4; /* Cor de fundo do corpo */
+   /* Cor de fundo do corpo */
   color: #878686; /* Cor de texto */
   display: flex;
   flex-direction: column;
