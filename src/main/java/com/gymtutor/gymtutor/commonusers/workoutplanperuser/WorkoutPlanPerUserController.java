@@ -10,16 +10,11 @@ import com.gymtutor.gymtutor.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-//todo : handle validation erros no posts
-
 
 // Controlador para gerenciar as operações relacionadas a WorkoutPlanPerUser.
 @Controller
@@ -53,16 +48,16 @@ public class WorkoutPlanPerUserController {
         // Recupera os vínculos de usuários com essa ficha de treino
         var workoutPlanPerUsers = workoutPlanPerUserService.findAllByWorkoutPlanId(workoutPlanId);
 
-    // IDs dos usuários vinculados
-            List<Integer> linkedUserIds = workoutPlanPerUsers.stream()
-                    .map(link -> link.getUser().getUserId())
-                    .collect(Collectors.toList());
+        // IDs dos usuários vinculados
+        List<Integer> linkedUserIds = workoutPlanPerUsers.stream()
+                .map(link -> link.getUser().getUserId())
+                .collect(Collectors.toList());
 
-    // Objetos User completos, ordenados pelo ID
-            List<User> linkedUsers = workoutPlanPerUsers.stream()
-                    .sorted(Comparator.comparingInt(link -> link.getUser().getUserId()))
-                    .map(WorkoutPlanPerUserModel::getUser)
-                    .collect(Collectors.toList());
+        // Objetos User completos, ordenados pelo ID
+        List<User> linkedUsers = workoutPlanPerUsers.stream()
+                .sorted(Comparator.comparingInt(link -> link.getUser().getUserId()))
+                .map(WorkoutPlanPerUserModel::getUser)
+                .collect(Collectors.toList());
 
 
         model.addAttribute("workoutPlan", workoutPlan);
@@ -109,18 +104,6 @@ public class WorkoutPlanPerUserController {
                 });
     }
 
-    private String handleValidationErrors(Model model, String view, WorkoutPlanPerUserModel workoutPlanPerUserModel, BindingResult bindingResult, Integer workoutPerWorkoutPlanId){
-        model.addAttribute("errorMessage", "Há erros no formulário!");
-        model.addAttribute("org.springframework.validation.BindingResult.WorkoutPlanPerUserModel", bindingResult);
-        model.addAttribute("workoutPlanPerUserModel", workoutPlanPerUserModel);
-
-        if(workoutPerWorkoutPlanId != null){
-            model.addAttribute("workoutPerWorkoutPlanId", workoutPerWorkoutPlanId);
-        }
-        model.addAttribute("body", view);
-
-        return "/fragments/layout";
-    }
     private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, WorkoutPlanPerUserModel workoutPlanPerUserModel, ActivitiesController.RequestHandler block
     ){
         try{
