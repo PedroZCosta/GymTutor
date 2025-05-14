@@ -16,7 +16,6 @@ public class ActivitiesImagesModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int imageId;
 
-    //TODO: GARANTIR UNICICIDADE DO NOME DA IMAGEM
     @NotBlank(message = "Nome da imagem não pode estar vazio!")
     @Size(min = 3, max = 50, message = "Nome da imagem deve ter entre 3 e 50 caracteres.")
     private String imageName;

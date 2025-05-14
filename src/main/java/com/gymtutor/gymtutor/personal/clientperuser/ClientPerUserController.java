@@ -34,8 +34,6 @@ public class ClientPerUserController {
             ){
         return handleRequest(redirectAttributes, model, null, null, null, () -> {
 
-             // todo: Implementar o método loadView
-
             User personal = loggedUser.getUser();
 
             List<User> connections = userRelationService.getAllConnectedUsers(personal);
@@ -151,8 +149,5 @@ public class ClientPerUserController {
             return "redirect:/personal/linkclients";
         }
     }
-
-
-
 
 }

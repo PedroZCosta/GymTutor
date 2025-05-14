@@ -15,7 +15,6 @@ import java.util.Optional;
 @Service
 public class WorkoutPerWorkoutPlanService {
 
-    // todo: revisar esse codigo quando possivel
     @Autowired
     private WorkoutPerWorkoutPlanRepository workoutPerWorkoutPlanRepository;
 
@@ -24,7 +23,7 @@ public class WorkoutPerWorkoutPlanService {
     public void linkWorkoutToWorkoutPlan(WorkoutModel workout, WorkoutPlanModel workoutPlan) {
         // Verifica se já existe o vínculo
         Optional<WorkoutPerWorkoutPlanModel> existingLink = workoutPerWorkoutPlanRepository
-                .findByWorkoutIdAndWorkoutPlanId(workout.getWorkoutId(), workoutPlan.getWorkoutPlanId());
+                .findByWorkout_WorkoutIdAndWorkoutPlan_WorkoutPlanId(workout.getWorkoutId(), workoutPlan.getWorkoutPlanId());
 
         if (existingLink.isPresent()) {
             throw new IllegalStateException("Este treino já está vinculado à ficha de treino.");
@@ -46,7 +45,7 @@ public class WorkoutPerWorkoutPlanService {
     @Transactional
     public void unlinkWorkoutFromWorkoutPlan(WorkoutModel workout, WorkoutPlanModel workoutPlan) {
         Optional<WorkoutPerWorkoutPlanModel> existingLink = workoutPerWorkoutPlanRepository
-                .findByWorkoutIdAndWorkoutPlanId(workout.getWorkoutId(), workoutPlan.getWorkoutPlanId());
+                .findByWorkout_WorkoutIdAndWorkoutPlan_WorkoutPlanId(workout.getWorkoutId(), workoutPlan.getWorkoutPlanId());
 
         if (existingLink.isEmpty()) {
             throw new IllegalStateException("Este treino não está vinculado à ficha de treino.");

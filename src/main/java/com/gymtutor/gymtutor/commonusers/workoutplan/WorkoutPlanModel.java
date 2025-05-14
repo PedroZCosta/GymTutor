@@ -14,9 +14,6 @@ import java.util.List;
 @Table(name="tb_workoutPlan")
 public class WorkoutPlanModel {
 
-    // Ao excluir um treino da ficha de treino deverá ser tirada a linha que a relaciona com a ficha e o treino especifico
-    // todo: realizar crud da relacao ficha e treino!!!!
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int workoutPlanId;

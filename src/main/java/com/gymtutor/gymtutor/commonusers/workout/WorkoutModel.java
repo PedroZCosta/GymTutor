@@ -2,12 +2,10 @@ package com.gymtutor.gymtutor.commonusers.workout;
 
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
-import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import com.gymtutor.gymtutor.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
 import java.util.List;
 
 @Entity
