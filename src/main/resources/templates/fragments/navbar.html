@@ -1,58 +1,90 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<style>
+    .nav-link {
+        position: relative !important;
+        display: inline-block !important;
+        text-decoration: none !important;
+        padding-bottom: 4px !important;
+        color: white !important;
+    }
 
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 0;
+        background-color: white;
+        transition: width 0.3s ease-in-out;
+    }
+
+    .nav-link:hover::after {
+        width: 100%;
+    }
+</style>
+</head>
     <body>
+    <!-- fragment: navbar.html -->
+    <div th:fragment="navbar">
+        <nav class="navbar navbar-expand-lg" style="background-color: #7d0022;">
+            <div class="container-fluid">
 
-        <div th:fragment="navbar">
-            <h1>Bem-vindo,</h1>
-            <h2><span th:text="${LoggedUserName}">User</span>!</h2>
+                <!-- Logo à esquerda -->
+                <a class="navbar-brand text-white" href="/home">
+                    <img th:src="@{/css/images/logo-gymtutor.png}" alt="Logo GymTutor" height="40">
+                </a>
 
-            <!-- Botão de logout -->
-            <form th:action="@{/logout}" th:method="post" style="display: inline;">
-                <button type="submit" onclick="return confirm('Você tem certeza de que deseja sair?')">Logout</button>
-            </form>
+                <!-- Botão hamburguer para mobile -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div>
-                <h2>Página Home</h2>
-                <ul>
-                    <li><a href="/home">Página Home</a></li>
-                    <li><a href="/profile">Meu Perfil</a></li>
-                </ul>
+                <!-- Conteúdo da navbar -->
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+
+                    <!-- Links centrais -->
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item"><a class="nav-link text-white" href="/home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="/profile">Meu Perfil</a></li>
+
+                        <!-- Seção do Admin -->
+                        <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_ADMIN')}">
+                            <a class="nav-link text-white" href="/admin/activities">Exercícios</a>
+                        </li>
+
+                        <!-- Seção do Aluno -->
+                        <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+                            <a class="nav-link text-white" href="/student/social">Social</a>
+                        </li>
+                        <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+                            <a class="nav-link text-white" href="/student/workoutplan">Ficha de treinos</a>
+                        </li>
+                        <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+                            <a class="nav-link text-white" href="/student/workout">Treinos individuais</a>
+                        </li>
+
+                        <!-- Seção do Personal -->
+                        <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+                            <a class="nav-link text-white" href="/personal/linkclients">Adicionar clientes</a>
+                        </li>
+                    </ul>
+
+                    <!-- Lado direito: usuário + logout -->
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="text-white fw-bold">Bem-vindo, <span th:text="${LoggedUserName}">Usuário</span>!</span>
+                        <form th:action="@{/logout}" method="post" onsubmit="return confirm('Você tem certeza de que deseja sair?')">
+                            <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+                        </form>
+                        <img th:src="@{/css/images/logo-pucpr.png}" alt="Logo PUCPR" height="40">
+                    </div>
+
+                </div>
             </div>
-
-            <div th:if="${LoggedUserRole.contains('ROLE_ADMIN')}">
-                <h2>Seção do Administrador</h2>
-                <ul>
-                    <h3>Cadastros</h3>
-                    <li><a href="/admin/activities"> Exercícios </a></li>
-                </ul>
-            </div>
-
-            <!-- todo: confirmar se ele ira aparecer aqui mesmo KKKKK -->
-            <div th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
-                <h2>Seção do Aluno</h2>
-                <ul>
-                    <h3>Social</h3>
-                    <li><a href="/student/social">Social</a></li>
-                    <h3>Treinos</h3>
-                    <li><a href="/student/workoutplan">Ficha de treinos</a></li>
-                </ul>
-                <ul>
-                    <li><a href="/student/workout">Treinos individuais</a></li>
-                </ul>
-            </div>
-
-
-            <div th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
-                <h2>Seção do Personal</h2>
-                <ul>
-                    <!-- Adicione links conforme necessário -->
-                    <h3>Clientes</h3>
-                    <li><a href="/personal/linkclients">Adicionar clientes</a></li>
-                </ul>
-            </div>
-
-        </div>
+        </nav>
+    </div>
 
     </body>
 

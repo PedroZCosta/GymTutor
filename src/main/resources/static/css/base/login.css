@@ -1,104 +1,104 @@
-/* Estilos gerais */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #F0F3F4; /* Cor de fundo escura */
-    color: #878686; /* Cor de texto */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Alinha o conteúdo verticalmente */
-    flex-direction: column;
-    overflow: hidden; /* Impede a barra de rolagem */
-}
+/*!* Estilos gerais *!*/
+/*body {*/
+/*    font-family: 'Arial', sans-serif;*/
+/*    background-color: #F0F3F4; !* Cor de fundo escura *!*/
+/*    color: #878686; !* Cor de texto *!*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    height: 100vh; !* Alinha o conteúdo verticalmente *!*/
+/*    flex-direction: column;*/
+/*    overflow: hidden; !* Impede a barra de rolagem *!*/
+/*}*/
 
-/* Estilo da camada transparente sobre o formulário */
-.overlay {
-    position: relative;
-    background-color: rgba(0, 0, 0, 0.08); /* Fundo preto semi-transparente */
-    padding: 50px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.88); /* Sombra suave */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100vw;
-}
+/*!* Estilo da camada transparente sobre o formulário *!*/
+/*.overlay {*/
+/*    position: relative;*/
+/*    background-color: rgba(0, 0, 0, 0.08); !* Fundo preto semi-transparente *!*/
+/*    padding: 50px;*/
+/*    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.88); !* Sombra suave *!*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    width: 100vw;*/
+/*}*/
 
-/* Estilo do formulário de login */
-form {
-    background-color: #ffffff1c; /* Fundo branco para o formulário */
-    padding: 20px;
-    border-radius: 25px; /* Bordas arredondadas */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22); /* Sombra suave */
-    width: 300px; /* Largura do formulário */
-    text-align: center;
-}
+/*!* Estilo do formulário de login *!*/
+/*form {*/
+/*    background-color: #ffffff1c; !* Fundo branco para o formulário *!*/
+/*    padding: 20px;*/
+/*    border-radius: 25px; !* Bordas arredondadas *!*/
+/*    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22); !* Sombra suave *!*/
+/*    width: 300px; !* Largura do formulário *!*/
+/*    text-align: center;*/
+/*}*/
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #154360; /* Cor escura para o título */
-}
+/*h1 {*/
+/*    font-size: 24px;*/
+/*    margin-bottom: 20px;*/
+/*    color: #154360; !* Cor escura para o título *!*/
+/*}*/
 
-label {
-    display: block;
-    text-align: left;
-    margin: 10px 0 5px;
-    font-size: 14px;
-    color: #555; /* Cor suave para o texto do label */
-}
+/*label {*/
+/*    display: block;*/
+/*    text-align: left;*/
+/*    margin: 10px 0 5px;*/
+/*    font-size: 14px;*/
+/*    color: #555; !* Cor suave para o texto do label *!*/
+/*}*/
 
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    font-size: 16px;
-    box-sizing: border-box; /* Inclui o padding na largura total */
-}
+/*input[type="email"],*/
+/*input[type="password"] {*/
+/*    width: 100%;*/
+/*    padding: 10px;*/
+/*    margin: 10px 0;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 15px;*/
+/*    font-size: 16px;*/
+/*    box-sizing: border-box; !* Inclui o padding na largura total *!*/
+/*}*/
 
-input[type="email"]:focus,
-input[type="password"]:focus {
-    border-color: #3498db; /* Cor de borda quando em foco */
-    outline: none;
-}
+/*input[type="email"]:focus,*/
+/*input[type="password"]:focus {*/
+/*    border-color: #3498db; !* Cor de borda quando em foco *!*/
+/*    outline: none;*/
+/*}*/
 
-button[type="submit"] {
-    background-color: #154360; /* Cor do botão */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 15px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 15px;
-}
+/*button[type="submit"] {*/
+/*    background-color: #154360; !* Cor do botão *!*/
+/*    color: white;*/
+/*    border: none;*/
+/*    padding: 10px 20px;*/
+/*    border-radius: 15px;*/
+/*    font-size: 16px;*/
+/*    cursor: pointer;*/
+/*    width: 100%;*/
+/*    margin-top: 15px;*/
+/*}*/
 
-button[type="submit"]:hover {
-    background-color: #0b3149; /* Tom mais escuro do botão ao passar o mouse */
-}
+/*button[type="submit"]:hover {*/
+/*    background-color: #0b3149; !* Tom mais escuro do botão ao passar o mouse *!*/
+/*}*/
 
-/* Responsividade */
-@media (max-width: 400px) {
-    form {
-        width: 90%; /* Ajusta a largura do formulário para telas pequenas */
-    }
-}
+/*!* Responsividade *!*/
+/*@media (max-width: 400px) {*/
+/*    form {*/
+/*        width: 90%; !* Ajusta a largura do formulário para telas pequenas *!*/
+/*    }*/
+/*}*/
 
 
-a {
-    color: rebeccapurple;       /* roxo bonito */
-    font-weight: bold;          /* negrito */
-    text-decoration: none;      /* remove sublinhado */
-    transition: color 0.3s ease;
-}
+/*a {*/
+/*    color: rebeccapurple;       !* roxo bonito *!*/
+/*    font-weight: bold;          !* negrito *!*/
+/*    text-decoration: none;      !* remove sublinhado *!*/
+/*    transition: color 0.3s ease;*/
+/*}*/
 
-a:hover {
-    color: darkviolet;          /* muda de cor ao passar o mouse */
-    text-decoration: underline; /* sublinhado no hover */
-}
+/*a:hover {*/
+/*    color: darkviolet;          !* muda de cor ao passar o mouse *!*/
+/*    text-decoration: underline; !* sublinhado no hover *!*/
+/*}*/

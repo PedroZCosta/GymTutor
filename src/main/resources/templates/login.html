@@ -1,53 +1,54 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>GymTutor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="bg-white">
 
-  <head>
-    <!-- Título da página, exibido na aba do navegador -->
-    <title>GymTutor</title>
+<!-- NAVBAR -->
+<nav class="navbar bg-danger-subtle px-4" style="background-color: #7d0022 !important;">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <img th:src="@{/css/images/logo-gymtutor.png}" alt="Logo" height="40">
+    <img th:src="@{/css/images/logo-pucpr.png}" alt="PUCPR" height="40">
+  </div>
+</nav>
 
-    <!-- Link para o arquivo CSS 'water.css' que aplica um estilo simples e limpo à página -->
-    <!--      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">-->
-    <link rel="stylesheet" href="/css/base/login.css">
-  </head>
+<!-- CONTAINER CENTRAL -->
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="card p-4 shadow-sm border-0" style="max-width: 400px; width: 100%; border-radius: 15px; background-color: #f4f4f4;">
+    <h5 class="text-center text-secondary mb-4">Login</h5>
 
-  <body>
+    <!-- Mensagens -->
+    <!-- Mensagem de sucesso -->
+    <div th:if="${successMessage}" class="alert alert-success text-center" role="alert" th:text="${successMessage}"></div>
 
-    <div class="overlay">
+    <!-- Mensagem de erro -->
+    <div th:if="${session.errorMessage}" class="alert alert-danger text-center" role="alert" th:text="${session.errorMessage}"></div>
 
-      <h1>Bem-vindo ao GymTutor!</h1>
-      <p>Logue com suas credenciais.</p>
-
-      <!-- Bloco condicional que mostra a mensagem de erro se houver falha na autenticação -->
-      <div th:if="${successMessage}" style="color: green;">
-        <p th:text="${successMessage}"></p>
+    <!-- Formulário -->
+    <form th:action="@{/login}" th:method="post" class="d-flex flex-column gap-2">
+      <div class="mb-2">
+        <label for="username" class="form-label">Email</label>
+        <input type="email" class="form-control rounded-pill shadow-sm" id="username" name="username" required>
       </div>
-      <div th:if="${session.errorMessage}">
-        <p style="color: red;" th:text="${session.errorMessage}"></p>
+      <div class="mb-3">
+        <label for="password" class="form-label">Senha</label>
+        <input type="password" class="form-control rounded-pill shadow-sm" id="password" name="password" required>
       </div>
+      <button type="submit" class="btn w-100 text-white rounded-pill shadow-sm" style="background-color: #7d0022;">Login</button>
+    </form>
 
-      <!-- Formulário de login -->
-      <form th:action="@{/login}" th:method="post">
-
-        <!-- Campo de entrada para o e-mail do usuário -->
-        <label for="username">E-mail</label>
-        <input type="email" id="username" name="username" required>
-
-        <!-- Campo de entrada para a senha do usuário -->
-        <label for="password">Senha</label>
-        <input type="password" id="password" name="password" required>
-
-        <!-- Botão de envio do formulário -->
-        <button type="submit">Login</button>
-
-      </form>
-
-      <br><br>
-      <a th:href="@{/password-recovery}">Esqueci Minha Senha</a>
-      <p>Não tem uma conta? <a th:href="@{/registration}">Crie uma conta</a></p>
-
-
+    <!-- Links -->
+    <div class="text-center mt-3">
+      <a th:href="@{/password-recovery}" class="small d-block" style="color: #7d0022;">Esqueci Minha Senha</a>
+      <small>Não tem uma conta? <a th:href="@{/registration}" style="color: #7d0022;">Crie uma conta</a></small>
     </div>
+  </div>
+</div>
 
-  </body>
-
+</body>
 </html>
