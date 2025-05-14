@@ -37,7 +37,6 @@ public class ProfileController {
     @Autowired
     private RoleRepository roleRepository;
 
-    // TODO: FAZER TODOS OS handlerequests  e bidingerros,
     // validar se a imagem e jpg??
     @GetMapping
     public String showProfile(
@@ -51,10 +50,24 @@ public class ProfileController {
             Personal personal = personalService.findByUser(user);
             if (personal != null) {
                 model.addAttribute("personal", personal);
+
+                // enviando uma mensagem do Status do CREF ao front
+                if (!personal.isApproved() && !personal.isRejected()) {
+                    model.addAttribute("creefMessage", "CREF em análise pelos administradores do sistema");
+                } else if (personal.isApproved()) {
+                    model.addAttribute("creefMessage", "CREF Válido");
+                } else if (personal.isRejected()) {
+                    model.addAttribute("creefMessage", "Seu CREF foi Rejeitado, Motivo: " + personal.getRejectReason());
+                }
             }
             if (!model.containsAttribute("changeNameForm")) {
                 model.addAttribute("changeNameForm", new ChangeNameDTO());
             }
+
+
+
+            model.addAttribute("personalCreefDTO", new PersonalCreefDTO());
+            model.addAttribute("states", State.values());
             model.addAttribute("body", "profile/profile");
             return "/fragments/layout";
         });
@@ -82,37 +95,59 @@ public class ProfileController {
             model.addAttribute("body", "profile/change-password");
             return "/fragments/layout";
         }
-        //TODO: Adicionar a validação de erros ao salvar a senha
-        User user = loggedUser.getUser();
-        userService.changePassword(user, userChangePasswordDTO.getUserPassword());
-        redirectAttributes.addFlashAttribute("successMessage", "Sua senha foi alterada com sucesso!");
-        return "redirect:/profile";
+
+        return handleRequest(redirectAttributes, model, "profile/profile", null, () -> {
+            User user = loggedUser.getUser();
+            userService.changePassword(user, userChangePasswordDTO.getUserPassword());
+            redirectAttributes.addFlashAttribute("successMessage", "Sua senha foi alterada com sucesso!");
+            return "redirect:/profile";
+        });
     }
 
     @Transactional
     @PostMapping("/save-creef")
     public String saveCreef(
-            @RequestParam("personalCREEF") String creef,
+            @Valid @ModelAttribute PersonalCreefDTO personalCreefDTO,
+            BindingResult bindingResult,
             @AuthenticationPrincipal CustomUserDetails loggedUser,
+            Model model,
             RedirectAttributes redirectAttributes
     ) {
-        User user = userService.findById(loggedUser.getUser().getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-        // Cria um novo Personal e vincula ao usuário
-        Personal personal = new Personal();
-        personal.setPersonalCREEF(creef);
-        personal.setUser(user);
-        personalService.save(personal);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", loggedUser.getUser());
+            model.addAttribute("personal", personalService.findByUser(loggedUser.getUser())); // acho que essa lógica e desnecessária
+            model.addAttribute("changeNameForm", new ChangeNameDTO());
+            model.addAttribute("states", State.values());
+            model.addAttribute("personalCreefDTO", personalCreefDTO);
+            model.addAttribute("openCreefModal", true); // sinalizador
+            model.addAttribute("org.springframework.validation.BindingResult.personalCreefDTO", bindingResult);
+            model.addAttribute("body", "profile/profile");
+            return "/fragments/layout";
+        }
 
-        userService.changeRole(user, RoleName.PERSONAL);
+        return handleRequest(redirectAttributes, model, "profile/profile", null, () -> {
 
-        // Atualiza o papel no CustomUserDetails
-        loggedUser.getUser().setRole(roleRepository.findByRoleName(RoleName.PERSONAL));
-        SecurityUtils.updateAuthenticatedUser(loggedUser);
+            User user = userService.findById(loggedUser.getUser().getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
-        redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!");
-        return "redirect:/profile";
+            // Cria um novo Personal e vincula ao usuário
+            Personal personal = new Personal();
+            personal.setPersonalCREEF(personalCreefDTO.getPersonalCREEF());
+            personal.setState(personalCreefDTO.getState());
+            personal.setUser(user);
+            personalService.save(personal);
+
+//            userService.changeRole(user, RoleName.PERSONAL);
+
+            // Atualiza o papel no CustomUserDetails
+            loggedUser.getUser().setRole(roleRepository.findByRoleName(RoleName.PERSONAL));
+            SecurityUtils.updateAuthenticatedUser(loggedUser);
+
+            redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!");
+            return "redirect:/profile";
+
+        });
     }
 
 
@@ -133,7 +168,6 @@ public class ProfileController {
 
             redirectAttributes.addFlashAttribute("successMessage", "Foto do perfil alterada com sucesso!");
         } catch (IOException e) {
-            e.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", "Erro ao carregar a imagem.");
         }
 
@@ -214,8 +248,6 @@ public class ProfileController {
         }
     }
 
-
-
     private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, Object anyModel, RequestHandler block
     ){
         try{
@@ -248,7 +280,7 @@ public class ProfileController {
 
     private String handleIllegalAccessException(IllegalAccessException ex, RedirectAttributes redirectAttributes){
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        return "redirect:/admin/activities";
+        return "redirect:/home";
     }
 
     private String handleDataIntegrityViolationException(Model model, Object anyModel, String view){
@@ -274,7 +306,7 @@ public class ProfileController {
             model.addAttribute("body", view);
             return "/fragments/layout";
         }else{
-            return "redirect:/admin/activities";
+            return "redirect:/profile";
         }
     }
 
