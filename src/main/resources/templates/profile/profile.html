@@ -32,7 +32,10 @@
 
         <!-- Se o usuário já tem CREEF e não for Administrador -->
         <div th:if="${personal != null}">
-          <h3 th:text="'CREF: ' + ${personal.personalCREEF}"></h3>
+          <h3 th:text="'CREF: ' + ${personal.personalCREEF} + '/' + ${personal.state} "></h3>
+          <div th:if="${creefMessage}" style="color: red;">
+            <p th:text="${creefMessage}"></p>
+          </div>
           <form id="removeCrefForm" th:action="@{/profile/remove-cref}" th:method="post" style="display: inline;">
             <input type="hidden" name="confirmPassword2" id="confirmPassword2">
             <button type="button" onclick="confirmRemoveCref()">Remover CREF</button>
@@ -66,9 +69,27 @@
   <!-- Modal para adicionar CREF -->
   <div id="creefModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
                            background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
-    <h3>Insira seu CREEF</h3>
-    <form id="creefForm" th:action="@{/profile/save-creef}" method="post">
-      <input type="text" name="personalCREEF" placeholder="Digite seu CREEF" required />
+
+    <h3>Insira seu CREEF e Estado</h3>
+    <form th:action="@{/profile/save-creef}" th:object="${personalCreefDTO}" method="post">
+
+      <input type="text" th:field="*{personalCREEF}" placeholder="Digite seu CREEF"
+             required pattern="^\d{1,6}-[GPC]$" title="O CREF deve conter de 1 a 6 dígitos seguidos de um hífen e uma letra (G, P ou C). Exemplo: 12345-G" />
+      <br><br>
+
+      <div th:if="${#fields.hasErrors('personalCREEF')}" style="color: red;">
+        <p th:errors="*{personalCREEF}"></p>
+      </div>
+
+      <select th:field="*{state}" required>
+        <option value="" disabled selected>Selecione o Estado</option>
+        <option th:each="state : ${states}" th:value="${state}" th:text="${state}"></option>
+      </select>
+
+      <div th:if="${#fields.hasErrors('state')}" style="color: red;">
+        <p th:errors="*{state}"></p>
+      </div>
+
       <br><br>
       <button type="submit">Salvar</button>
       <button type="button" onclick="closeCreefModal()">Cancelar</button>
@@ -210,7 +231,13 @@
     }
   </script>
 
-
-  </body>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    var shouldOpenCreefModal = [[${openCreefModal}]];
+    if (shouldOpenCreefModal) {
+      openCreefModal();
+    }
+    /*]]>*/
+  </script>
 
 </html>
