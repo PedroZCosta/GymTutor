@@ -28,7 +28,9 @@ public class WorkoutService {
         return optionalWorkoutModel.orElseThrow(() -> new RuntimeException("workout not found with id" + workoutId));
     }
 
-    public List<WorkoutModel> findAll() {return workoutRepository.findAll();} //todo: filtrar a busca por usuario
+    public List<WorkoutModel> findAllByUser(int userId) {
+        return workoutRepository.findByUserUserId(userId);
+    }
 
     public void updateWorkout(WorkoutModel workoutModel, int workoutId){
 

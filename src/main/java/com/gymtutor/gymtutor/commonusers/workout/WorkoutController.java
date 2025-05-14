@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.Comparator;
 
 
@@ -33,7 +32,7 @@ public class WorkoutController {
             ){
         return handleRequest(redirectAttributes, model, null, null, () -> {
             int userId = userDetails.getUser().getUserId();
-            var workoutList = workoutService.findAll(); //todo: filtrar por usuario
+            var workoutList = workoutService.findAllByUser(userId);
             //Função para colocar as atividades vinculadas em ordem sequencial
             for (WorkoutModel workout : workoutList) {
                 workout.getWorkoutActivities().sort(Comparator.comparingInt(WorkoutActivitiesModel::getSequence));
