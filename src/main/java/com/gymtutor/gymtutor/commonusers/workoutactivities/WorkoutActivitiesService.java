@@ -1,6 +1,6 @@
 package com.gymtutor.gymtutor.commonusers.workoutactivities;
 
-import com.gymtutor.gymtutor.activities.ActivitiesModel;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

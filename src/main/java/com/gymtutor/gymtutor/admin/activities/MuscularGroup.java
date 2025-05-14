@@ -1,4 +1,4 @@
-package com.gymtutor.gymtutor.activities;
+package com.gymtutor.gymtutor.admin.activities;
 
 public enum MuscularGroup {
     PEITORAL,

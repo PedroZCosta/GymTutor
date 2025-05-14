@@ -1,4 +1,4 @@
-package com.gymtutor.gymtutor.activities;
+package com.gymtutor.gymtutor.admin.activities;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

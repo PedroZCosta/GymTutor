@@ -1,6 +1,6 @@
 package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 
-import com.gymtutor.gymtutor.activities.ActivitiesController;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesController;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import com.gymtutor.gymtutor.user.*;
 import org.springframework.dao.DataIntegrityViolationException;

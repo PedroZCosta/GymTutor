@@ -1,7 +1,7 @@
-package com.gymtutor.gymtutor.activitiesvideos;
+package com.gymtutor.gymtutor.admin.activitiesvideos;
 
-import com.gymtutor.gymtutor.activities.ActivitiesModel;
-import com.gymtutor.gymtutor.activities.ActivitiesRepository;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesModel;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;

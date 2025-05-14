@@ -1,7 +1,7 @@
-package com.gymtutor.gymtutor.activitiesimages;
+package com.gymtutor.gymtutor.admin.activitiesimages;
 
-import com.gymtutor.gymtutor.activities.ActivitiesModel;
-import com.gymtutor.gymtutor.activities.ActivitiesRepository;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesModel;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.gymtutor.gymtutor.activitiesvideos;
+package com.gymtutor.gymtutor.admin.activitiesvideos;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

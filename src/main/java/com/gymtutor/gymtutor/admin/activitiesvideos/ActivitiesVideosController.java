@@ -1,4 +1,4 @@
-package com.gymtutor.gymtutor.activitiesvideos;
+package com.gymtutor.gymtutor.admin.activitiesvideos;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

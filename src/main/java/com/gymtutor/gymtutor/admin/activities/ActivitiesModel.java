@@ -1,7 +1,7 @@
-package com.gymtutor.gymtutor.activities;
+package com.gymtutor.gymtutor.admin.activities;
 
-import com.gymtutor.gymtutor.activitiesimages.ActivitiesImagesModel;
-import com.gymtutor.gymtutor.activitiesvideos.ActivitiesVideosModel;
+import com.gymtutor.gymtutor.admin.activitiesimages.ActivitiesImagesModel;
+import com.gymtutor.gymtutor.admin.activitiesvideos.ActivitiesVideosModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

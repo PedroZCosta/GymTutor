@@ -1,7 +1,7 @@
 package com.gymtutor.gymtutor.commonusers.profile.social;
 
-import com.gymtutor.gymtutor.activitiesvideos.ActivitiesVideosController;
-import com.gymtutor.gymtutor.activitiesvideos.ActivitiesVideosModel;
+import com.gymtutor.gymtutor.admin.activitiesvideos.ActivitiesVideosController;
+import com.gymtutor.gymtutor.admin.activitiesvideos.ActivitiesVideosModel;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.user.User;
 import com.gymtutor.gymtutor.user.UserService;

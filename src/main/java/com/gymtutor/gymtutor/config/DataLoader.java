@@ -1,8 +1,8 @@
 package com.gymtutor.gymtutor.config;
 
-import com.gymtutor.gymtutor.activities.MuscularGroup;
-import com.gymtutor.gymtutor.activities.MuscularGroupModel;
-import com.gymtutor.gymtutor.activities.MuscularGroupRepository;
+import com.gymtutor.gymtutor.admin.activities.MuscularGroup;
+import com.gymtutor.gymtutor.admin.activities.MuscularGroupModel;
+import com.gymtutor.gymtutor.admin.activities.MuscularGroupRepository;
 import com.gymtutor.gymtutor.user.Role;
 import com.gymtutor.gymtutor.user.RoleName;
 import com.gymtutor.gymtutor.user.RoleRepository;

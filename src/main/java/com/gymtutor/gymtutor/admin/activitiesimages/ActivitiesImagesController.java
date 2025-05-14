@@ -1,4 +1,4 @@
-package com.gymtutor.gymtutor.activitiesimages;
+package com.gymtutor.gymtutor.admin.activitiesimages;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;

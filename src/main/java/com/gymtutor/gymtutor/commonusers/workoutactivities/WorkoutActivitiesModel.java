@@ -1,7 +1,7 @@
 package com.gymtutor.gymtutor.commonusers.workoutactivities;
 
 
-import com.gymtutor.gymtutor.activities.ActivitiesModel;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

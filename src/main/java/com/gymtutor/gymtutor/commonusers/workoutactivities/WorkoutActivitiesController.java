@@ -1,9 +1,9 @@
 package com.gymtutor.gymtutor.commonusers.workoutactivities;
 
-import com.gymtutor.gymtutor.activities.ActivitiesRepository;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesRepository;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
-import com.gymtutor.gymtutor.activities.ActivitiesModel;
+import com.gymtutor.gymtutor.admin.activities.ActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
