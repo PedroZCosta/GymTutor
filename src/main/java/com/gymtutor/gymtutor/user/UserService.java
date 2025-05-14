@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -37,7 +36,6 @@ public class UserService {
                 .filter(u -> u.getUserId() != loggedUser.getUserId())
                 .toList();
     }
-
 
     @Transactional
     public void createUser(UserRegistrationDTO userRegistrationDTO) {
