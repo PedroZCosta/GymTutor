@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/profile/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN")
                         .requestMatchers("/student/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN") // STUDENT e PERSONAL podem acessar /student
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Apenas ADMIN pode acessar /admin
-                        .requestMatchers("/personal/**").hasRole("PERSONAL") // Apenas PERSONAL pode acessar /personal
+                        .requestMatchers("/personal/**").hasAnyRole("PERSONAL", "ADMIN") // Apenas PERSONAL e ADMIN pode acessar /personal
                         .anyRequest().authenticated() // Qualquer outra requisição requer autenticação
                 )
                 .formLogin(form -> form
