@@ -41,12 +41,12 @@ public class Personal {
         this.personalId = personalId;
     }
 
-    public String getPersonalCREEF() {
+    public String getPersonalCREF() {
         return personalCREF;
     }
 
-    public void setPersonalCREEF(String personalCREEF) {
-        this.personalCREF = personalCREEF;
+    public void setPersonalCREF(String personalCREF) {
+        this.personalCREF = personalCREF;
     }
 
     public User getUser() {
@@ -56,10 +56,6 @@ public class Personal {
     public void setUser(User user) {
         this.user = user;
     }
-
-    public String getPersonalCREF() { return personalCREF; }
-
-    public void setPersonalCREF(String personalCREF) { this.personalCREF = personalCREF; }
 
     public State getState() { return state; }
 
