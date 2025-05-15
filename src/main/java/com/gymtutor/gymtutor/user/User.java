@@ -24,7 +24,7 @@ public class User {
     private int userId;
 
     // Nome do aluno (obrigatório e tamanho mínimo de 2 caracteres)
-    @Size(min = 2, message = "O nome deve ter pelo menos 2 caracteres.")
+    @Size(min = 3, message = "O nome deve ter pelo menos 3 caracteres.")
     private String userName;
 
     @OneToMany(mappedBy = "user")

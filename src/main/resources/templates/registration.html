@@ -30,7 +30,7 @@
 
             <div class="mb-3">
                 <label for="userName" class="form-label">Nome</label>
-                <input type="text" class="form-control rounded-pill shadow-sm" id="userName" th:field="*{userName}" required>
+                <input type="text" class="form-control rounded-pill shadow-sm" id="userName" th:field="*{userName}" min="3" max="100" required>
             </div>
             <!-- Exibe erro se houver -->
             <div th:if="${#fields.hasErrors('userName')}" style="color: red;">
