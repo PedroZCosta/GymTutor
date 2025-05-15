@@ -53,11 +53,11 @@ public class ProfileController {
 
                 // enviando uma mensagem do Status do CREF ao front
                 if (!personal.isApproved() && !personal.isRejected()) {
-                    model.addAttribute("creefMessage", "CREF em análise pelos administradores do sistema");
+                    model.addAttribute("crefMessage", "CREF em análise pelos administradores do sistema");
                 } else if (personal.isApproved()) {
-                    model.addAttribute("creefMessage", "CREF Válido");
+                    model.addAttribute("crefMessage", "CREF Válido");
                 } else if (personal.isRejected()) {
-                    model.addAttribute("creefMessage", "Seu CREF foi Rejeitado, Motivo: " + personal.getRejectReason());
+                    model.addAttribute("crefMessage", "Seu CREF foi Rejeitado, Motivo: " + personal.getRejectReason());
                 }
             }
             if (!model.containsAttribute("changeNameForm")) {
@@ -66,7 +66,7 @@ public class ProfileController {
 
 
 
-            model.addAttribute("personalCreefDTO", new PersonalCreefDTO());
+            model.addAttribute("personalCrefDTO", new PersonalCrefDTO());
             model.addAttribute("states", State.values());
             model.addAttribute("body", "profile/profile");
             return "/fragments/layout";
@@ -105,9 +105,9 @@ public class ProfileController {
     }
 
     @Transactional
-    @PostMapping("/save-creef")
-    public String saveCreef(
-            @Valid @ModelAttribute PersonalCreefDTO personalCreefDTO,
+    @PostMapping("/save-cref")
+    public String saveCref(
+            @Valid @ModelAttribute PersonalCrefDTO personalCrefDTO,
             BindingResult bindingResult,
             @AuthenticationPrincipal CustomUserDetails loggedUser,
             Model model,
@@ -119,9 +119,9 @@ public class ProfileController {
             model.addAttribute("personal", personalService.findByUser(loggedUser.getUser())); // acho que essa lógica e desnecessária
             model.addAttribute("changeNameForm", new ChangeNameDTO());
             model.addAttribute("states", State.values());
-            model.addAttribute("personalCreefDTO", personalCreefDTO);
-            model.addAttribute("openCreefModal", true); // sinalizador
-            model.addAttribute("org.springframework.validation.BindingResult.personalCreefDTO", bindingResult);
+            model.addAttribute("personalCrefDTO", personalCrefDTO);
+            model.addAttribute("openCrefModal", true); // sinalizador
+            model.addAttribute("org.springframework.validation.BindingResult.personalCrefDTO", bindingResult);
             model.addAttribute("body", "profile/profile");
             return "/fragments/layout";
         }
@@ -133,8 +133,8 @@ public class ProfileController {
 
             // Cria um novo Personal e vincula ao usuário
             Personal personal = new Personal();
-            personal.setPersonalCREEF(personalCreefDTO.getPersonalCREEF());
-            personal.setState(personalCreefDTO.getState());
+            personal.setPersonalCREF(personalCrefDTO.getPersonalCREF());
+            personal.setState(personalCrefDTO.getState());
             personal.setUser(user);
             personalService.save(personal);
 
@@ -144,7 +144,7 @@ public class ProfileController {
             loggedUser.getUser().setRole(roleRepository.findByRoleName(RoleName.PERSONAL));
             SecurityUtils.updateAuthenticatedUser(loggedUser);
 
-            redirectAttributes.addFlashAttribute("successMessage", "CREEF cadastrado com sucesso!");
+            redirectAttributes.addFlashAttribute("successMessage", "CREF cadastrado com sucesso!");
             return "redirect:/profile";
 
         });
