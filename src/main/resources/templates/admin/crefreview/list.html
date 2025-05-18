@@ -2,64 +2,84 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
     <body>
-
-    <h1>Revisão de CREFs</h1>
+    <div class="container my-4">
+        <h1 class="mb-4">Revisão de CREFs</h1>
 
         <!-- Mensagens de erro e sucesso -->
-        <div th:if="${successMessage}" style="color: green;">
-            <p th:text="${successMessage}"></p>
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <p class="mb-0" th:text="${successMessage}"></p>
         </div>
-        <div th:if="${errorMessage}" style="color: red;">
-            <p th:text="${errorMessage}"></p>
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <p class="mb-0" th:text="${errorMessage}"></p>
         </div>
 
-        <!-- Lista dos Usuarios -->
-        <table>
-            <thead>
+        <!-- Lista dos Usuários -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
                 <tr>
                     <th>Usuário</th>
                     <th>CREF</th>
                     <th>Ações</th>
                 </tr>
-            </thead>
-            <tbody>
-            <tr th:each="cref : ${crefRequestList}">
-                <td th:text="${cref.user.userName}"></td>
-                <td th:text="${cref.personalCREF} + '/' + ${cref.state}"></td>
-                <td>
-                    <!-- Aprovar -->
-                    <form th:action="@{/admin/cref_review/approve}" method="post" style="display:inline;">
-                        <input type="hidden" name="personalId" th:value="${cref.personalId}" />
-                        <button type="submit">Aprovar</button>
-                    </form>
+                </thead>
+                <tbody>
+                <tr th:each="cref : ${crefRequestList}">
+                    <td th:text="${cref.user.userName}"></td>
+                    <td th:text="${cref.personalCREF} + '/' + ${cref.state}"></td>
+                    <td>
+                        <!-- Aprovar -->
+                        <form th:action="@{/admin/cref_review/approve}" method="post" class="d-inline">
+                            <input type="hidden" name="personalId" th:value="${cref.personalId}" />
+                            <button type="submit" class="btn btn-success btn-sm me-2">
+                                <i class="bi bi-check-circle me-1"></i>Aprovar
+                            </button>
+                        </form>
 
-                    <!-- Rejeitar com modal -->
-                    <button type="button"
-                            th:attr="data-id=${cref.personalId}, data-name=${cref.user.userName}"
-                            onclick="openRejectModal(this)">
-                        Rejeitar
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-
-        </table>
-
-
-        <!-- Modal de Rejeição -->
-        <div id="rejectModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
-         background:#fff; padding:20px; border:1px solid #ccc; z-index:1000; width: 300px;">
-            <h3 id="modalTitle">Rejeitar CREF</h3>
-            <form th:action="@{/admin/cref_review/reject}" method="post">
-                <input type="hidden" name="personalId" id="modalPersonalId" />
-                <label for="reason">Motivo:</label>
-                <input type="text" name="reason" id="rejectReason" placeholder="Motivo da rejeição" required
-                       minlength="5" maxlength="50" title="O motivo deve ter entre 5 e 50 caracteres."/>
-                <br><br>
-                <button type="submit">Confirmar Rejeição</button>
-                <button type="button" onclick="closeRejectModal()">Cancelar</button>
-            </form>
+                        <!-- Rejeitar com modal -->
+                        <button type="button"
+                                class="btn btn-danger btn-sm"
+                                th:attr="data-id=${cref.personalId}, data-name=${cref.user.userName}"
+                                onclick="openRejectModal(this)">
+                            <i class="bi bi-x-circle me-1"></i>Rejeitar
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
+
+
+    <!-- Modal de Rejeição -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+                <h5 class="modal-title fw-bold text-start mb-3" id="modalTitle">Rejeitar CREF</h5>
+                <form th:action="@{/admin/cref_review/reject}" method="post">
+                    <input type="hidden" name="personalId" id="modalPersonalId" />
+
+                    <div class="mb-3">
+                        <label for="rejectReason" class="form-label fw-semibold">Motivo da Rejeição</label>
+                        <input type="text"
+                               name="reason"
+                               id="rejectReason"
+                               class="form-control rounded-3 shadow-sm py-2 px-3"
+                               placeholder="Motivo da rejeição"
+                               required
+                               minlength="5"
+                               maxlength="50"
+                               title="O motivo deve ter entre 5 e 50 caracteres." />
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-danger">Confirmar Rejeição</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
         <!-- Overlay -->
         <div id="rejectOverlay" style="display:none; position:fixed; top:0; left:0; width:100%;
@@ -74,13 +94,16 @@
                 document.getElementById('modalPersonalId').value = personalId;
                 document.getElementById('modalTitle').innerText = "Rejeitar CREF de " + userName;
 
-                document.getElementById('rejectModal').style.display = 'block';
-                document.getElementById('rejectOverlay').style.display = 'block';
+                const modal = new bootstrap.Modal(document.getElementById('rejectModal'));
+                modal.show();
             }
 
             function closeRejectModal() {
-                document.getElementById('rejectModal').style.display = 'none';
-                document.getElementById('rejectOverlay').style.display = 'none';
+                const modalEl = document.getElementById('rejectModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) {
+                    modal.hide();
+                }
             }
         </script>
 
