@@ -10,14 +10,14 @@
 <div class="container my-5 border rounded-4 p-4" style="background-color: #f4f4f4;">
     <!-- Título -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Gerenciamento de Treino</h2>
+        <h2 class="fw-bold" >Gerenciar Treinos</h2>
         <a href="/student/workout/new" class="btn text-white" style="background-color: #7d0022;">Criar Novo Treino</a>
     </div>
 
-    <!-- Mensagens -->
+    <!-- Mensagens
     <div th:if="${successMessage}" class="text-success mb-2" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="text-danger mb-2" th:text="${errorMessage}"></div>
-
+ -->
     <!-- Cards dos treinos -->
     <div class="d-flex flex-column gap-3">
         <div th:each="workout : ${workout}" class="p-4 rounded-4 text-white" style="background-color: #7d0022;">
@@ -41,12 +41,11 @@
                 </form>
 
                 <form th:action="@{/student/workout/delete/{id}(id=${workout.workoutId})}" th:method="post">
-                    <button type="submit" class="btn btn-danger"
-                            onclick="return confirm('Você tem certeza de que deseja excluir esta ficha?')">Excluir</button>
+                    <button type="submit" class="btn btn-danger">Excluir</button>
                 </form>
 
                 <form th:action="@{/student/workout/{workoutId}/linkactivities(workoutId=${workout.workoutId})}" th:method="get">
-                    <button type="submit" class="btn btn-warning text-white">Vincular Exercícios</button>
+                    <button type="submit" class="btn btn-secondary text-white">Vincular Exercícios</button>
                 </form>
             </div>
         </div>
@@ -55,4 +54,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+
+    let successMessage = [[${successMessage != null}]];
+    let errorMessage = [[${errorMessage != null}]];
+
+    if(successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: '[[${successMessage}]]',
+            confirmButtonColor: '#7d0022'
+        });
+    }
+    if(errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro!',
+            text: '[[${errorMessage}]]',
+            confirmButtonColor: '#7d0022'
+        });
+    }
+
+</script>
 </html>

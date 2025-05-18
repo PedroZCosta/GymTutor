@@ -78,6 +78,10 @@ public class ActivitiesModel {
 
     public MuscularGroupModel getMuscularGroup() { return muscularGroup; }
 
+    public List<ActivitiesImagesModel> getImages() {
+        return images;
+    }
+
     public void setMuscularGroup(MuscularGroupModel muscularGroup) { this.muscularGroup = muscularGroup;}
 
 

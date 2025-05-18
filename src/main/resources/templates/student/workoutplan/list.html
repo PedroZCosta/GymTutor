@@ -15,49 +15,84 @@
     </div>
 
     <!-- Mensagens -->
-    <div th:if="${successMessage}" class="text-success mb-2" th:text="${successMessage}"></div>
+    <!--<div th:if="${successMessage}" class="text-success mb-2" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="text-danger mb-2" th:text="${errorMessage}"></div>
-
+    -->
     <!-- Fichas -->
-    <div class="d-flex flex-column gap-3 ">
-        <div class="p-4 rounded-4 text-white d-flex justify-content-between "
-             th:each="workoutPlan : ${workoutPlan}" style="background-color: #7d0022;">
+    <div class="d-flex flex-column gap-3">
+        <div class="p-4 rounded-4 text-white" th:each="plan : ${workoutPlan}" style="background-color: #7d0022;">
 
             <!-- Nome e Descrição -->
-            <h5 th:text="${workoutPlan.workoutPlanName}">Nome da Ficha</h5>
-            <p th:text="${workoutPlan.workoutPlanDescription}">Descrição da ficha</p>
+            <h5 th:text="${plan.workoutPlanName}">Nome da Ficha</h5>
+            <p th:text="${plan.workoutPlanDescription}">Descrição da ficha</p>
 
-            <!-- Lista de Treinos e Atividades -->
             <ul class="mb-3">
-                <li th:each="workout : ${workoutPlan.workoutPerWorkoutPlans}">
-                    <span th:text="${workout.workout.workoutName}">Treino X</span>
+                <li th:each="workout : ${plan.workoutPerWorkoutPlans}">
+                    <span class="fw-bold" th:text="${workout.workout.workoutName}">Treino X</span>
                     <ul>
-                        <li th:each="activity : ${workout.workout.workoutActivities}"
-                            th:text="${activity.sequence} + ' - ' + ${activity.activity.activityName} + ' - Repetições: ' + ${activity.reps}">
-                            Atividade
+                        <li class="mb-1" th:each="activity : ${workout.workout.workoutActivities}">
+                            <!-- Botão para abrir o modal -->
+                            <button class="btn btn-link text-white text-start p-0"
+                                    type="button"
+                                    data-bs-toggle="modal"
+                                    th:attr="data-bs-target='#modal-activity-' + ${activity.activity.activitiesId}"
+                                    th:text="${activity.sequence} + ' - ' + ${activity.activity.activityName} + ' - Repetições: ' + ${activity.reps}">
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade"
+                                 th:id="'modal-activity-' + ${activity.activity.activitiesId}"
+                                 tabindex="-1"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" >
+                                    <div class="modal-content "style="background-color: #7d0022">
+                                        <div class="modal-header d-flex justify-content-between">
+                                            <h5 class="modal-title"
+                                                     th:text="${activity.activity.activityName}  ">Nome da Atividade</h5>
+
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                        </div>
+                                        <div class="modal-body text-center ">
+                                            <div class="d-flex flex-column gap-3 ">
+                                                <div class="p-4 rounded-4 text-white d-flex flex-wrap gap-3 justify-content-center" style="background-color: #7d0022;">
+                                                    <div th:each="image : ${activity.activity.images}" class="text-center">
+                                                        <img th:src="${image.imagePath}" alt="Imagem" style="width: 120px; height:120px; border-radius: 8px;" />
+                                                    </div>
+                                                    <div th:each="video : ${activity.activity.videos}" class="text-center d-flex" >
+                                                        <p th:text="${video.videoName}"></p>
+                                                        <iframe th:if="${video.videoLink != null and video.videoLink.contains('v=')}"
+                                                                th:src="'https://www.youtube.com/embed/' + ${#strings.substring(video.videoLink, video.videoLink.indexOf('v=') + 2)}"
+                                                                width="200" height="113" frameborder="0"
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                allowfullscreen>
+                                                        </iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            <!-- Fim do Modal -->
                         </li>
                     </ul>
                 </li>
             </ul>
 
             <!-- Botões -->
-            <div class="d-flex gap-2 ">
-                <form th:action="@{/student/workoutplan/{id}/edit(id=${workoutPlan.workoutPlanId})}" th:method="get">
-                    <button type="submit" class="btn " style="background-color: #5A70FF;">Editar</button>
+            <div class="d-flex gap-2">
+                <form th:action="@{/student/workoutplan/{id}/edit(id=${plan.workoutPlanId})}" th:method="get">
+                    <button type="submit" class="btn" style="background-color: #5A70FF;">Editar</button>
                 </form>
 
-                <form th:action="@{/student/workoutplan/delete/{id}(id=${workoutPlan.workoutPlanId})}" th:method="post">
-                    <button type="submit" class="btn " style="background-color: #FF4949;"
-                            onclick="return confirm('Você tem certeza de que deseja excluir esta ficha?')">Excluir</button>
+                <form th:action="@{/student/workoutplan/delete/{id}(id=${plan.workoutPlanId})}" th:method="post">
+                    <button type="submit" class="btn" style="background-color: #FF4949;">Excluir</button>
                 </form>
 
-                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkusers(workoutPlanId=${workoutPlan.workoutPlanId})}" th:method="get"
+                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkusers(workoutPlanId=${plan.workoutPlanId})}" th:method="get"
                       th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
                     <button type="submit" class="btn btn-secondary">Vincular Usuários</button>
-
                 </form>
 
-                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${workoutPlan.workoutPlanId})}" th:method="get">
+                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${plan.workoutPlanId})}" th:method="get">
                     <button type="submit" class="btn btn-secondary">Vincular Treinos</button>
                 </form>
             </div>
@@ -69,4 +104,30 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:inline="javascript">
+    /* <![CDATA[ */
+    let successMessage = [[${successMessage != null}]];
+    let errorMessage = [[${errorMessage != null}]];
+
+    if(successMessage) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Sucesso!',
+            text: '[[${successMessage}]]',
+            confirmButtonColor: '#7d0022'
+        });
+    }
+
+    if(errorMessage) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro!',
+            text: '[[${errorMessage}]]',
+            confirmButtonColor: '#7d0022'
+        });
+    }
+
+</script>
+
 </html>

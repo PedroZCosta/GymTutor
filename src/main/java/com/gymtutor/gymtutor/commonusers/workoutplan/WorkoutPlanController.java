@@ -39,6 +39,7 @@ public class WorkoutPlanController {
         return handleRequest(redirectAttributes, model, null, null, () -> {
             int userId = userDetails.getUser().getUserId();
             var workoutPlanList = workoutPlanService.findAllByUserUserId(userId);
+
             model.addAttribute("workoutPlan", workoutPlanList);
             model.addAttribute("body", "student/workoutplan/list");
             return "/fragments/layout";
