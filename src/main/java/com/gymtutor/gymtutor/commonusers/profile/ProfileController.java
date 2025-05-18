@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/profile")
@@ -64,43 +65,20 @@ public class ProfileController {
                 model.addAttribute("changeNameForm", new ChangeNameDTO());
             }
 
+            if (!model.containsAttribute("userChangePasswordDTO")) {
+                model.addAttribute("userChangePasswordDTO", new UserChangePasswordDTO());
+            }
 
+            if (!model.containsAttribute("userAboutMeDTO")) {
+                UserAboutMeDTO dto = new UserAboutMeDTO();
+                dto.setAboutMe(Optional.ofNullable(user.getAboutMe()).orElse("")); // Preenche com o valor salvo
+                model.addAttribute("userAboutMeDTO", dto);
+            }
 
             model.addAttribute("personalCrefDTO", new PersonalCrefDTO());
             model.addAttribute("states", State.values());
             model.addAttribute("body", "profile/profile");
             return "/fragments/layout";
-        });
-    }
-
-    @GetMapping("/change-password")
-    public String showChangePasswordForm(Model model) {
-        model.addAttribute("userChangePasswordDTO", new UserChangePasswordDTO());
-        model.addAttribute("body", "profile/change-password");
-        return "/fragments/layout";
-    }
-
-    @PostMapping("/change-password")
-    public String changePassword(
-            @Valid @ModelAttribute UserChangePasswordDTO userChangePasswordDTO,
-            BindingResult bindingResult,
-            Model model,
-            RedirectAttributes redirectAttributes,
-            @AuthenticationPrincipal CustomUserDetails loggedUser
-    ) {
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("errorMessage", "Há erros no formulário!");
-            model.addAttribute("org.springframework.validation.BindingResult.userChangePasswordDTO", bindingResult);
-            model.addAttribute("userChangePasswordDTO", userChangePasswordDTO);
-            model.addAttribute("body", "profile/change-password");
-            return "/fragments/layout";
-        }
-
-        return handleRequest(redirectAttributes, model, "profile/profile", null, () -> {
-            User user = loggedUser.getUser();
-            userService.changePassword(user, userChangePasswordDTO.getUserPassword());
-            redirectAttributes.addFlashAttribute("successMessage", "Sua senha foi alterada com sucesso!");
-            return "redirect:/profile";
         });
     }
 
@@ -139,9 +117,8 @@ public class ProfileController {
             personalService.save(personal);
 
 //            userService.changeRole(user, RoleName.PERSONAL);
-
             // Atualiza o papel no CustomUserDetails
-            loggedUser.getUser().setRole(roleRepository.findByRoleName(RoleName.PERSONAL));
+//            loggedUser.getUser().setRole(roleRepository.findByRoleName(RoleName.PERSONAL));
             SecurityUtils.updateAuthenticatedUser(loggedUser);
 
             redirectAttributes.addFlashAttribute("successMessage", "CREF cadastrado com sucesso!");
@@ -171,6 +148,25 @@ public class ProfileController {
             redirectAttributes.addFlashAttribute("errorMessage", "Erro ao carregar a imagem.");
         }
 
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/upload-banner")
+    public String uploadBanner(
+            @RequestParam("image") MultipartFile image,
+            @AuthenticationPrincipal CustomUserDetails loggedUser,
+            RedirectAttributes redirectAttributes
+    ) {
+        User user = loggedUser.getUser();
+        try {
+            Path userDir = Paths.get("uploads/images/users", String.valueOf(user.getUserId()));
+            Files.createDirectories(userDir);
+            Path filePath = userDir.resolve("banner.jpg");
+            Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            redirectAttributes.addFlashAttribute("successMessage", "Banner alterada com sucesso!");
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao carregar a imagem.");
+        }
         return "redirect:/profile";
     }
 
@@ -224,7 +220,6 @@ public class ProfileController {
     public String changeName(
             @Valid @ModelAttribute("changeNameForm") ChangeNameDTO changeNameDTO,
             BindingResult result,
-
             RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal CustomUserDetails loggedUser
     ){
@@ -247,6 +242,47 @@ public class ProfileController {
             return "redirect:/profile";
         }
     }
+
+    @Transactional
+    @PostMapping("/change-password")
+    public String changePassword(
+            @Valid @ModelAttribute("userChangePasswordDTO") UserChangePasswordDTO userChangePasswordDTO,
+            RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails loggedUser
+    ) {
+        if (userChangePasswordDTO.getUserPassword().equals(userChangePasswordDTO.getConfirmPassword4())){
+        User user = userService.findById(loggedUser.getUser().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            userService.changePassword(user, userChangePasswordDTO.getUserPassword());
+            SecurityUtils.updateAuthenticatedUser(loggedUser);
+            redirectAttributes.addFlashAttribute("successMessage", "Sua senha foi alterada com sucesso!");
+            return "redirect:/profile";
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "Senhas incompativeis. Não foi possível alterar sua senha");
+            return "redirect:/profile";
+        }
+    }
+
+    @PostMapping("/about-me")
+    public String aboutMe(
+            @Valid @ModelAttribute("userAboutMeDTO") UserAboutMeDTO userAboutMeDTO,
+            RedirectAttributes redirectAttributes,
+            Model model,
+            @AuthenticationPrincipal CustomUserDetails loggedUser
+                ) {
+            User user = userService.findById(loggedUser.getUser().getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+            userService.changeAboutMe(user, userAboutMeDTO.getAboutMe());
+            // Atualiza o objeto em memória (do usuário logado)
+            loggedUser.getUser().setAboutMe(userAboutMeDTO.getAboutMe());
+            // Atualiza a sessão de autenticação
+            SecurityUtils.updateAuthenticatedUser(loggedUser);
+            redirectAttributes.addFlashAttribute("successMessage", "Seu sobre mim foi alterado com sucesso!");
+            return "redirect:/profile";
+        };
+//        redirectAttributes.addFlashAttribute("errorMessage", "Sobre mim está vazio. Não foi possível alterar seu sobre mim.");
+//        return "redirect:/profile";
+
 
     private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, Object anyModel, RequestHandler block
     ){

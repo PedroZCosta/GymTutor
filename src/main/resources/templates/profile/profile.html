@@ -1,243 +1,664 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meu Perfil</title>
 
-  <body>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <h1>Meu Perfil</h1>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Mensagens de erro e sucesso -->
-    <div th:if="${successMessage}" style="color: green;">
-      <p th:text="${successMessage}"></p>
-    </div>
-    <div th:if="${errorMessage}" style="color: red;">
-      <p th:text="${errorMessage}"></p>
-    </div>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
 
-    <!-- Informações do usuário -->
-    <div style="display: flex; flex-direction: column; align-items: center">
+    .profile-card {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #f1f1f1;
+      border-radius: 25px;
+      padding: 20px 25px 30px;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      position: relative;
+    }
 
-      <img th:src="@{/images/users/{id}/profile.jpg(id=${user.userId})}"
-           alt="Imagem de perfil"
-           onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
-           style="width: 150px; height: 150px; object-fit: cover;" />
+    .banner {
+      background-color: #d9d9d9;
+      height: 100px;
+      border-radius: 25px 25px 0 0;
+      position: relative;
+    }
 
-      <div style="display: flex; flex-direction: column">
-        <button onclick="openPhotoModal()">Alterar Foto</button>
+    .banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 25px 25px 0 0;
+    }
 
-        <h2 th:text="'Nome: ' + ${user.userName}"></h2>
-        <button type="button" onclick="openNameModal()">Alterar Nome</button>
-        <h2 th:text="'Tipo de Conta: ' + ${user.role.roleName.displayName}"></h2>
-        <h3 th:text="'Login: ' + ${user.userEmail}"></h3>
-        <H3 th:text="'CPF: ' + ${user.userCpf}"></H3>
+    .avatar {
+      width: 100px;
+      height: 100px;
+      background-color: #d9d9d9;
+      border-radius: 50%;
+      position: absolute;
+      top: 60px;
+      left: 30px;
+      border: 5px solid #f1f1f1;
+      object-fit: cover;
+      overflow: hidden;
+    }
 
-        <!-- Se o usuário já tem CREF e não for Administrador -->
-        <div th:if="${personal != null}">
-          <h3 th:text="'CREF: ' + ${personal.personalCREF} + '/' + ${personal.state} "></h3>
-          <div th:if="${crefMessage}" style="color: red;">
-            <p th:text="${crefMessage}"></p>
-          </div>
-          <form id="removeCrefForm" th:action="@{/profile/remove-cref}" th:method="post" style="display: inline;">
-            <input type="hidden" name="confirmPassword2" id="confirmPassword2">
-            <button type="button" onclick="confirmRemoveCref()">Remover CREF</button>
-          </form>
-        </div>
+    .btn-wine {
+      background-color: #7d0022;
+      color: white;
+    }
 
-        <!-- Se o usuário ainda NÃO tem CREF -->
-        <div th:if="${personal == null and user.role.roleName.displayName == 'Aluno'}">
-          <button onclick="openCrefModal()">Cadastrar CREF</button>
-        </div>
+    .btn-wine:hover {
+      background-color: #6e0130;
+    }
 
+    .badge-role {
+      background-color: #6a80ff;
+      color: white;
+      font-size: 0.85rem;
+      padding: 0.3em 0.8em;
+      border-radius: 15px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
 
-        <div class="actions-cell">
+    .about-box {
+      background-color: #ddd;
+      border-radius: 10px;
+      height: 200px;
+      margin-top: 10px;
+      padding: 10px;
+      resize: none;
+      width: 100%;
+      font-size: 0.9rem;
+    }
 
-          <form th:action="@{/profile/change-password}" th:method="get" style="display: inline;">
-            <button type="submit">Alterar Senha</button>
-          </form>
+    .cref-warning {
+      background-color: #f8d7da;
+      color: #721c24;
+      font-size: 0.875rem;
+      border-radius: 5px;
+      padding: 8px 12px;
+      margin-top: 15px;
+      text-align: center;
+    }
 
+    .actions-cell {
+      margin-top: 20px;
+    }
 
-          <form id="disableForm" th:action="@{/profile/disable-account}" th:method="post" style="display: inline;">
-            <input type="hidden" name="confirmPassword" id="confirmPassword">
-            <button type="button" onclick="confirmDisable()">Desativar Conta</button>
-          </form>
+    /* Botões pequenos com margem lateral */
+    .btn-sm-wine {
+      background-color: #7d0022;
+      color: white;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.6rem;
+      margin-left: 8px;
+    }
 
-        </div>
-      </div>
+    .btn-sm-wine:hover {
+      background-color: #6e0130;
+    }
 
-    </div>
+    .icon-button {
+      background-color: #dee2e6; /* cinza mais escuro */
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
 
+    .icon-button:hover {
+      background-color: #ced4da; /* tom um pouco mais escuro no hover */
+    }
+  </style>
+</head>
 
-  <!-- Modal para adicionar CREF -->
-  <div id="crefModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
-                           background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
-
-    <h3>Insira seu CREF e Estado</h3>
-    <form th:action="@{/profile/save-cref}" th:object="${personalCrefDTO}" method="post">
-
-      <input type="text" th:field="*{personalCREF}" placeholder="Digite seu CREF"
-             required pattern="^\d{1,6}-[GPC]$" title="O CREF deve conter de 1 a 6 dígitos seguidos de um hífen e uma letra (G, P ou C). Exemplo: 12345-G" />
-      <br><br>
-
-      <div th:if="${#fields.hasErrors('personalCREF')}" style="color: red;">
-        <p th:errors="*{personalCREF}"></p>
-      </div>
-
-      <select th:field="*{state}" required>
-        <option value="" disabled selected>Selecione o Estado</option>
-        <option th:each="state : ${states}" th:value="${state}" th:text="${state}"></option>
-      </select>
-
-      <div th:if="${#fields.hasErrors('state')}" style="color: red;">
-        <p th:errors="*{state}"></p>
-      </div>
-
-      <br><br>
-      <button type="submit">Salvar</button>
-      <button type="button" onclick="closeCrefModal()">Cancelar</button>
-    </form>
+<body>
+<div class="profile-card">
+  <div class="banner">
+    <img th:src="@{/images/users/{id}/banner.jpg(id=${user.userId})}"
+         alt="Imagem do banner do perfil"
+         onerror="this.onerror=null; this.src='/images/users/nobanner.png';" />
   </div>
 
-  <!-- Overlay para escurecer o fundo -->
-  <div id="crefOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
+  <img th:src="@{/images/users/{id}/profile.jpg(id=${user.userId})}"
+       alt="Imagem de perfil"
+       onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
+       class="avatar" />
+
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <button class="btn btn-sm btn-wine" onclick="openPhotoModal()">Alterar foto</button>
+    <button class="btn btn-sm btn-wine" onclick="openBannerModal()">Alterar banner</button>
+  </div>
+
+  <div>
+    <span class="badge-role" th:text="${user.role.roleName.displayName}">Personal trainer</span>
+
+    <div class="d-flex align-items-center">
+      <h4 class="fw-bold mb-0 me-2" th:text="${user.userName.toUpperCase()}"></h4>
+      <button class="btn btn-sm-sm btn-sm-wine" type="button" onclick="openNameModal()">Alterar nome</button>
+      <button class="btn btn-sm-sm btn-sm-wine" type="button" onclick="openPasswordModal()">Alterar senha</button>
+    </div>
+
+    <p class="mb-1" th:text="${user.userEmail}"></p>
+  </div>
+
+  <div th:if="${successMessage}" class="text-success fw-semibold mt-3 d-flex align-items-center gap-2">
+    <i class="bi bi-check-circle-fill"></i>
+    <span th:text="${successMessage}"></span>
+  </div>
+
+  <strong>
+    Sobre
+    <i class="bi bi-pencil icon-button ms-2" onclick="openAboutMeModal()"></i>
+  </strong>
+  <textarea class="about-box" readonly
+            th:text="${#strings.isEmpty(user.aboutMe) ? 'Conte algo sobre você...' : user.aboutMe}"></textarea>
+
+  <!-- Modal About Me -->
+  <div class="modal fade" id="AboutMeModal" tabindex="-1" aria-labelledby="aboutMeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-4">
+        <h5 class="modal-title fw-bold text-start mb-3" id="aboutMeModalLabel">Alterar Sobre-mim</h5>
+        <form th:action="@{/profile/about-me}" th:object="${userAboutMeDTO}" method="post">
+          <div class="mb-3">
+            <label for="aboutMe" class="form-label fw-semibold">Novo Sobre mim</label>
+            <textarea id="aboutMe"
+                      th:field="*{aboutMe}"
+                      class="form-control rounded-3 shadow-sm py-2 px-3"
+                      placeholder="Escreva algo sobre você..."
+                      rows="4"
+                      required></textarea>
+          </div>
+          <small id="aboutMeCounter" class="form-text text-muted">0 / 1200 caracteres</small>
+          <div id="aboutMeError" class="text-danger mt-1" style="display: none;"></div>
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="button" class="btn btn-danger" onclick="closeAboutMeModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div th:if="${personal != null}">
+    <div th:if="${crefMessage == 'CREF Válido'}"
+         class="d-flex align-items-center gap-2 mt-3">
+      <i class="bi bi-check-circle-fill text-success fs-5"></i>
+      <span class="text-success fw-semibold" th:text="${crefMessage}"></span>
+    </div>
+    <div th:if="${crefMessage != 'CREF Válido'}"
+         class="d-flex align-items-center gap-2 mt-3">
+      <i class="bi bi-hourglass-split text-warning fs-5"></i>
+      <span class="text-warning fw-semibold" th:text="${crefMessage}"></span>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 mt-1">
+      <strong>CREF:</strong>
+      <span th:text="${personal.personalCREF} + '/' + ${personal.state}"></span>
+      <form id="removeCrefForm" th:action="@{/profile/remove-cref}" th:method="post" style="display: inline;">
+        <input type="hidden" name="confirmPassword2" id="confirmPassword2" />
+        <button type="button" class="btn btn-sm btn-wine" onclick="confirmRemoveCref()">Remover cref</button>
+      </form>
+    </div>
+  </div>
+
+  <div th:if="${personal == null and user.role.roleName.displayName == 'Aluno'}" class="mt-3">
+    <button class="btn btn-sm btn-wine" onclick="openCrefModal()">Cadastrar CREF</button>
+  </div>
+
+  <div class="actions-cell">
+    <form id="disableForm" th:action="@{/profile/disable-account}" th:method="post" style="display: inline;">
+      <input type="hidden" name="confirmPassword" id="confirmPassword" />
+      <button type="button" class="btn btn-sm btn-wine" onclick="confirmDisable()">Desativar conta</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal CREF -->
+<div id="crefModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
+                           background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+  <h3>Insira seu CREF e Estado</h3>
+  <form th:action="@{/profile/save-cref}" th:object="${personalCrefDTO}" method="post">
+    <input type="text" th:field="*{personalCREF}" placeholder="Digite seu CREF"
+           required pattern="^\d{1,6}-[GPC]$" title="O CREF deve conter de 1 a 6 dígitos seguidos de um hífen e uma letra (G, P ou C). Exemplo: 12345-G" />
+    <br><br>
+    <div th:if="${#fields.hasErrors('personalCREF')}" style="color: red;">
+      <p th:errors="*{personalCREF}"></p>
+    </div>
+    <select th:field="*{state}" required>
+      <option value="" disabled selected>Selecione o Estado</option>
+      <option th:each="state : ${states}" th:value="${state}" th:text="${state}"></option>
+    </select>
+    <div th:if="${#fields.hasErrors('state')}" style="color: red;">
+      <p th:errors="*{state}"></p>
+    </div>
+    <br><br>
+    <button type="submit" class="btn btn-wine btn-sm">Salvar</button>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="closeCrefModal()">Cancelar</button>
+  </form>
+</div>
+
+<!-- Overlay CREF -->
+<div id="crefOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
                              height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closeCrefModal()"></div>
 
-
-    <!-- Script do Modal para adicionar Cref -->
-  <script>
-    function openCrefModal() {
-      document.getElementById("crefModal").style.display = "block";
-      document.getElementById("crefOverlay").style.display = "block";
-    }
-
-    function closeCrefModal() {
-      document.getElementById("crefModal").style.display = "none";
-      document.getElementById("crefOverlay").style.display = "none";
-    }
-  </script>
-
-
-    <!-- Modal de Upload de Foto -->
-    <div id="photoModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
-                           background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
-      <h3>Alterar Foto de Perfil</h3>
+<!-- Modal Foto -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4">
+      <h5 class="modal-title fw-bold text-start mb-3" id="photoModalLabel">Alterar Foto</h5>
       <form th:action="@{/profile/upload-photo}" method="post" enctype="multipart/form-data">
         <img id="imagePreview"
              th:src="@{/images/users/{id}/profile.jpg(id=${user.userId})}"
              alt="Pré-visualização da imagem"
-             style="max-width: 150px; max-height: 150px; object-fit: cover; display: block; margin-bottom: 10px;"
+             class="img-fluid mb-3 rounded"
+             style="width: 100%; height: 200px; object-fit: cover;"
              onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';" />
-        <input type="file" name="image" accept="image/*" required onchange="previewImage(event)" />
-        <br><br>
-        <button type="submit">Enviar</button>
-        <button type="button" onclick="closePhotoModal()">Cancelar</button>
+        <div class="mb-3">
+          <input class="form-control" type="file" name="image" accept="image/*" required onchange="previewImage(event)" />
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Enviar</button>
+          <button type="button" class="btn btn-danger" onclick="closePhotoModal()">Cancelar</button>
+        </div>
       </form>
     </div>
+  </div>
+</div>
 
-    <!-- Overlay -->
-    <div id="photoOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
+<!-- Modal Banner -->
+<div class="modal fade" id="bannerModal" tabindex="-1" aria-labelledby="bannerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4">
+      <h5 class="modal-title fw-bold text-start mb-3" id="bannerModalLabel">Alterar Foto</h5>
+      <form th:action="@{/profile/upload-banner}" method="post" enctype="multipart/form-data">
+        <img id="bannerPreview"
+             th:src="@{/images/users/{id}/banner.jpg(id=${user.userId})}"
+             alt="Pré-visualização do banner"
+             class="img-fluid mb-3 rounded"
+             style="width: 100%; height: 200px; object-fit: cover;"
+             onerror="this.onerror=null; this.src='/images/users/nobanner.png';" />
+        <div class="mb-3">
+          <input class="form-control" type="file" name="image" accept="image/*" required onchange="previewBanner(event)" />
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Enviar</button>
+          <button type="button" class="btn btn-danger" onclick="closeBannerModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay Foto/Banner -->
+<div id="photoOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
                              height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closePhotoModal()"></div>
+<div id="bannerOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
+                               height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closeBannerModal()"></div>
 
-    <script>
-      function openPhotoModal() {
-        document.getElementById("photoModal").style.display = "block";
-        document.getElementById("photoOverlay").style.display = "block";
-      }
-
-      function closePhotoModal() {
-        document.getElementById("photoModal").style.display = "none";
-        document.getElementById("photoOverlay").style.display = "none";
-      }
-
-      function previewImage(event) {
-        var file = event.target.files[0];
-        var reader = new FileReader();
-
-        reader.onload = function(e) {
-          var preview = document.getElementById('imagePreview');
-          preview.src = e.target.result;
-          preview.style.display = 'block';
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-          alert("O tamanho da imagem não pode exceder 5MB.");
-          document.getElementById('imagePreview').style.display = 'none';
-          event.target.value = ""; // limpa o input de arquivo
-        } else {
-          reader.readAsDataURL(file);
-        }
-      }
-    </script>
-
-
-    <!-- Modal para trocar o nome -->
-    <div id="nameModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
-                     background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
-      <h3>Alterar Nome</h3>
+<!-- Modal Nome -->
+<div class="modal fade" id="nameModal" tabindex="-1" aria-labelledby="nameModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4">
+      <h5 class="modal-title fw-bold text-start mb-3" id="nameModalLabel">Alterar Nome</h5>
       <form th:action="@{/profile/change-name}" th:object="${changeNameForm}" method="post">
-        <input type="text" th:field="*{newName}" placeholder="Novo nome" required />
-        <input type="password" th:field="*{confirmPassword3}" placeholder="Senha atual" required />
-        <br><br>
-        <button type="submit">Salvar</button>
-        <button type="button" onclick="closeNameModal()">Cancelar</button>
+        <div class="mb-3">
+          <label for="newName" class="form-label">Novo Nome</label>
+          <input type="text" id="newName" th:field="*{newName}" class="form-control rounded-pill shadow-sm" placeholder="" required />
+        </div>
+        <div class="mb-3">
+          <label for="confirmPassword3" class="form-label">Senha Atual</label>
+          <input type="password" id="confirmPassword3" th:field="*{confirmPassword3}" class="form-control rounded-pill shadow-sm" placeholder="" required />
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        </div>
       </form>
     </div>
+  </div>
+</div>
 
-    <!-- Overlay -->
-    <div id="nameOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
+<!-- Overlay Nome -->
+<div id="nameOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
                          height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closeNameModal()"></div>
 
-    <script>
-      function openNameModal() {
-        document.getElementById("nameModal").style.display = "block";
-        document.getElementById("nameOverlay").style.display = "block";
+<!-- Modal Senha -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4">
+      <h5 class="modal-title fw-bold text-start mb-3" id="passwordModalLabel">Alterar Senha</h5>
+      <form id="changePasswordForm" th:action="@{/profile/change-password}" th:method="post" th:object="${userChangePasswordDTO}">
+        <div class="mb-3">
+          <label for="userPassword" class="form-label">Nova Senha</label>
+          <input type="password" id="userPassword" th:field="*{userPassword}"
+                 class="form-control rounded-pill shadow-sm" minlength="5" required />
+        </div>
+        <div class="mb-3">
+          <label for="confirmPassword4" class="form-label">Confirme a Senha</label>
+          <input type="password" id="confirmPassword4" th:field="*{confirmPassword4}"
+                 class="form-control rounded-pill shadow-sm" minlength="5" required />
+          <div id="confirmPasswordError" class="validation-error text-danger mt-1"></div>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Alterar Senha</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay Senha -->
+<div id="passwordOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%;
+                         height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;" onclick="closePasswordModal()"></div>
+
+<!-- Scripts -->
+<script>
+  // Funções para abrir/fechar modais
+  function openAboutMeModal() {
+    const modal = new bootstrap.Modal(document.getElementById('AboutMeModal'));
+    modal.show();
+  }
+
+  function closeAboutMeModal() {
+    const modalEl = document.getElementById('AboutMeModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+      modal.hide();
+    }
+  }
+
+  function openCrefModal() {
+    document.getElementById("crefModal").style.display = "block";
+    document.getElementById("crefOverlay").style.display = "block";
+  }
+
+  function closeCrefModal() {
+    document.getElementById("crefModal").style.display = "none";
+    document.getElementById("crefOverlay").style.display = "none";
+  }
+
+  function openPhotoModal() {
+    const modal = new bootstrap.Modal(document.getElementById('photoModal'));
+    modal.show();
+  }
+
+  function closePhotoModal() {
+    const modalEl = document.getElementById('photoModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+      modal.hide();
+    }
+  }
+
+  function openBannerModal() {
+    const modal = new bootstrap.Modal(document.getElementById('bannerModal'));
+    modal.show();
+  }
+
+  function closeBannerModal() {
+    const modalEl = document.getElementById('bannerModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+      modal.hide();
+    }
+  }
+
+  function openNameModal() {
+    const modal = new bootstrap.Modal(document.getElementById('nameModal'));
+    modal.show();
+  }
+
+  function closeNameModal() {
+    const modalEl = document.getElementById('nameModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+      modal.hide();
+    }
+  }
+
+  function openPasswordModal() {
+    const modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+    modal.show();
+  }
+
+  function closePasswordModal() {
+    const modalEl = document.getElementById('passwordModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+      modal.hide();
+    }
+  }
+
+  // Preview de imagens
+  function previewImage(event) {
+    var file = event.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      var preview = document.getElementById('imagePreview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    }
+
+    if (file.size > 9 * 1024 * 1024) {
+      alert("O tamanho da imagem não pode exceder 5MB.");
+      document.getElementById('imagePreview').style.display = 'none';
+      event.target.value = ""; // limpa o input de arquivo
+    } else {
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function previewBanner(event) {
+    const file = event.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      var preview = document.getElementById('bannerPreview');
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    }
+
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+      alert("O tamanho do banner não pode exceder 10MB.");
+      preview.style.display = 'none';
+      event.target.value = ""; // limpa o input
+      return;
+    } else {
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Validação de senha
+  document.addEventListener("DOMContentLoaded", function () {
+    const password = document.getElementById("userPassword");
+    const confirmPassword = document.getElementById("confirmPassword4");
+    const passwordError = document.getElementById("confirmPasswordError");
+    const form = document.getElementById("changePasswordForm");
+
+    function validateMatch(field1, field2, errorDiv, message) {
+      if (field2.value === "") {
+        field2.classList.remove("is-valid", "is-invalid");
+        errorDiv.textContent = "";
+        return;
       }
 
-      function closeNameModal() {
-        document.getElementById("nameModal").style.display = "none";
-        document.getElementById("nameOverlay").style.display = "none";
-      }
-    </script>
-
-
-  <!-- Script da desativação de conta -->
-  <script>
-    function confirmDisable() {
-      const senha = prompt("Por favor, digite sua senha para confirmar:");
-
-      if (senha !== null && senha.trim() !== "") {
-        document.getElementById("confirmPassword").value = senha;
-        if (confirm("Você tem certeza de que deseja desativar sua conta?")) {
-          document.getElementById("disableForm").submit();
-        }
+      if (field1.value === field2.value) {
+        field2.classList.add("is-valid");
+        field2.classList.remove("is-invalid");
+        errorDiv.textContent = "";
       } else {
-        alert("A senha é obrigatória para desativar a conta.");
+        field2.classList.add("is-invalid");
+        field2.classList.remove("is-valid");
+        errorDiv.textContent = message;
       }
     }
-  </script>
 
-  <!-- Script da remoção do CREF -->
-  <script>
-    function confirmRemoveCref() {
-      const senha = prompt("Por favor, digite sua senha para confirmar:");
+    confirmPassword.addEventListener("input", () => {
+      validateMatch(password, confirmPassword, passwordError, "As senhas não coincidem.");
+    });
 
-      if (senha !== null && senha.trim() !== "") {
-        document.getElementById("confirmPassword2").value = senha;
-        if (confirm("Você tem certeza de que deseja remover seu CREF? você pode cadastra-lo novamente depois, " +
-                "mas sem CREF sua conta voltará a ser de Aluno")) {
-          document.getElementById("removeCrefForm").submit();
-        }
-      } else {
-        alert("A senha é obrigatória para remover seu CREF.");
+    form.addEventListener("submit", function (e) {
+      let valid = true;
+
+      if (password.value !== confirmPassword.value) {
+        validateMatch(password, confirmPassword, passwordError, "As senhas não coincidem.");
+        valid = false;
       }
-    }
-  </script>
 
-  <script th:inline="javascript">
-    /*<![CDATA[*/
-    var shouldOpenCrefModal = [[${openCrefModal}]];
-    if (shouldOpenCrefModal) {
-      openCrefModal();
-    }
-    /*]]>*/
-  </script>
+      if (!valid) {
+        e.preventDefault();
+      }
+    });
+  });
 
+  // Contador de caracteres para About Me
+  const aboutMeField = document.getElementById('aboutMe');
+  const aboutMeCounter = document.getElementById('aboutMeCounter');
+  const aboutMeError = document.getElementById('aboutMeError');
+  const form = document.querySelector('form');
+
+  const maxChars = 1200;
+  const minChars = 10;
+
+  function updateCounter() {
+    const length = aboutMeField.value.length;
+    aboutMeCounter.textContent = `${length} / ${maxChars} caracteres`;
+
+    if (length > maxChars) {
+      aboutMeError.textContent = `O texto excedeu o limite de ${maxChars} caracteres.`;
+      aboutMeError.style.display = 'block';
+    } else {
+      aboutMeError.style.display = 'none';
+    }
+  }
+
+  aboutMeField.addEventListener('input', updateCounter);
+  updateCounter(); // <-- chama logo ao carregar a página
+
+  form.addEventListener('submit', function (e) {
+    const length = aboutMeField.value.trim().length;
+
+    if (length < minChars || length > maxChars) {
+      e.preventDefault();
+      aboutMeError.textContent = `O campo deve ter entre ${minChars} e ${maxChars} caracteres.`;
+      aboutMeError.style.display = 'block';
+    }
+  });
+
+  // SweetAlert para confirmações
+  async function confirmRemoveCref() {
+    const { value: senha } = await Swal.fire({
+      title: "Confirmação necessária",
+      input: "password",
+      inputLabel: "Por favor, digite sua senha para confirmar:",
+      inputPlaceholder: "Digite sua senha",
+      inputAttributes: {
+        maxlength: "50",
+        autocapitalize: "off",
+        autocorrect: "off"
+      },
+      showCancelButton: true,
+      confirmButtonText: "Continuar",
+      cancelButtonText: "Cancelar"
+    });
+
+    if (!senha || senha.trim() === "") {
+      await Swal.fire({
+        icon: "warning",
+        title: "Atenção",
+        text: "A senha é obrigatória para remover seu CREF."
+      });
+      return;
+    }
+
+    const confirmacao = await Swal.fire({
+      title: "Tem certeza?",
+      text: "Você realmente deseja remover seu CREF? Você poderá cadastrá-lo novamente depois, mas sua conta voltará a ser de Aluno.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, remover",
+      cancelButtonText: "Cancelar"
+    });
+
+    if (confirmacao.isConfirmed) {
+      document.getElementById("confirmPassword2").value = senha;
+      document.getElementById("removeCrefForm").submit();
+    }
+  }
+
+  async function confirmDisable() {
+    const { value: senha } = await Swal.fire({
+      title: "Confirmação necessária",
+      input: "password",
+      inputLabel: "Por favor, digite sua senha para confirmar:",
+      inputPlaceholder: "Digite sua senha",
+      inputAttributes: {
+        maxlength: "50", // ou o que quiser
+        autocapitalize: "off",
+        autocorrect: "off"
+      },
+      showCancelButton: true,
+      confirmButtonText: "Continuar",
+      cancelButtonText: "Cancelar"
+    });
+
+    if (!senha || senha.trim() === "") {
+      Swal.fire({
+        icon: "warning",
+        title: "Atenção",
+        text: "A senha é obrigatória para desativar a conta."
+      });
+      return;
+    }
+
+    const confirmacao = await Swal.fire({
+      title: "Tem certeza?",
+      text: "Você realmente deseja desativar sua conta?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, desativar",
+      cancelButtonText: "Cancelar"
+    });
+
+    if (confirmacao.isConfirmed) {
+      document.getElementById("confirmPassword").value = senha;
+      document.getElementById("disableForm").submit();
+    }
+  }
+</script>
+
+<!-- Script para abrir modal CREF se necessário -->
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  var shouldOpenCrefModal = [[${openCrefModal}]];
+  if (shouldOpenCrefModal) {
+    openCrefModal();
+  }
+  /*]]>*/
+</script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
 </html>

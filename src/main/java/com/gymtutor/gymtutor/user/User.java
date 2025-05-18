@@ -41,6 +41,9 @@ public class User {
     @Size(min = 5, message = "A senha deve ter pelo menos 5 caracteres.")
     private String userPassword;
 
+    @Size(min = 10, max=1200 , message = "Este campo deve ter entre 10 e 1200 caracteres.")
+    private String aboutMe;
+
     // CPF
     @Column(name = "cpf", unique = true)
     private String userCpf;
@@ -86,6 +89,14 @@ public class User {
     }
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
     }
 
     public String getUserCpf() {

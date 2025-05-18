@@ -114,4 +114,9 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void changeAboutMe(User user, String newAboutMe) {
+        user.setAboutMe(newAboutMe);
+        userRepository.save(user);
+    }
+
 }
