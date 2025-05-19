@@ -131,8 +131,7 @@
       <tr th:each="user : ${connections}">
         <td>
           <img th:src="@{/images/users/{userId}/profile.jpg(id=${user.userId})}" alt="Imagem de perfil"
-               onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
-               class="profile-img" />
+               onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';" class="profile-img" />
         </td>
         <td th:text="${user.userName}"></td>
         <td>
