@@ -10,7 +10,8 @@
 <div class="container my-5 border rounded-4 p-4" style="background-color: #f4f4f4;">
 
     <!-- Botão Nova Ficha -->
-    <div class="d-flex justify-content-end mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" >Minhas Fichas</h2>
         <a href="/student/workoutplan/new" class="btn text-white" style="background-color: #7d0022;">Nova Ficha</a>
     </div>
 
@@ -78,24 +79,25 @@
             </ul>
 
             <!-- Botões -->
-            <div class="d-flex gap-2">
-                <form th:action="@{/student/workoutplan/{id}/edit(id=${plan.workoutPlanId})}" th:method="get">
-                    <button type="submit" class="btn" style="background-color: #5A70FF;">Editar</button>
+            <div class="d-flex flex-wrap flex-md-nowrap gap-2">
+                <form th:action="@{/student/workoutplan/{id}/edit(id=${plan.workoutPlanId})}" th:method="get" class="flex-fill">
+                    <button type="submit" class="btn w-100 text-white" style="background-color: #5A70FF;">Editar</button>
                 </form>
 
-                <form th:action="@{/student/workoutplan/delete/{id}(id=${plan.workoutPlanId})}" th:method="post">
-                    <button type="submit" class="btn" style="background-color: #FF4949;">Excluir</button>
+                <form th:action="@{/student/workoutplan/delete/{id}(id=${plan.workoutPlanId})}" th:method="post" class="flex-fill">
+                    <button type="submit" class="btn w-100 text-white" style="background-color: #FF4949;">Excluir</button>
                 </form>
 
                 <form th:action="@{/student/workoutplan/{workoutPlanId}/linkusers(workoutPlanId=${plan.workoutPlanId})}" th:method="get"
-                      th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
-                    <button type="submit" class="btn btn-secondary">Vincular Usuários</button>
+                      th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}" class="flex-fill">
+                    <button type="submit" class="btn btn-secondary w-100">Vincular Usuários</button>
                 </form>
 
-                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${plan.workoutPlanId})}" th:method="get">
-                    <button type="submit" class="btn btn-secondary">Vincular Treinos</button>
+                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${plan.workoutPlanId})}" th:method="get" class="flex-fill">
+                    <button type="submit" class="btn btn-secondary w-100">Vincular Treinos</button>
                 </form>
             </div>
+
 
         </div>
     </div>
