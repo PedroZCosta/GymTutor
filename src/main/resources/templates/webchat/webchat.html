@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.0/lib/stomp.min.js"></script>
+</head>
+<body>
+<div style="display: flex;">
+    <!-- Lista de contatos -->
+    <div id="contacts" style="width: 200px; border-right: 1px solid #ccc; padding: 10px;">
+        <h3>Contatos</h3>
+        <div th:each="user : ${otherUsers}">
+            <button th:text="${user.userName}"
+                    th:attr="onclick=|loadConversation(${user.userId})|">Contato</button>
+        </div>
+    </div>
+
+    <!-- Área de chat -->
+    <div style="flex: 1; padding: 10px;">
+        <div>
+            <strong>Usuário logado:</strong>
+            <span th:text="${currentUser.userName}"></span> (<span th:text="${currentUser.userEmail}"></span>)
+        </div>
+        <div style="margin-top: 10px;">
+            <strong>Conversando com:</strong> <span id="chatWith">Selecione um contato</span>
+        </div>
+        <hr />
+        <div id="messageModels" style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;"></div>
+        <div style="margin-top: 10px;">
+            <input type="text" id="messageModel" placeholder="Digite sua mensagem..." style="width: 80%;" />
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    let stompClient = null;
+    let selectedUserId = null;
+
+    // Objeto completo do usuário logado (usado em sender)
+    let currentUser = {
+        id: [[${currentUser.userId}]],
+        name: '[[${currentUser.userName}]]',
+        email: '[[${currentUser.userEmail}]]'
+    };
+
+    function connect() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        // (Opcional) Debug no console
+        stompClient.debug = null;
+
+        stompClient.connect({}, function (frame) {
+            console.log("Conectado como:", currentUser.name);
+
+            // O Spring trata automaticamente o canal "/user/queue/messages"
+            stompClient.subscribe('/user/queue/messages', function (messageOutput) {
+                const messageModel = JSON.parse(messageOutput.body);
+
+                // Verifica se a mensagem pertence à conversa atual
+                if (messageModel.sender.userId === selectedUserId || messageModel.receiver.userId === selectedUserId) {
+                    showMessage(messageModel);
+                } else {
+                    // Se quiser, pode tratar mensagens de outras conversas (notificações, por exemplo)
+                    console.log("Mensagem de outra conversa recebida");
+                }
+            });
+        });
+    }
+
+    function loadConversation(userId) {
+        selectedUserId = userId;
+        document.getElementById("messageModels").innerHTML = "";
+
+        // Atualiza nome do destinatário
+        const button = [...document.querySelectorAll("#contacts button")]
+            .find(b => b.getAttribute("onclick").includes(userId));
+        document.getElementById("chatWith").textContent = button?.textContent || "Contato desconhecido";
+
+        fetch(`/api/conversations/${userId}`)
+            .then(res => res.json())
+            .then(messageModels => messageModels.forEach(showMessage));
+    }
+
+    function sendMessage() {
+        const contentInput = document.getElementById("messageModel");
+        const content = contentInput.value.trim();
+        if (!content) return;
+        if (!selectedUserId) return alert("Selecione um usuário para conversar.");
+
+        // Envia a mensagem para o servidor
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
+            sender: {
+                userId: currentUser.id,
+                userName: currentUser.name,
+                userEmail: currentUser.email
+            },
+            receiver: { userId: selectedUserId },
+            content: content
+        }));
+
+        contentInput.value = "";
+    }
+
+    function showMessage(messageModel) {
+        const div = document.getElementById("messageModels");
+        const p = document.createElement("p");
+
+        const isMine = messageModel.sender.userId === currentUser.id;
+
+        p.style.textAlign = isMine ? "right" : "left";
+        p.style.margin = "5px 0";
+        p.style.padding = "5px 10px";
+        p.style.borderRadius = "10px";
+        p.style.display = "inline-block";
+        p.style.backgroundColor = isMine ? "#dcf8c6" : "#fff";
+        p.style.border = "1px solid #ccc";
+
+        p.textContent = messageModel.content;
+        div.appendChild(p);
+        div.appendChild(document.createElement("br"));
+        div.scrollTop = div.scrollHeight;
+    }
+    window.onload = connect;
+</script>
+</body>
+</html>

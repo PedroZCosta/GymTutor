@@ -27,9 +27,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/ws/**")   // nova rota do WS
+                )
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/registration", "/password-recovery", "/login").permitAll() // Páginas públicas
-                        .requestMatchers("/images/activities/**").permitAll()
+                        .requestMatchers("/chat/**", "/ws/**").authenticated()
+                        .requestMatchers("/images/activities/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN")
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // Permitir acesso a arquivos estáticos
                         .requestMatchers("/profile/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN")
                         .requestMatchers("/student/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN") // STUDENT e PERSONAL podem acessar /student
