@@ -1,44 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Vídeo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <body>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-white">
 
-        <h1>Editar Vídeo</h1>
-        <!-- Link de Voltar -->
-        <a th:href="@{/admin/activities/{id}/videos(id=${activitiesId})}">Voltar</a><br>
+<!-- Formulário centralizado -->
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="p-5 shadow rounded-4" style="background-color: #f4f4f4; width: 100%; max-width: 600px;">
 
-        <!-- Mensagens de erro e sucesso -->
-        <div th:if="${successMessage}" style="color: green;">
-            <p th:text="${successMessage}"></p>
+        <h4 class="text-center mb-4">Editar Vídeo</h4>
+
+        <!-- Link de voltar -->
+        <div class="mb-3 text-start">
+            <a th:href="@{/admin/activities/{id}/videos(id=${activitiesId})}" class="text-decoration-none" style="color: #7d0022;">&larr; Voltar</a>
         </div>
-        <div th:if="${errorMessage}" style="color: red;">
-            <p th:text="${errorMessage}"></p>
-        </div>
 
-        <!-- Formulário de edição -->
+        <!-- Mensagens -->
+        <div th:if="${successMessage}" class="text-success mb-2" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="text-danger mb-2" th:text="${errorMessage}"></div>
+
+        <!-- Formulário -->
         <form th:action="@{/admin/activities/{activitiesId}/videos/{videoId}/edit(videoId=${videoId}, activitiesId=${activitiesId})}" th:method="post" th:object="${activitiesVideosModel}">
 
-            <!-- Campo para nome do setor -->
-            <label for="videoName">Nome do video:</label>
-            <input type="text" id="videoName" name="videoName" th:value="*{videoName}" required />
-
-            <!-- Exibe erro se houver -->
-            <div th:if="${#fields.hasErrors('videoName')}" style="color: red;">
-                <p th:each="err : ${#fields.errors('videoName')}" th:text="${err}"></p>
+            <div class="mb-3">
+                <label for="videoName" class="form-label">Nome do Vídeo</label>
+                <input type="text" class="form-control rounded-pill shadow-sm" id="videoName" name="videoName" th:field="*{videoName}" required>
+                <div th:if="${#fields.hasErrors('videoName')}" class="text-danger form-text">
+                    <p th:each="err : ${#fields.errors('videoName')}" th:text="${err}"></p>
+                </div>
             </div>
 
-            <label for="videoLink">Link</label>
-            <input type="url" id="videoLink" name="videoLink" th:value="*{videoLink}" required />
-
-            <!-- Exibe erro se houver -->
-            <div th:if="${#fields.hasErrors('videoLink')}" style="color: red;">
-                <p th:each="err : ${#fields.errors('videoLink')}" th:text="${err}"></p>
+            <div class="mb-4">
+                <label for="videoLink" class="form-label">Link do Vídeo</label>
+                <input type="url" class="form-control rounded-pill shadow-sm" id="videoLink" name="videoLink" th:field="*{videoLink}" required>
+                <div th:if="${#fields.hasErrors('videoLink')}" class="text-danger form-text">
+                    <p th:each="err : ${#fields.errors('videoLink')}" th:text="${err}"></p>
+                </div>
             </div>
 
-            <button type="submit">Atualizar</button>
-
+            <div class="d-grid">
+                <button type="submit" class="btn rounded-pill text-white" style="background-color: #7d0022;">Atualizar Vídeo</button>
+            </div>
         </form>
+    </div>
+</div>
 
-    </body>
-
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
