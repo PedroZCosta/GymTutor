@@ -11,19 +11,13 @@
 
     <!-- Botão Nova Ficha -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold" >Minhas Fichas</h2>
+        <h2 class="fw-bold">Minhas Fichas</h2>
         <a href="/student/workoutplan/new" class="btn text-white" style="background-color: #7d0022;">Nova Ficha</a>
     </div>
 
-    <!-- Mensagens -->
-    <!--<div th:if="${successMessage}" class="text-success mb-2" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="text-danger mb-2" th:text="${errorMessage}"></div>
-    -->
-    <!-- Fichas -->
+    <!-- Fichas criadas pelo usuário -->
     <div class="d-flex flex-column gap-3">
         <div class="p-4 rounded-4 text-white" th:each="plan : ${workoutPlan}" style="background-color: #7d0022;">
-
-            <!-- Nome e Descrição -->
             <h5 th:text="${plan.workoutPlanName}">Nome da Ficha</h5>
             <p th:text="${plan.workoutPlanDescription}">Descrição da ficha</p>
 
@@ -32,7 +26,6 @@
                     <span class="fw-bold" th:text="${workout.workout.workoutName}">Treino X</span>
                     <ul>
                         <li class="mb-1" th:each="activity : ${workout.workout.workoutActivities}">
-                            <!-- Botão para abrir o modal -->
                             <button class="btn btn-link text-white text-start p-0"
                                     type="button"
                                     data-bs-toggle="modal"
@@ -40,39 +33,37 @@
                                     th:text="${activity.sequence} + ' - ' + ${activity.activity.activityName} + ' - Repetições: ' + ${activity.reps}">
                             </button>
 
-                            <!-- Modal -->
+                            <!-- Modal da Atividade -->
                             <div class="modal fade"
                                  th:id="'modal-activity-' + ${activity.activity.activitiesId}"
                                  tabindex="-1"
                                  aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" >
-                                    <div class="modal-content "style="background-color: #7d0022">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content" style="background-color: #7d0022">
                                         <div class="modal-header d-flex justify-content-between">
-                                            <h5 class="modal-title"
-                                                     th:text="${activity.activity.activityName}  ">Nome da Atividade</h5>
-
+                                            <h5 class="modal-title" th:text="${activity.activity.activityName}">Nome da Atividade</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                         </div>
-                                        <div class="modal-body text-center ">
-                                            <div class="d-flex flex-column gap-3 ">
+                                        <div class="modal-body text-center">
+                                            <div class="d-flex flex-column gap-3">
                                                 <div class="p-4 rounded-4 text-white d-flex flex-wrap gap-3 justify-content-center" style="background-color: #7d0022;">
                                                     <div th:each="image : ${activity.activity.images}" class="text-center">
                                                         <img th:src="${image.imagePath}" alt="Imagem" style="width: 120px; height:120px; border-radius: 8px;" />
                                                     </div>
-                                                    <div th:each="video : ${activity.activity.videos}" class="text-center d-flex" >
+                                                    <div th:each="video : ${activity.activity.videos}" class="text-center d-flex">
                                                         <p th:text="${video.videoName}"></p>
                                                         <iframe th:if="${video.videoLink != null and video.videoLink.contains('v=')}"
                                                                 th:src="'https://www.youtube.com/embed/' + ${#strings.substring(video.videoLink, video.videoLink.indexOf('v=') + 2)}"
                                                                 width="200" height="113" frameborder="0"
-                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                allowfullscreen>
-                                                        </iframe>
+                                                                allowfullscreen></iframe>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                            <!-- Fim do Modal -->
+                                </div>
+                            </div>
+                            <!-- Fim Modal -->
                         </li>
                     </ul>
                 </li>
@@ -80,28 +71,47 @@
 
             <!-- Botões -->
             <div class="d-flex flex-wrap flex-md-nowrap gap-2">
-                <form th:action="@{/student/workoutplan/{id}/edit(id=${plan.workoutPlanId})}" th:method="get" class="flex-fill">
+                <form th:action="@{/student/workoutplan/{id}/edit(id=${plan.workoutPlanId})}" method="get" class="flex-fill">
                     <button type="submit" class="btn w-100 text-white" style="background-color: #5A70FF;">Editar</button>
                 </form>
-
-                <form th:action="@{/student/workoutplan/delete/{id}(id=${plan.workoutPlanId})}" th:method="post" class="flex-fill">
+                <form th:action="@{/student/workoutplan/delete/{id}(id=${plan.workoutPlanId})}" method="post" class="flex-fill">
                     <button type="submit" class="btn w-100 text-white" style="background-color: #FF4949;">Excluir</button>
                 </form>
-
-                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkusers(workoutPlanId=${plan.workoutPlanId})}" th:method="get"
-                      th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}" class="flex-fill">
+                <form th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}"
+                      th:action="@{/student/workoutplan/{workoutPlanId}/linkusers(workoutPlanId=${plan.workoutPlanId})}" method="get" class="flex-fill">
                     <button type="submit" class="btn btn-secondary w-100">Vincular Usuários</button>
                 </form>
-
-                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${plan.workoutPlanId})}" th:method="get" class="flex-fill">
+                <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${plan.workoutPlanId})}" method="get" class="flex-fill">
                     <button type="submit" class="btn btn-secondary w-100">Vincular Treinos</button>
                 </form>
             </div>
-
-
         </div>
     </div>
 
+    <!-- Fichas em que estou vinculado -->
+    <h4 class="mt-5 text-dark fw-bold">Fichas em que estou vinculado</h4>
+    <div class="d-flex flex-column gap-3">
+        <div class="p-4 rounded-4 text-white" th:each="plan : ${userWorkoutPlans}" style="background-color: #7d0022;">
+            <h5 th:text="${plan.workoutPlanName}">Nome da Ficha</h5>
+            <p th:text="${plan.workoutPlanDescription}">Descrição da ficha</p>
+
+            <ul class="mb-3">
+                <li th:each="workout : ${plan.workoutPerWorkoutPlans}">
+                    <span class="fw-bold" th:text="${workout.workout.workoutName}">Treino X</span>
+                    <ul>
+                        <li class="mb-1" th:each="activity : ${workout.workout.workoutActivities}">
+                            <button class="btn btn-link text-white text-start p-0"
+                                    type="button"
+                                    data-bs-toggle="modal"
+                                    th:attr="data-bs-target='#modal-activity-' + ${activity.activity.activitiesId}"
+                                    th:text="${activity.sequence} + ' - ' + ${activity.activity.activityName} + ' - Repetições: ' + ${activity.reps}">
+                            </button>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

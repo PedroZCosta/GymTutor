@@ -77,7 +77,8 @@ public class WorkoutPlanPerUserService {
 
     }
 
-
-
+    public List<WorkoutPlanModel> findWorkoutPlansByUserId(int userId) {
+        return workoutPlanPerUserRepository.findWorkoutPlansByUserId(userId);
+    }
 
 }

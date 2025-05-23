@@ -1,7 +1,9 @@
 package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 
-import com.gymtutor.gymtutor.user.User;
+import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +17,8 @@ public interface WorkoutPlanPerUserRepository extends JpaRepository<WorkoutPlanP
     List<WorkoutPlanPerUserModel> findByWorkoutPlanWorkoutPlanId(int workoutPlanId);
 
     Optional<WorkoutPlanPerUserModel> findByWorkoutPlanPerUserId(WorkoutPlanPerUserId id);
+
+    @Query("SELECT wpum.workoutPlan FROM WorkoutPlanPerUserModel wpum WHERE wpum.user.userId = :userId")
+    List<WorkoutPlanModel> findWorkoutPlansByUserId(@Param("userId") int userId);
 
 }

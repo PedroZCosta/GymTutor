@@ -3,6 +3,7 @@ package com.gymtutor.gymtutor.commonusers.workoutplan;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
+import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.security.CustomUserDetailsService;
 import jakarta.validation.Valid;
@@ -28,6 +29,8 @@ public class WorkoutPlanController {
     @Autowired
     private WorkoutPlanService workoutPlanService;
 
+    @Autowired
+    private WorkoutPlanPerUserService workoutPlanPerUserService;
 
 
     @GetMapping
@@ -39,7 +42,12 @@ public class WorkoutPlanController {
         return handleRequest(redirectAttributes, model, null, null, () -> {
             int userId = userDetails.getUser().getUserId();
             var workoutPlanList = workoutPlanService.findAllByUserUserId(userId);
+
+            // Busca as fichas de treino do usuário logado
+            List<WorkoutPlanModel> userWorkoutPlans = workoutPlanPerUserService.findWorkoutPlansByUserId(userId);
+
             model.addAttribute("workoutPlan", workoutPlanList);
+            model.addAttribute("userWorkoutPlans", userWorkoutPlans);
             model.addAttribute("body", "student/workoutplan/list");
             return "/fragments/layout";
         });
