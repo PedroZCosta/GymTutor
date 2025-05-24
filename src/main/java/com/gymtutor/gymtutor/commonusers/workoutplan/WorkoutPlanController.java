@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -30,7 +32,7 @@ public class WorkoutPlanController {
     private WorkoutPlanService workoutPlanService;
 
     @Autowired
-    private WorkoutPlanPerUserService workoutPlanPerUserService;
+    private WorkoutPlanRepository workoutPlanRepository;
 
 
     @GetMapping
@@ -41,13 +43,16 @@ public class WorkoutPlanController {
 
         return handleRequest(redirectAttributes, model, null, null, () -> {
             int userId = userDetails.getUser().getUserId();
-            var workoutPlanList = workoutPlanService.findAllByUserUserId(userId);
+            List<WorkoutPlanModel> createdPlans = workoutPlanRepository.findByUserUserIdAndCopiedForUserIsNull(userId);
+            List<WorkoutPlanModel> copiedPlans = workoutPlanService.findAllByCopiedForUserUserId(userId);
 
-            // Busca as fichas de treino do usuário logado
-            List<WorkoutPlanModel> userWorkoutPlans = workoutPlanPerUserService.findWorkoutPlansByUserId(userId);
+            // Junta os dois, sem duplicar
+            Set<WorkoutPlanModel> allPlans = new LinkedHashSet<>();
+            allPlans.addAll(createdPlans);
+            allPlans.addAll(copiedPlans);
 
-            model.addAttribute("workoutPlan", workoutPlanList);
-            model.addAttribute("userWorkoutPlans", userWorkoutPlans);
+            model.addAttribute("workoutPlanList", allPlans);
+            model.addAttribute("LoggedUserId", userId);
             model.addAttribute("body", "student/workoutplan/list");
             return "/fragments/layout";
         });

@@ -11,7 +11,8 @@ import java.util.List;
 // que irá gerenciar a entidade WorkoutPlan, permitindo operações CRUD (criação, leitura, atualização, remoção) no banco de dados.
 @Repository
 public interface WorkoutPlanRepository extends JpaRepository<WorkoutPlanModel, Integer> {
-    List<WorkoutPlanModel> findAllByUserUserId(int userId);
-    // ⬅️ Adicione esta linha aqui para buscar os vínculos por ID da ficha
+    List<WorkoutPlanModel> findAllByCopiedForUserUserId(int userId);
+
+    List<WorkoutPlanModel> findByUserUserIdAndCopiedForUserIsNull(int userId);
 
 }

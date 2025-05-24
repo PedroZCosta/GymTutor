@@ -17,7 +17,7 @@
 
     <!-- Fichas criadas pelo usuário -->
     <div class="d-flex flex-column gap-3">
-        <div class="p-4 rounded-4 text-white" th:each="plan : ${workoutPlan}" style="background-color: #7d0022;">
+        <div class="p-4 rounded-4 text-white" th:each="plan : ${workoutPlanList}" style="background-color: #7d0022;">
             <h5 th:text="${plan.workoutPlanName}">Nome da Ficha</h5>
             <p th:text="${plan.workoutPlanDescription}">Descrição da ficha</p>
 
@@ -85,31 +85,6 @@
                     <button type="submit" class="btn btn-secondary w-100">Vincular Treinos</button>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Fichas em que estou vinculado -->
-    <h4 class="mt-5 text-dark fw-bold">Fichas em que estou vinculado</h4>
-    <div class="d-flex flex-column gap-3">
-        <div class="p-4 rounded-4 text-white" th:each="plan : ${userWorkoutPlans}" style="background-color: #7d0022;">
-            <h5 th:text="${plan.workoutPlanName}">Nome da Ficha</h5>
-            <p th:text="${plan.workoutPlanDescription}">Descrição da ficha</p>
-
-            <ul class="mb-3">
-                <li th:each="workout : ${plan.workoutPerWorkoutPlans}">
-                    <span class="fw-bold" th:text="${workout.workout.workoutName}">Treino X</span>
-                    <ul>
-                        <li class="mb-1" th:each="activity : ${workout.workout.workoutActivities}">
-                            <button class="btn btn-link text-white text-start p-0"
-                                    type="button"
-                                    data-bs-toggle="modal"
-                                    th:attr="data-bs-target='#modal-activity-' + ${activity.activity.activitiesId}"
-                                    th:text="${activity.sequence} + ' - ' + ${activity.activity.activityName} + ' - Repetições: ' + ${activity.reps}">
-                            </button>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
         </div>
     </div>
 </div>

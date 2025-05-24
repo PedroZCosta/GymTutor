@@ -1,8 +1,17 @@
 package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 
+import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
+import com.gymtutor.gymtutor.commonusers.workout.WorkoutRepository;
+import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesId;
+import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
+import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesRepository;
+import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanId;
+import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
+import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanRepository;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanService;
 import com.gymtutor.gymtutor.user.User;
+import com.gymtutor.gymtutor.user.UserRepository;
 import com.gymtutor.gymtutor.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +31,18 @@ public class WorkoutPlanPerUserService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WorkoutPerWorkoutPlanRepository workoutPerWorkoutPlanRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private WorkoutRepository workoutRepository;
+
+    @Autowired
+    private WorkoutActivitiesRepository workoutActivitiesRepository;
 
     // Vincular ficha de treino a um usuario
     @Transactional
@@ -62,19 +83,106 @@ public class WorkoutPlanPerUserService {
 
     @Transactional
     public void linkUserToPlan(int workoutPlanId, int userId) {
-        WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
+        // Busca o plano original
+        WorkoutPlanModel originalPlan = workoutPlanService.findById(workoutPlanId);
+
+        User copiedUser = userRepository.findById(userId).orElseThrow();
+
+        // Clona o plano (sem ID, com novo nome, etc.)
+        WorkoutPlanModel clonedPlan = new WorkoutPlanModel();
+        clonedPlan.setWorkoutPlanName(originalPlan.getWorkoutPlanName() + " (" + copiedUser.getUserName() + ")");
+         // não pode esquecer disso!
+
+        // Descrição
+        clonedPlan.setWorkoutPlanDescription(originalPlan.getWorkoutPlanDescription());
+
+        // Você pode definir o user como o mesmo dono do original
+        clonedPlan.setUser(originalPlan.getUser()); // ou o novo usuário, se quiser alterar
+
+        // Setando o usuario que ira utilizar essa cópia
+        User copyingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário que está copiando não encontrado"));
+        clonedPlan.setCopiedForUser(copyingUser);
+
+        // Marca de onde ela foi clonada (caso queira rastrear de qual plano original veio)
+        clonedPlan.setClonedFrom(originalPlan);
+
+        workoutPlanService.saveClone(clonedPlan); // SALVA primeiro para gerar ID
+
+        // Clona os vínculos com treinos da ficha original
+        List<WorkoutPerWorkoutPlanModel> originalWorkoutLinks = originalPlan.getWorkoutPerWorkoutPlans();
+
+        for (WorkoutPerWorkoutPlanModel originalWorkoutLink : originalWorkoutLinks) {
+            WorkoutModel originalWorkout = originalWorkoutLink.getWorkout();
+            WorkoutModel clonedWorkout = new WorkoutModel();
+
+            // Clona atributos básicos
+            clonedWorkout.setWorkoutName(originalWorkout.getWorkoutName());
+            clonedWorkout.setRestTime(originalWorkout.getRestTime());
+
+
+
+//            // Clona imagens, se houver
+//            clonedWorkout.setImagePath(originalWorkout.getImagePath()); // ou getImageUrl(), conforme o seu campo
+//
+//            // Clona vídeos, se houver
+//            clonedWorkout.setVideoUrl(originalWorkout.getVideoUrl());
+
+            // Clona o usuário dono do treino (ou outro usuário, se quiser)
+            clonedWorkout.setUser(originalWorkout.getUser());
+
+            // Salva treino clonado
+            workoutRepository.save(clonedWorkout);
+
+            // Vínculo do treino clonado com a nova ficha
+            WorkoutPerWorkoutPlanModel newLink = new WorkoutPerWorkoutPlanModel();
+            WorkoutPerWorkoutPlanId newId = new WorkoutPerWorkoutPlanId();
+            newId.setWorkoutId(clonedWorkout.getWorkoutId());
+            newId.setWorkoutPlanId(clonedPlan.getWorkoutPlanId());
+
+            newLink.setWorkoutPerWorkoutPlanId(newId);
+            newLink.setWorkout(clonedWorkout);
+            newLink.setWorkoutPlan(clonedPlan);
+
+            List<WorkoutActivitiesModel> originalActivities = originalWorkout.getWorkoutActivities();
+
+            for (WorkoutActivitiesModel activity : originalActivities) {
+                WorkoutActivitiesModel clonedActivity = new WorkoutActivitiesModel();
+
+                // Criação do ID composto
+                WorkoutActivitiesId newActivityId = new WorkoutActivitiesId();
+                newActivityId.setWorkoutId(clonedWorkout.getWorkoutId());
+                newActivityId.setActivitiesId(activity.getActivity().getActivitiesId()); // Assume que a atividade já existe
+
+                // Atribui o ID composto à entidade
+                clonedActivity.setWorkoutActivitiesId(newActivityId);
+
+                // Define os demais atributos
+                clonedActivity.setWorkout(clonedWorkout);
+                clonedActivity.setActivity(activity.getActivity());
+                clonedActivity.setSequence(activity.getSequence());
+                clonedActivity.setReps(activity.getReps());
+
+                // Salva a atividade clonada com ID válido
+                workoutActivitiesRepository.save(clonedActivity);
+            }
+
+
+            workoutPerWorkoutPlanRepository.save(newLink);
+        }
+
+
+        // Finalmente, vincula o plano clonado ao usuário
         User user = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
-        WorkoutPlanPerUserId id = new WorkoutPlanPerUserId(
-                workoutPlanId, userId
-        );
+
         WorkoutPlanPerUserModel link = new WorkoutPlanPerUserModel();
+        WorkoutPlanPerUserId id = new WorkoutPlanPerUserId(clonedPlan.getWorkoutPlanId(), userId);
         link.setWorkoutPlanPerUserId(id);
-        link.setWorkoutPlan(workoutPlan);
+        link.setWorkoutPlan(clonedPlan);
         link.setUser(user);
+
         workoutPlanPerUserRepository.save(link);
-
-
     }
 
     public List<WorkoutPlanModel> findWorkoutPlansByUserId(int userId) {

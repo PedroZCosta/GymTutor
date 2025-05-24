@@ -41,8 +41,9 @@ public class WorkoutPlanService {
         return optionalWorkoutPlanModel.orElseThrow(() -> new RuntimeException("workoutPlan not found with id " + workoutPlanId));
     }
 
-    public List<WorkoutPlanModel> findAllByUserUserId(int userId) {
-        return workoutPlanRepository.findAllByUserUserId(userId);
+    // Retorna as fichas que foram associadas à aquele usuario
+    public List<WorkoutPlanModel> findAllByCopiedForUserUserId(int userId) {
+        return workoutPlanRepository.findAllByCopiedForUserUserId(userId);
     }
 
     public void updateWorkoutPlan(WorkoutPlanModel workoutPlanModel, int workoutPlanId){
@@ -84,6 +85,11 @@ public class WorkoutPlanService {
             workoutPlanPerUserRepository.save(link);
         }
     }
+
+    public void saveClone(WorkoutPlanModel workoutPlanModel) {
+        workoutPlanRepository.save(workoutPlanModel);
+    }
+
     public List<User> findUsersLinkedToWorkoutPlan(int workoutPlanId) {
         return workoutPlanPerUserRepository
                 .findByWorkoutPlanWorkoutPlanId(workoutPlanId)

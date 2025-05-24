@@ -33,6 +33,15 @@ public class WorkoutPlanModel {
     @OneToMany(mappedBy = "workoutPlan")
     private List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans;
 
+    // Pois na tabela de relacao a gnt ja consegue ver de onde vem o clone do swgundo campo apenas nn aqui na propria model
+    @ManyToOne
+    @JoinColumn(name = "cloned_from_workout_id")
+    private WorkoutPlanModel clonedFrom;
+
+    @ManyToOne
+    @JoinColumn(name = "copied_for_user_id")
+    private User copiedForUser;
+
     // Construtor padrão
     public WorkoutPlanModel() {
     }
@@ -79,5 +88,21 @@ public class WorkoutPlanModel {
 
     public void setWorkoutPerWorkoutPlans(List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans) {
         this.workoutPerWorkoutPlans = workoutPerWorkoutPlans;
+    }
+
+    public WorkoutPlanModel getClonedFrom() {
+        return clonedFrom;
+    }
+
+    public void setClonedFrom(WorkoutPlanModel clonedFrom) {
+        this.clonedFrom = clonedFrom;
+    }
+
+    public User getCopiedForUser() {
+        return copiedForUser;
+    }
+
+    public void setCopiedForUser(User copiedForUser) {
+        this.copiedForUser = copiedForUser;
     }
 }
