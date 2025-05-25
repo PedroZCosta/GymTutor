@@ -114,8 +114,9 @@
 
                         </th:block>
 
-                        <form th:action="@{/student/social/message/{id}(id=${user.userId})}" method="get">
-                            <button type="submit" class="btn btn-secondary">Enviar mensagem</button>
+                        <form th:action="@{/chat}" method="get">
+                            <input type="hidden" name="otherUserId" th:value="${user.userId}" />
+                            <button type="submit" class="btn btn-primary">Enviar mensagem</button>
                         </form>
 
                     </div>

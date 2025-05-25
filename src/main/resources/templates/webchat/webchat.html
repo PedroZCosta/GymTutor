@@ -2,69 +2,148 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.0/lib/stomp.min.js"></script>
 </head>
 <body>
-<div style="display: flex;">
+<div class="d-flex" style="height: calc(100vh - 66px);">
     <!-- Lista de contatos -->
-    <div id="contacts" style="width: 200px; border-right: 1px solid #ccc; padding: 10px;">
-        <h3>Contatos</h3>
-        <div th:each="user : ${otherUsers}">
-            <button th:text="${user.userName}"
-                    th:attr="onclick=|loadConversation(${user.userId})|">Contato</button>
-        </div>
+    <div id="contacts" class="border-end p-3" style="width: 250px; overflow-y: auto;">
+        <h3>Conversas</h3>
+        <ul id="contactsList" class="list-group">
+            <!-- Exibe mensagem se não houver conversas ativas -->
+            <li th:if="${activeContacts.size() == 0}" class="list-group-item">
+                Nenhuma conversa ativa
+            </li>
+            <!-- Lista de contatos -->
+            <li th:each="user : ${activeContacts}"
+                class="list-group-item d-flex justify-content-between align-items-center contact-item"
+                th:attr="data-userid=${user.userId}"
+                th:onclick="|loadConversation(${user.userId})|"
+                style="cursor:pointer;">
+                <span th:text="${user.userName}">Nome do usuário</span>
+                <span class="badge bg-danger rounded-pill d-none"
+                      th:attr="id='badge-' + ${user.userId}">!</span>
+            </li>
+        </ul>
     </div>
 
     <!-- Área de chat -->
-    <div style="flex: 1; padding: 10px;">
-        <div>
+    <div class="flex-grow-1 d-flex flex-column overflow-hidden">
+        <div class="p-3">
             <strong>Usuário logado:</strong>
             <span th:text="${currentUser.userName}"></span> (<span th:text="${currentUser.userEmail}"></span>)
         </div>
-        <div style="margin-top: 10px;">
+        <div class="px-3">
             <strong>Conversando com:</strong> <span id="chatWith">Selecione um contato</span>
         </div>
-        <hr />
-        <div id="messageModels" style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;"></div>
-        <div style="margin-top: 10px;">
-            <input type="text" id="messageModel" placeholder="Digite sua mensagem..." style="width: 80%;" />
-            <button onclick="sendMessage()">Enviar</button>
+        <hr class="my-2" />
+
+        <!-- Área de mensagens -->
+        <div id="messageModels" class="flex-grow-1 mx-3 mb-2 border rounded p-3 bg-light overflow-auto"></div>
+
+        <!-- Input -->
+        <div class="p-3 d-flex">
+            <input type="text" id="messageModel" placeholder="Digite sua mensagem..." class="form-control me-2" />
+            <button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
         </div>
     </div>
 </div>
 
 <script th:inline="javascript">
     let stompClient = null;
-    let selectedUserId = null;
+    let selectedUserId = [[${selectedUser != null} ? ${selectedUser.userId} : 'null']];
+    let selectedUserName = /*[[${selectedUser != null} ? '${selectedUser.userName}' : 'null']]*/ 'null';
 
-    // Objeto completo do usuário logado (usado em sender)
+    // Se existe usuário selecionado (via URL), atualize o texto do contato antes de carregar conversa
+    if (selectedUserId !== null && selectedUserName !== 'null') {
+        document.getElementById("chatWith").textContent = selectedUserName;
+    }
+
     let currentUser = {
         id: [[${currentUser.userId}]],
         name: '[[${currentUser.userName}]]',
         email: '[[${currentUser.userEmail}]]'
     };
 
+    // Mapa para controlar contatos e notificações de mensagens não lidas
+    let contactsMap = new Map();
+
+    // Função para adicionar contato na lista lateral, se não existir
+    function addContact(user) {
+        const userIdStr = String(user.userId);
+        if (contactsMap.has(userIdStr)) return;
+
+        contactsMap.set(userIdStr, user.userName);
+
+        const contactsList = document.getElementById('contactsList');
+        const noConversationsMsg = contactsList.querySelector('li[th\\:if]');
+
+        if (noConversationsMsg) noConversationsMsg.remove();
+
+        const li = document.createElement('li');
+        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'contact-item');
+        li.style.cursor = 'pointer';
+        li.setAttribute('data-userid', userIdStr);
+        li.onclick = () => loadConversation(user.userId);
+
+        const spanName = document.createElement('span');
+        spanName.textContent = user.userName;
+
+        const badge = document.createElement('span');
+        badge.classList.add('badge', 'bg-danger', 'rounded-pill', 'd-none');
+        badge.id = `badge-${user.userId}`;
+        badge.textContent = '!';
+
+        li.appendChild(spanName);
+        li.appendChild(badge);
+
+        contactsList.appendChild(li);
+    }
+
+    // Marcar badge para mensagem não lida
+    function markUnread(userId) {
+        if (userId === selectedUserId) return; // Conversa ativa, não marcar
+
+        const badge = document.getElementById(`badge-${userId}`);
+        if (badge) badge.classList.remove('d-none');
+    }
+
+    // Limpar badge ao abrir conversa
+    function clearUnread(userId) {
+        const badge = document.getElementById(`badge-${userId}`);
+        if (badge) badge.classList.add('d-none');
+    }
+
     function connect() {
         const socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
-
-        // (Opcional) Debug no console
         stompClient.debug = null;
 
         stompClient.connect({}, function (frame) {
             console.log("Conectado como:", currentUser.name);
 
-            // O Spring trata automaticamente o canal "/user/queue/messages"
             stompClient.subscribe('/user/queue/messages', function (messageOutput) {
                 const messageModel = JSON.parse(messageOutput.body);
+                const senderId = messageModel.sender.userId;
+                const receiverId = messageModel.receiver.userId;
 
-                // Verifica se a mensagem pertence à conversa atual
-                if (messageModel.sender.userId === selectedUserId || messageModel.receiver.userId === selectedUserId) {
-                    showMessage(messageModel);
-                } else {
-                    // Se quiser, pode tratar mensagens de outras conversas (notificações, por exemplo)
-                    console.log("Mensagem de outra conversa recebida");
+                // Se mensagem é para mim (sou receiver) ou enviada por mim (sou sender)
+                if (senderId === currentUser.id || receiverId === currentUser.id) {
+                    // Se não tenho contato ainda, adiciona na lista
+                    let otherUser = senderId === currentUser.id ? messageModel.receiver : messageModel.sender;
+                    addContact(otherUser);
+
+                    // Se mensagem é da conversa aberta, mostra direto
+                    if (otherUser.userId === selectedUserId) {
+                        showMessage(messageModel);
+                        clearUnread(otherUser.userId);
+                    } else {
+                        // Marca que tem mensagem não lida
+                        markUnread(otherUser.userId);
+                        console.log("Mensagem de outra conversa recebida");
+                    }
                 }
             });
         });
@@ -72,12 +151,14 @@
 
     function loadConversation(userId) {
         selectedUserId = userId;
+        clearUnread(userId);
         document.getElementById("messageModels").innerHTML = "";
 
-        // Atualiza nome do destinatário
-        const button = [...document.querySelectorAll("#contacts button")]
-            .find(b => b.getAttribute("onclick").includes(userId));
-        document.getElementById("chatWith").textContent = button?.textContent || "Contato desconhecido";
+        // Converte para string para evitar falhas na busca
+        const contactLi = [...document.querySelectorAll("#contactsList li")]
+            .find(li => li.getAttribute('data-userid') === String(userId));
+
+        document.getElementById("chatWith").textContent = contactLi ? contactLi.querySelector('span').textContent : "Contato desconhecido";
 
         fetch(`/api/conversations/${userId}`)
             .then(res => res.json())
@@ -90,7 +171,6 @@
         if (!content) return;
         if (!selectedUserId) return alert("Selecione um usuário para conversar.");
 
-        // Envia a mensagem para o servidor
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify({
             sender: {
                 userId: currentUser.id,
@@ -110,20 +190,30 @@
 
         const isMine = messageModel.sender.userId === currentUser.id;
 
-        p.style.textAlign = isMine ? "right" : "left";
-        p.style.margin = "5px 0";
-        p.style.padding = "5px 10px";
-        p.style.borderRadius = "10px";
-        p.style.display = "inline-block";
-        p.style.backgroundColor = isMine ? "#dcf8c6" : "#fff";
-        p.style.border = "1px solid #ccc";
-
+        p.className = isMine ? "text-end bg-success bg-opacity-25 rounded p-2 my-1" : "text-start bg-white rounded p-2 my-1 border";
         p.textContent = messageModel.content;
+
         div.appendChild(p);
-        div.appendChild(document.createElement("br"));
         div.scrollTop = div.scrollHeight;
     }
+
+    // Inicializa mapa de contatos já existentes na lista no carregamento da página
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("#contactsList li.contact-item").forEach(li => {
+            const userId = li.getAttribute('data-userid');
+            const userName = li.querySelector('span').textContent;
+            contactsMap.set(userId, userName);
+        });
+
+        // Se veio selectedUserId pelo backend, abre conversa automaticamente
+        if (selectedUserId !== null) {
+            loadConversation(selectedUserId);
+        }
+    });
+
     window.onload = connect;
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

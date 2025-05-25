@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -36,18 +37,59 @@ public class ChatController {
 
     // Abre página do Chat
     @GetMapping("/chat")
-    public String openChatPage(Model model, Principal principal) {
+    public String openChatPage(
+            @RequestParam(name = "otherUserId", required = false) Integer otherUserId,
+            Model model,
+            Principal principal
+    ) {
         User currentUser = userRepository.findByUserEmail(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
-        // Lista todos os outros usuários (exceto o logado)
-        List<User> otherUsers = userRepository.findAll().stream()
-                .filter(user -> user.getUserId() != currentUser.getUserId())
+        // Busca conversas onde currentUser é user1 ou user2
+        List<Conversation> convUser1 = conversationRepository.findByUser1(currentUser);
+        List<Conversation> convUser2 = conversationRepository.findByUser2(currentUser);
+
+        // Junta as duas listas
+        List<Conversation> allConversations = new ArrayList<>();
+        allConversations.addAll(convUser1);
+        allConversations.addAll(convUser2);
+
+        // Ordena por data da última mensagem da conversa (desc)
+        allConversations.sort((c1, c2) -> {
+            LocalDateTime lastMsg1 = c1.getMessages().stream()
+                    .map(m -> m.getTimestamp())
+                    .max(LocalDateTime::compareTo)
+                    .orElse(LocalDateTime.MIN);
+
+            LocalDateTime lastMsg2 = c2.getMessages().stream()
+                    .map(m -> m.getTimestamp())
+                    .max(LocalDateTime::compareTo)
+                    .orElse(LocalDateTime.MIN);
+
+            return lastMsg2.compareTo(lastMsg1); // DESC
+        });
+
+        // Extrai os contatos (usuários que não são o currentUser)
+        List<User> activeContacts = allConversations.stream()
+                .map(c -> c.getUser1().equals(currentUser) ? c.getUser2() : c.getUser1())
                 .toList();
 
+        // Lista todos usuários para nova conversa
+        List<User> allUsers = userRepository.findAll().stream()
+                .filter(user -> !user.equals(currentUser))
+                .toList();
+
+        User selectedUser = null;
+        if (otherUserId != null) {
+            selectedUser = userRepository.findById(otherUserId).orElse(null);
+        }
+
         model.addAttribute("currentUser", currentUser);
-        model.addAttribute("otherUsers", otherUsers);
-        return "webchat/webchat";
+        model.addAttribute("activeContacts", activeContacts);
+        model.addAttribute("allUsers", allUsers);
+        model.addAttribute("selectedUser", selectedUser); // ID do usuário do "Enviar Mensagem"
+        model.addAttribute("body", "webchat/webchat");
+        return "/fragments/layout";
     }
 
     // Retorna a conversa entre o usuário logado e outro usuário

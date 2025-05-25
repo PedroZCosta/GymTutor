@@ -101,8 +101,9 @@
               <button type="submit" class="btn btn-custom-red"
                       onclick="return confirm('Você tem certeza de que deseja rejeitar esta conexão?')">Rejeitar</button>
             </form>
-            <form th:action="@{/student/social}" method="get" style="display: inline;">
-              <button type="submit" class="btn btn-secondary">Enviar mensagem</button>
+            <form th:action="@{/chat}" method="get">
+              <input type="hidden" name="otherUserId" th:value="${user.userId}" />
+              <button type="submit" class="btn btn-primary">Enviar mensagem</button>
             </form>
           </div>
         </td>
@@ -136,8 +137,9 @@
         <td th:text="${user.userName}"></td>
         <td>
           <div class="d-flex gap-2 flex-wrap">
-            <form th:action="@{/student/social}" method="get" style="display: inline;">
-              <button type="submit" class="btn btn-secondary">Enviar mensagem</button>
+            <form th:action="@{/chat}" method="get">
+              <input type="hidden" name="otherUserId" th:value="${user.userId}" />
+              <button type="submit" class="btn btn-primary">Enviar mensagem</button>
             </form>
             <form th:action="@{/student/social/unfriend/{id}(id=${user.userId})}" method="post" style="display: inline;">
               <button type="submit" class="btn btn-custom-red"

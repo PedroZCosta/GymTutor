@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<style>
+    <style>
     .nav-link {
         position: relative !important;
         display: inline-block !important;
@@ -78,10 +78,9 @@
 
                     <!-- Lado direito: usuário + logout -->
                     <div class="d-flex align-items-center gap-3">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="/chat">Chat</a>
-                        </li>
-
+                        <a class="nav-link text-white" href="/chat" title="Chat">
+                            <i class="bi bi-chat-dots-fill fs-4"></i>
+                        </a>
 
                         <form th:action="@{/logout}" method="post" onsubmit="return confirm('Você tem certeza de que deseja sair?')">
                             <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
