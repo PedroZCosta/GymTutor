@@ -26,8 +26,16 @@
         </a>
     </div>
 
+    <!-- Alerta de aviso para atividades inexistentes -->
+    <div th:if="${activities.isEmpty()}" class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill fs-4"></i> <!-- Ícone de aviso -->
+        <div class="d-flex flex-column align-items-start">
+            <p class="mb-0">Não há Atividades Registradas! Registre atividades para os usuários poderem cadastrar treinos.</p>
+        </div>
+    </div>
+
     <!-- Tabela de Exercícios -->
-    <div class="table-responsive">
+    <div  th:if="${!activities.isEmpty()}" class="table-responsive">
         <table class="table table-bordered table-hover align-middle">
             <thead class="table-light">
             <tr>
