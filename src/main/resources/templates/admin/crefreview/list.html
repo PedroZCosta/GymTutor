@@ -13,8 +13,16 @@
             <p class="mb-0" th:text="${errorMessage}"></p>
         </div>
 
+        <!-- Alerta verde para crefs pendentes -->
+        <div th:if="${crefRequestList.isEmpty()}" class="alert alert-success d-flex align-items-center gap-2" role="alert">
+            <i class="bi bi-check-circle-fill fs-4"></i> <!-- Ícone de sucesso -->
+            <div class="d-flex flex-column align-items-start">
+                <p class="mb-0">Não há Revisões de CREF Pendentes.</p> <!-- Texto do alerta -->
+            </div>
+        </div>
+
         <!-- Lista dos Usuários -->
-        <div class="table-responsive">
+        <div th:if="${!crefRequestList.isEmpty()}" class="table-responsive">
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                 <tr>
