@@ -11,5 +11,6 @@ import java.util.List;
 public interface WorkoutRepository extends JpaRepository<WorkoutModel, Integer> {
 
     // busca por usuario
-    List<WorkoutModel> findByUserUserId(Integer userId);
+    List<WorkoutModel> findAllByReceiverUserId(int receiverUserId);
+
 }

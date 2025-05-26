@@ -27,6 +27,7 @@ public class WorkoutService {
     public void createWorkout(WorkoutModel workoutModel, CustomUserDetails loggedUser) {
         User user = loggedUser.getUser();
         workoutModel.setUser(user);
+        workoutModel.setReceiverUserId(user.getUserId());
         workoutRepository.save(workoutModel);}
 
     public WorkoutModel findById(int workoutId){
@@ -34,8 +35,8 @@ public class WorkoutService {
         return optionalWorkoutModel.orElseThrow(() -> new RuntimeException("workout not found with id" + workoutId));
     }
 
-    public List<WorkoutModel> findAllByUser(int userId) {
-        return workoutRepository.findByUserUserId(userId);
+    public List<WorkoutModel> findAllByReceiverUserId(int userId) {
+        return workoutRepository.findAllByReceiverUserId(userId);
     }
 
     public void updateWorkout(WorkoutModel workoutModel, int workoutId){

@@ -131,6 +131,7 @@ public class WorkoutPlanPerUserService {
             clonedWorkout.setWorkoutName(originalWorkout.getWorkoutName());
             clonedWorkout.setRestTime(originalWorkout.getRestTime());
             clonedWorkout.setUser(originalWorkout.getUser());
+            clonedWorkout.setReceiverUserId(userId); // seta o usuario como o usuario novo
 
             // Salva treino clonado
             workoutRepository.save(clonedWorkout);
@@ -149,7 +150,6 @@ public class WorkoutPlanPerUserService {
             newLink.setWorkoutPlan(clonedPlan);
 
 
-            // todo: eu nn preciso clonar as atividades
             // Clonagem das atividades do treino
             List<WorkoutActivitiesModel> originalActivities = originalWorkout.getWorkoutActivities();
 
