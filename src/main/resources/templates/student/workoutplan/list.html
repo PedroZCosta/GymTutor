@@ -19,11 +19,32 @@
     <div class="d-flex flex-column gap-3">
         <div class="p-4 rounded-4 text-white" th:each="plan : ${workoutPlanList}" style="background-color: #7d0022;">
             <h5 th:text="${plan.workoutPlanName}">Nome da Ficha</h5>
+            <div class="d-flex align-items-center gap-2">
+                <p class="mb-0">Dias de duração:</p>
+                <p class="mb-0 fw-bold" th:text="${plan.targetDaysToComplete}">Dias de duração</p>
+            </div>
             <p th:text="${plan.workoutPlanDescription}">Descrição da ficha</p>
 
             <ul class="mb-3">
                 <li th:each="workout : ${plan.workoutPerWorkoutPlans}">
                     <span class="fw-bold" th:text="${workout.workout.workoutName}">Treino X</span>
+
+                    <form th:action="@{/student/workoutplan/workoutCheck}"
+                          method="post"
+                          th:id="'form-checkworkout-' + ${workout.workout.workoutId}">
+
+                        <input type="hidden" name="userId" th:value="${LoggedUserId}" />
+                        <input type="hidden" name="workoutPlanId" th:value="${plan.workoutPlanId}" />
+                        <input type="hidden" name="workoutId" th:value="${workout.workout.workoutId}" />
+
+                        <button type="button"
+                                class="btn btn-success mt-2"
+                                th:onclick="'confirmarConclusaoTreino(' + ${workout.workout.workoutId} + ')'"
+                        >
+                            Concluir Treino
+                        </button>
+                    </form>
+
                     <ul>
                         <li class="mb-1" th:each="activity : ${workout.workout.workoutActivities}">
                             <button class="btn btn-link text-white text-start p-0"
@@ -89,9 +110,11 @@
     </div>
 </div>
 
+<!-- Scripts Bootstrap e SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Scripts personalizados -->
 <script th:inline="javascript">
     /* <![CDATA[ */
     let successMessage = [[${successMessage != null}]];
@@ -115,6 +138,23 @@
         });
     }
 
+    function confirmarConclusaoTreino(workoutId) {
+        Swal.fire({
+            title: 'Confirmar conclusão?',
+            text: "Deseja registrar a conclusão deste treino?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#7d0022',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, concluir!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('form-checkworkout-' + workoutId).submit();
+            }
+        });
+    }
+    /* ]]> */
 </script>
 
+</body>
 </html>

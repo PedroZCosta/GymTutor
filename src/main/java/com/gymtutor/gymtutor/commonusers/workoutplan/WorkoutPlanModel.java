@@ -42,6 +42,9 @@ public class WorkoutPlanModel {
     @JoinColumn(name = "copied_for_user_id")
     private User copiedForUser;
 
+    @Column(name = "target_days_to_complete", nullable = false)
+    private Short targetDaysToComplete;
+
     // Construtor padrão
     public WorkoutPlanModel() {
     }
@@ -104,5 +107,13 @@ public class WorkoutPlanModel {
 
     public void setCopiedForUser(User copiedForUser) {
         this.copiedForUser = copiedForUser;
+    }
+
+    public Short getTargetDaysToComplete() {
+        return targetDaysToComplete;
+    }
+
+    public void setTargetDaysToComplete(Short targetDaysToComplete) {
+        this.targetDaysToComplete = targetDaysToComplete;
     }
 }

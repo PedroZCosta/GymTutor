@@ -1,13 +1,17 @@
 package com.gymtutor.gymtutor.commonusers.workoutplan;
 
 
+import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserModel;
+import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserService;
 import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserId;
 import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserModel;
 import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserRepository;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.user.User;
 import com.gymtutor.gymtutor.user.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +29,8 @@ public class WorkoutPlanService {
     private WorkoutPlanRepository workoutPlanRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    @Lazy
+    private WorkoutExecutionRecordPerUserService workoutExecutionRecordperUserService;
 
     @Autowired
     private WorkoutPlanPerUserRepository workoutPlanPerUserRepository;
@@ -34,7 +39,12 @@ public class WorkoutPlanService {
     public void createWorkoutPlan(WorkoutPlanModel workoutPlanModel, CustomUserDetails loggedUser) {
         User user = loggedUser.getUser();
         workoutPlanModel.setUser(user);
-        workoutPlanRepository.save(workoutPlanModel);}
+        workoutPlanRepository.save(workoutPlanModel);
+
+        // Inicia o acompanhamento de exercicios do aluno
+        workoutExecutionRecordperUserService.createInitialCompletedStatusForPlanWhenMeStart(workoutPlanModel, user);
+        workoutExecutionRecordperUserService.createInitialExecutionsForPlanWhenMeStart(workoutPlanModel, user);
+    }
 
     public WorkoutPlanModel findById(int workoutPlanId){
         Optional<WorkoutPlanModel> optionalWorkoutPlanModel = workoutPlanRepository.findById(workoutPlanId);
@@ -57,6 +67,7 @@ public class WorkoutPlanService {
 
             workoutPlan.setWorkoutPlanName(workoutPlanModel.getWorkoutPlanName());
             workoutPlan.setWorkoutPlanDescription(workoutPlanModel.getWorkoutPlanDescription());
+            workoutPlan.setTargetDaysToComplete(workoutPlanModel.getTargetDaysToComplete());
 
 
             // Salva o treino atualizada no banco de dados

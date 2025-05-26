@@ -1,5 +1,7 @@
 package com.gymtutor.gymtutor.commonusers.workoutperworkoutplan;
 
+import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
+import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +17,9 @@ public interface WorkoutPerWorkoutPlanRepository extends JpaRepository<WorkoutPe
     // Buscar vínculo específico entre workout e workoutPlan
     Optional<WorkoutPerWorkoutPlanModel> findByWorkout_WorkoutIdAndWorkoutPlan_WorkoutPlanId(int workoutId, int workoutPlanId);
 
+    List<WorkoutPerWorkoutPlanModel> findByWorkoutPlan_WorkoutPlanId(int workoutPlanId);
+
+
+    @Query("SELECT wpp.workout FROM WorkoutPerWorkoutPlanModel wpp WHERE wpp.workoutPlan = :workoutPlan")
+    List<WorkoutModel> findAllWorkoutsByWorkoutPlan(@Param("workoutPlan") WorkoutPlanModel workoutPlan);
 }

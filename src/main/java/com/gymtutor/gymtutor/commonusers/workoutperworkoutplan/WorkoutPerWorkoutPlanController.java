@@ -55,6 +55,7 @@ public class WorkoutPerWorkoutPlanController {
             @ModelAttribute @Valid WorkoutPerWorkoutPlanFormDTO workoutPerWorkoutPlanFormDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails loggedUser,
             Model model
     ){
         if (bindingResult.hasErrors()){
@@ -64,7 +65,7 @@ public class WorkoutPerWorkoutPlanController {
         return handleRequest(redirectAttributes, model, "/student/workoutplan/linkworkout", null, workoutPlanId, () ->{
             WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
             WorkoutModel workout = workoutRepository.findById(workoutPerWorkoutPlanFormDTO.getWorkoutId()).orElseThrow();
-            workoutPerWorkoutPlanService.linkWorkoutToWorkoutPlan(workout, workoutPlan);
+            workoutPerWorkoutPlanService.linkWorkoutToWorkoutPlan(workout, workoutPlan, loggedUser.getUser());
             redirectAttributes.addFlashAttribute("successMessage", "Treino vinculado com sucesso!");
             return "redirect:/student/workoutplan/" + workoutPlanId + "/linkworkout";
         });

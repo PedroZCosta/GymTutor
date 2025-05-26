@@ -5,6 +5,7 @@ import com.gymtutor.gymtutor.commonusers.workout.WorkoutRepository;
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesId;
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesRepository;
+import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserService;
 import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanId;
 import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
 import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanRepository;
@@ -17,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,6 +46,9 @@ public class WorkoutPlanPerUserService {
 
     @Autowired
     private WorkoutActivitiesRepository workoutActivitiesRepository;
+
+    @Autowired
+    private WorkoutExecutionRecordPerUserService workoutExecutionRecordperUserService;
 
     // Vincular ficha de treino a um usuario
     @Transactional
@@ -96,6 +102,9 @@ public class WorkoutPlanPerUserService {
         // Descrição
         clonedPlan.setWorkoutPlanDescription(originalPlan.getWorkoutPlanDescription());
 
+        // dias para compleção
+        clonedPlan.setTargetDaysToComplete(originalPlan.getTargetDaysToComplete());
+
         // Você pode definir o user como o mesmo dono do original
         clonedPlan.setUser(originalPlan.getUser()); // ou o novo usuário, se quiser alterar
 
@@ -109,6 +118,8 @@ public class WorkoutPlanPerUserService {
 
         workoutPlanService.saveClone(clonedPlan); // SALVA primeiro para gerar ID
 
+        Map<Integer, Integer> originalToClonedWorkoutIds = new HashMap<>();
+
         // Clona os vínculos com treinos da ficha original
         List<WorkoutPerWorkoutPlanModel> originalWorkoutLinks = originalPlan.getWorkoutPerWorkoutPlans();
 
@@ -119,20 +130,13 @@ public class WorkoutPlanPerUserService {
             // Clona atributos básicos
             clonedWorkout.setWorkoutName(originalWorkout.getWorkoutName());
             clonedWorkout.setRestTime(originalWorkout.getRestTime());
-
-
-
-//            // Clona imagens, se houver
-//            clonedWorkout.setImagePath(originalWorkout.getImagePath()); // ou getImageUrl(), conforme o seu campo
-//
-//            // Clona vídeos, se houver
-//            clonedWorkout.setVideoUrl(originalWorkout.getVideoUrl());
-
-            // Clona o usuário dono do treino (ou outro usuário, se quiser)
             clonedWorkout.setUser(originalWorkout.getUser());
 
             // Salva treino clonado
             workoutRepository.save(clonedWorkout);
+
+            // 🔑 Mapeia ID original → ID clonado
+            originalToClonedWorkoutIds.put(originalWorkout.getWorkoutId(), clonedWorkout.getWorkoutId());
 
             // Vínculo do treino clonado com a nova ficha
             WorkoutPerWorkoutPlanModel newLink = new WorkoutPerWorkoutPlanModel();
@@ -144,29 +148,24 @@ public class WorkoutPlanPerUserService {
             newLink.setWorkout(clonedWorkout);
             newLink.setWorkoutPlan(clonedPlan);
 
+            // Clonagem das atividades do treino
             List<WorkoutActivitiesModel> originalActivities = originalWorkout.getWorkoutActivities();
 
             for (WorkoutActivitiesModel activity : originalActivities) {
                 WorkoutActivitiesModel clonedActivity = new WorkoutActivitiesModel();
 
-                // Criação do ID composto
                 WorkoutActivitiesId newActivityId = new WorkoutActivitiesId();
                 newActivityId.setWorkoutId(clonedWorkout.getWorkoutId());
-                newActivityId.setActivitiesId(activity.getActivity().getActivitiesId()); // Assume que a atividade já existe
+                newActivityId.setActivitiesId(activity.getActivity().getActivitiesId());
 
-                // Atribui o ID composto à entidade
                 clonedActivity.setWorkoutActivitiesId(newActivityId);
-
-                // Define os demais atributos
                 clonedActivity.setWorkout(clonedWorkout);
                 clonedActivity.setActivity(activity.getActivity());
                 clonedActivity.setSequence(activity.getSequence());
                 clonedActivity.setReps(activity.getReps());
 
-                // Salva a atividade clonada com ID válido
                 workoutActivitiesRepository.save(clonedActivity);
             }
-
 
             workoutPerWorkoutPlanRepository.save(newLink);
         }
@@ -183,6 +182,10 @@ public class WorkoutPlanPerUserService {
         link.setUser(user);
 
         workoutPlanPerUserRepository.save(link);
+
+        // Inicia o acompanhamento de exercicios do aluno
+        workoutExecutionRecordperUserService.createInitialCompletedStatusForPlan(link);
+        workoutExecutionRecordperUserService.createInitialExecutionsForPlan(link);
     }
 
     public List<WorkoutPlanModel> findWorkoutPlansByUserId(int userId) {
