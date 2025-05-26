@@ -3,10 +3,12 @@ package com.gymtutor.gymtutor.commonusers.workoutperworkoutplan;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutRepository;
 
+import com.gymtutor.gymtutor.commonusers.workout.WorkoutService;
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
+import com.gymtutor.gymtutor.user.User;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -35,6 +37,9 @@ public class WorkoutPerWorkoutPlanController {
     @Autowired
     private WorkoutPerWorkoutPlanService workoutPerWorkoutPlanService;
 
+    @Autowired
+    private WorkoutService workoutService;
+
     @GetMapping
     public String showWorkoutLinkForm(
             @PathVariable int workoutPlanId,
@@ -42,8 +47,8 @@ public class WorkoutPerWorkoutPlanController {
             @AuthenticationPrincipal CustomUserDetails loggedUser,
             RedirectAttributes redirectAttributes
             ) {
-        return handleRequest(redirectAttributes, model, null, null, workoutPlanId, () -> {
-            loadView(workoutPlanId, model);
+        return handleRequest(redirectAttributes, model, null, null, loggedUser, workoutPlanId, () -> {
+            loadView(workoutPlanId, model, loggedUser);
             return "/fragments/layout";
         });
     }
@@ -62,7 +67,7 @@ public class WorkoutPerWorkoutPlanController {
             redirectAttributes.addFlashAttribute("errorMessage", "Dados inválidos para vincular treino.");
             return "redirect:/student/workoutplan/" + workoutPlanId + "/linkworkout";
         }
-        return handleRequest(redirectAttributes, model, "/student/workoutplan/linkworkout", null, workoutPlanId, () ->{
+        return handleRequest(redirectAttributes, model, "/student/workoutplan/linkworkout", null, loggedUser, workoutPlanId, () ->{
             WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
             WorkoutModel workout = workoutRepository.findById(workoutPerWorkoutPlanFormDTO.getWorkoutId()).orElseThrow();
             workoutPerWorkoutPlanService.linkWorkoutToWorkoutPlan(workout, workoutPlan, loggedUser.getUser());
@@ -77,9 +82,10 @@ public class WorkoutPerWorkoutPlanController {
             @PathVariable int workoutPlanId,
             @ModelAttribute WorkoutPerWorkoutPlanFormDTO workoutPerWorkoutPlanFormDTO,
             RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails loggedUser,
             Model model
     ){
-        return handleRequest(redirectAttributes, model, "/student/workoutplan/linkworkout", null, workoutPlanId, () ->{
+        return handleRequest(redirectAttributes, model, "/student/workoutplan/linkworkout", null, loggedUser, workoutPlanId, () ->{
             WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
             WorkoutModel workout = workoutRepository.findById(workoutPerWorkoutPlanFormDTO.getWorkoutId()).orElseThrow();
             workoutPerWorkoutPlanService.unlinkWorkoutFromWorkoutPlan(workout, workoutPlan);
@@ -100,12 +106,12 @@ public class WorkoutPerWorkoutPlanController {
         return "/fragments/layout";
     }
 
-    private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, int workoutPlanId, WorkoutPerWorkoutPlanController.RequestHandler block){
+    private String handleRequest(RedirectAttributes redirectAttributes, Model model, String view, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, CustomUserDetails loggedUser, int workoutPlanId, WorkoutPerWorkoutPlanController.RequestHandler block){
         try{
             return block.execute();
         }catch(Exception ex){
             ex.printStackTrace();
-            return handleException(ex, model, workoutPerWorkoutPlanModel, view, redirectAttributes, workoutPlanId);
+            return handleException(ex, model, workoutPerWorkoutPlanModel, view, redirectAttributes, loggedUser, workoutPlanId);
         }
     }
 
@@ -114,21 +120,21 @@ public class WorkoutPerWorkoutPlanController {
         String execute();
     }
 
-    public String handleException(Exception ex, Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, RedirectAttributes redirectAttributes, int workoutPlanId){
+    public String handleException(Exception ex, Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, RedirectAttributes redirectAttributes, CustomUserDetails loggedUser, int workoutPlanId){
         return switch (ex){
             case IllegalArgumentException illegalArgumentException ->
-                    handleIllegalArgumentException(illegalArgumentException, model, workoutPerWorkoutPlanModel, view, workoutPlanId);
+                    handleIllegalArgumentException(illegalArgumentException, model, workoutPerWorkoutPlanModel, view, loggedUser, workoutPlanId);
             case IllegalAccessException illegalAccessException ->
                     handleIllegalAccessException(illegalAccessException, redirectAttributes);
             case DataIntegrityViolationException ignored ->
-                    handleDataIntegrityViolationException(model, workoutPerWorkoutPlanModel, view, workoutPlanId);
-            case null, default -> handleUnexpectedException(model, workoutPerWorkoutPlanModel, view, workoutPlanId);
+                    handleDataIntegrityViolationException(model, workoutPerWorkoutPlanModel, view, loggedUser, workoutPlanId);
+            case null, default -> handleUnexpectedException(model, workoutPerWorkoutPlanModel, view, loggedUser, workoutPlanId);
         };
     }
 
 
-    private String handleIllegalArgumentException(IllegalArgumentException ex, Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, int workoutPlanId){
-        return handleError(ex.getMessage(), model, workoutPerWorkoutPlanModel, view, workoutPlanId);
+    private String handleIllegalArgumentException(IllegalArgumentException ex, Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, CustomUserDetails loggedUser, int workoutPlanId){
+        return handleError(ex.getMessage(), model, workoutPerWorkoutPlanModel, view, loggedUser, workoutPlanId);
     }
 
     private String handleIllegalAccessException(IllegalAccessException ex, RedirectAttributes redirectAttributes){
@@ -136,20 +142,20 @@ public class WorkoutPerWorkoutPlanController {
         return "redirect:/student/workoutplan";
     }
 
-    private String handleDataIntegrityViolationException(Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, int workoutPlanId){
-        return handleError("Erro de integridade de dados.", model, workoutPerWorkoutPlanModel, view, workoutPlanId);
+    private String handleDataIntegrityViolationException(Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, CustomUserDetails loggedUser, int workoutPlanId){
+        return handleError("Erro de integridade de dados.", model, workoutPerWorkoutPlanModel, view, loggedUser, workoutPlanId);
     }
 
-    private String handleUnexpectedException(Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, int workoutPlanId){
-        return handleError("Erro inesperado. Tente novamente.", model, workoutPerWorkoutPlanModel, view, workoutPlanId);
+    private String handleUnexpectedException(Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, CustomUserDetails loggedUser, int workoutPlanId){
+        return handleError("Erro inesperado. Tente novamente.", model, workoutPerWorkoutPlanModel, view, loggedUser, workoutPlanId);
 
     }
 
-    private String handleError(String errorMessage, Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, int workoutPlanId) {
+    private String handleError(String errorMessage, Model model, WorkoutPerWorkoutPlanModel workoutPerWorkoutPlanModel, String view, CustomUserDetails loggedUser, int workoutPlanId) {
         if (model != null) {
             model.addAttribute("errorMessage", errorMessage);
             model.addAttribute("workoutPerWorkoutPlanModel", workoutPerWorkoutPlanModel);
-            loadView(workoutPlanId, model);
+            loadView(workoutPlanId, model, loggedUser);
         }
         if (view != null) {
             assert model != null;
@@ -160,11 +166,10 @@ public class WorkoutPerWorkoutPlanController {
         }
     }
 
-    private void loadView(int workoutPlanId, Model model){
+    private void loadView(int workoutPlanId, Model model, CustomUserDetails loggedUser) {
         WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
 
-
-        List<WorkoutModel> allWorkouts = workoutRepository.findAll(); // todo: filtrar por usuario logado
+        var allWorkouts = workoutService.findAllByReceiverUserId(loggedUser.getUserId());
 
         //Colocando em ordem de sequencia dos exercícios
         allWorkouts.forEach(workout ->
