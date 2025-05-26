@@ -128,7 +128,6 @@ public class WorkoutExecutionRecordPerUserService {
         completedWorkoutPlanRepository.save(status);
     }
 
-    // todo: createInitialExecutionsForWorkout em que toda vez que e vinculada um treino a ficha de treino tem q comecar a trackear esse treino tbm!
 
     public void checkTotalCompletions(Integer userId, Integer workoutPlanId) {
         WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
