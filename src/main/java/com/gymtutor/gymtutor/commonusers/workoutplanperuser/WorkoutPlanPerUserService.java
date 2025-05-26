@@ -148,23 +148,22 @@ public class WorkoutPlanPerUserService {
             newLink.setWorkout(clonedWorkout);
             newLink.setWorkoutPlan(clonedPlan);
 
+
+            // todo: eu nn preciso clonar as atividades
             // Clonagem das atividades do treino
             List<WorkoutActivitiesModel> originalActivities = originalWorkout.getWorkoutActivities();
 
-            for (WorkoutActivitiesModel activity : originalActivities) {
-                WorkoutActivitiesModel clonedActivity = new WorkoutActivitiesModel();
+            for (WorkoutActivitiesModel originalActivity : originalActivities) {
+                WorkoutActivitiesModel linkedActivity = new WorkoutActivitiesModel();
+                linkedActivity.setWorkoutActivitiesId(
+                        new WorkoutActivitiesId(clonedWorkout.getWorkoutId(), originalActivity.getActivity().getActivitiesId())
+                );
+                linkedActivity.setWorkout(clonedWorkout);
+                linkedActivity.setActivity(originalActivity.getActivity());
+                linkedActivity.setSequence(originalActivity.getSequence());
+                linkedActivity.setReps(originalActivity.getReps());
 
-                WorkoutActivitiesId newActivityId = new WorkoutActivitiesId();
-                newActivityId.setWorkoutId(clonedWorkout.getWorkoutId());
-                newActivityId.setActivitiesId(activity.getActivity().getActivitiesId());
-
-                clonedActivity.setWorkoutActivitiesId(newActivityId);
-                clonedActivity.setWorkout(clonedWorkout);
-                clonedActivity.setActivity(activity.getActivity());
-                clonedActivity.setSequence(activity.getSequence());
-                clonedActivity.setReps(activity.getReps());
-
-                workoutActivitiesRepository.save(clonedActivity);
+                workoutActivitiesRepository.save(linkedActivity);
             }
 
             workoutPerWorkoutPlanRepository.save(newLink);
