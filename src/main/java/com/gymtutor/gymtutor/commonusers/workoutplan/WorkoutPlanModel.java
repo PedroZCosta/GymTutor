@@ -19,7 +19,7 @@ public class WorkoutPlanModel {
     private int workoutPlanId;
 
     @NotBlank(message = "Nome não pode estar vazio!")
-    @Size(min = 2, max=30 , message = "Este campo deve ter entre 2 e 30 caracteres.")
+    @Size(min = 2, max=50 , message = "Este campo deve ter entre 2 e 50 caracteres.")
     private String workoutPlanName;
 
     @NotBlank(message = "Nome não pode estar vazio!")
