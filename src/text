@@ -1,0 +1,76 @@
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+public class Aluno {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // Outros campos existentes...
+
+    // Integrante 1: Número da sorte
+    private Integer numeroDaSorte;
+
+    // Integrante 2: Cor favorita
+    @Column(columnDefinition = "TEXT")
+    private String corFavorita;
+
+    // Integrante 3: Data de ingresso na universidade
+    private LocalDateTime dataIngresso;
+
+    // Integrante 4: Valor da passagem de ônibus
+    private Float valorPassagemOnibus;
+
+    // Integrante 5: Nome da mãe (VARCHAR 50)
+    @Column(length = 50)
+    private String nomeMae;
+
+    // Getters e Setters
+}
+
+<!-- Número da Sorte (INT) -->
+<div class="mb-3">
+  <label for="numeroDaSorte" class="form-label">Número da Sorte</label>
+  <input type="number" class="form-control rounded-pill shadow-sm" id="numeroDaSorte" name="numeroDaSorte" th:field="*{numeroDaSorte}" required>
+  <div th:if="${#fields.hasErrors('numeroDaSorte')}" class="text-danger form-text">
+    <p th:each="err : ${#fields.errors('numeroDaSorte')}" th:text="${err}"></p>
+  </div>
+</div>
+
+<!-- Cor Favorita (TEXT) -->
+<div class="mb-3">
+  <label for="corFavorita" class="form-label">Cor Favorita</label>
+  <input type="text" class="form-control rounded-pill shadow-sm" id="corFavorita" name="corFavorita" th:field="*{corFavorita}" required>
+  <div th:if="${#fields.hasErrors('corFavorita')}" class="text-danger form-text">
+    <p th:each="err : ${#fields.errors('corFavorita')}" th:text="${err}"></p>
+  </div>
+</div>
+
+<!-- Data de Ingresso (DATETIME) -->
+<div class="mb-3">
+  <label for="dataIngresso" class="form-label">Data de Ingresso na Universidade</label>
+  <input type="datetime-local" class="form-control rounded-pill shadow-sm" id="dataIngresso" name="dataIngresso" th:field="*{dataIngresso}" required>
+  <div th:if="${#fields.hasErrors('dataIngresso')}" class="text-danger form-text">
+    <p th:each="err : ${#fields.errors('dataIngresso')}" th:text="${err}"></p>
+  </div>
+</div>
+
+<!-- Valor da Passagem (FLOAT) -->
+<div class="mb-3">
+  <label for="valorPassagemOnibus" class="form-label">Valor da Passagem de Ônibus</label>
+  <input type="number" step="0.01" class="form-control rounded-pill shadow-sm" id="valorPassagemOnibus" name="valorPassagemOnibus" th:field="*{valorPassagemOnibus}" required>
+  <div th:if="${#fields.hasErrors('valorPassagemOnibus')}" class="text-danger form-text">
+    <p th:each="err : ${#fields.errors('valorPassagemOnibus')}" th:text="${err}"></p>
+  </div>
+</div>
+
+<!-- Nome da Mãe (VARCHAR 50) -->
+<div class="mb-3">
+  <label for="nomeMae" class="form-label">Nome da Mãe</label>
+  <input type="text" class="form-control rounded-pill shadow-sm" id="nomeMae" name="nomeMae" th:field="*{nomeMae}" maxlength="50" required>
+  <div th:if="${#fields.hasErrors('nomeMae')}" class="text-danger form-text">
+    <p th:each="err : ${#fields.errors('nomeMae')}" th:text="${err}"></p>
+  </div>
+</div>

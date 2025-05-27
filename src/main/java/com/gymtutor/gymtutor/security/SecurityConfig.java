@@ -32,6 +32,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/registration", "/password-recovery", "/login").permitAll() // Páginas públicas
+                        .requestMatchers("/fxml").permitAll() // Páginas públicas
                         .requestMatchers("/chat/**", "/ws/**").authenticated()
                         .requestMatchers("/images/activities/**").hasAnyRole("STUDENT", "PERSONAL", "ADMIN")
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // Permitir acesso a arquivos estáticos
