@@ -5,6 +5,7 @@ import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkout
 import com.gymtutor.gymtutor.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
@@ -34,6 +35,9 @@ public class WorkoutModel {
 
     @OneToMany(mappedBy = "workout")
     private List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans;
+
+    @NotNull
+    private int receiverUserId;
 
     // Construtor padrão
     public WorkoutModel() {
@@ -97,5 +101,13 @@ public class WorkoutModel {
 
     public void setWorkoutPerWorkoutPlans(List<WorkoutPerWorkoutPlanModel> workoutPerWorkoutPlans) {
         this.workoutPerWorkoutPlans = workoutPerWorkoutPlans;
+    }
+
+    public int getReceiverUserId() {
+        return receiverUserId;
+    }
+
+    public void setReceiverUserId(int receiverUserId) {
+        this.receiverUserId = receiverUserId;
     }
 }

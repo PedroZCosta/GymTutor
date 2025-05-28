@@ -23,7 +23,7 @@
         <div th:each="workout : ${workout}" class="p-4 rounded-4 text-white" style="background-color: #7d0022;">
             <!-- Informações principais -->
             <div class="mb-2">
-                <h5 th:text="'Treino ' + ${workout.workoutName}">Nome do Treino</h5>
+                <h5 th:text="${workout.workoutName}">Nome do Treino</h5>
                 <p th:text="'Descanso entre exercícios: ' + ${workout.restTime}">Descanso</p>
             </div>
 

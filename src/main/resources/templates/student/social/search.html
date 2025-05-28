@@ -80,7 +80,7 @@
             <tbody>
             <tr th:each="user : ${results}">
                 <td>
-                    <img th:src="@{/images/users/{userId}/profile.jpg(id=${user.userId})}"
+                    <img th:src="@{/images/users/{userId}/profile.jpg(userId=${user.userId})}"
                          alt="Imagem de perfil"
                          onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
                          class="profile-img" />

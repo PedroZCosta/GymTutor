@@ -32,7 +32,7 @@ public class WorkoutController {
             ){
         return handleRequest(redirectAttributes, model, null, null, () -> {
             int userId = userDetails.getUser().getUserId();
-            var workoutList = workoutService.findAllByUser(userId);
+            var workoutList = workoutService.findAllByReceiverUserId(userId); // todo: tenho que realizar novo filtro pois agora aprece as atividades clonadas tambem, ou seja talvez seja legal ter um campo chamado "clonado" como boolean
             //Função para colocar as atividades vinculadas em ordem sequencial
             for (WorkoutModel workout : workoutList) {
                 workout.getWorkoutActivities().sort(Comparator.comparingInt(WorkoutActivitiesModel::getSequence));

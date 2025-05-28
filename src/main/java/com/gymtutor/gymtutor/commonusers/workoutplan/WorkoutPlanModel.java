@@ -19,7 +19,7 @@ public class WorkoutPlanModel {
     private int workoutPlanId;
 
     @NotBlank(message = "Nome não pode estar vazio!")
-    @Size(min = 2, max=30 , message = "Este campo deve ter entre 2 e 30 caracteres.")
+    @Size(min = 2, max=50 , message = "Este campo deve ter entre 2 e 50 caracteres.")
     private String workoutPlanName;
 
     @NotBlank(message = "Nome não pode estar vazio!")
@@ -41,6 +41,9 @@ public class WorkoutPlanModel {
     @ManyToOne
     @JoinColumn(name = "copied_for_user_id")
     private User copiedForUser;
+
+    @Column(name = "target_days_to_complete", nullable = false)
+    private Short targetDaysToComplete;
 
     // Construtor padrão
     public WorkoutPlanModel() {
@@ -104,5 +107,13 @@ public class WorkoutPlanModel {
 
     public void setCopiedForUser(User copiedForUser) {
         this.copiedForUser = copiedForUser;
+    }
+
+    public Short getTargetDaysToComplete() {
+        return targetDaysToComplete;
+    }
+
+    public void setTargetDaysToComplete(Short targetDaysToComplete) {
+        this.targetDaysToComplete = targetDaysToComplete;
     }
 }

@@ -1,7 +1,9 @@
 package com.gymtutor.gymtutor.commonusers.workoutperworkoutplan;
 
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
+import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserService;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
+import com.gymtutor.gymtutor.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +20,12 @@ public class WorkoutPerWorkoutPlanService {
     @Autowired
     private WorkoutPerWorkoutPlanRepository workoutPerWorkoutPlanRepository;
 
+    @Autowired
+    private WorkoutExecutionRecordPerUserService workoutExecutionRecordPerUserService;
+
     // Vincular treino a uma ficha de treino
     @Transactional
-    public void linkWorkoutToWorkoutPlan(WorkoutModel workout, WorkoutPlanModel workoutPlan) {
+    public void linkWorkoutToWorkoutPlan(WorkoutModel workout, WorkoutPlanModel workoutPlan, User user) {
         // Verifica se já existe o vínculo
         Optional<WorkoutPerWorkoutPlanModel> existingLink = workoutPerWorkoutPlanRepository
                 .findByWorkout_WorkoutIdAndWorkoutPlan_WorkoutPlanId(workout.getWorkoutId(), workoutPlan.getWorkoutPlanId());
@@ -39,6 +44,7 @@ public class WorkoutPerWorkoutPlanService {
         link.setWorkoutPlan(workoutPlan);
 
         workoutPerWorkoutPlanRepository.save(link);
+        workoutExecutionRecordPerUserService.syncExecutionRecordsWithWorkoutPlan(workoutPlan, user);
     }
 
     // Desvincular treino da ficha de treino
