@@ -2,6 +2,9 @@ package com.gymtutor.gymtutor.commonusers.workoutplanperuser;
 
 import com.gymtutor.gymtutor.admin.activities.ActivitiesController;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
+import com.gymtutor.gymtutor.personal.clientperuser.ClientPerUserModel;
+import com.gymtutor.gymtutor.personal.clientperuser.ClientPerUserRepository;
+import com.gymtutor.gymtutor.personal.clientperuser.ClientPerUserService;
 import com.gymtutor.gymtutor.user.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
@@ -25,7 +28,7 @@ public class WorkoutPlanPerUserController {
     private WorkoutPlanService workoutPlanService;
 
     @Autowired
-    private UserService userService;
+    private ClientPerUserService clientPerUserService;
 
     @Autowired
     private WorkoutPlanPerUserService workoutPlanPerUserService;
@@ -42,8 +45,11 @@ public class WorkoutPlanPerUserController {
         // Recupera a ficha de treino
         WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
 
-        // Recupera todos os usuários (ou filtre conforme necessário)
-        List<User> allUsers = userRepository.findAll();
+        // Recupera todos os clientes por pesonal logado
+        List<User> teste = clientPerUserService.findByPersonalId(loggedUser.getUserId())
+                .stream()
+                .map(ClientPerUserModel::getClient)
+                .collect(Collectors.toList());
 
         // Recupera os vínculos de usuários com essa ficha de treino
         var workoutPlanPerUsers = workoutPlanPerUserService.findAllByWorkoutPlanId(workoutPlanId);
@@ -61,7 +67,7 @@ public class WorkoutPlanPerUserController {
 
 
         model.addAttribute("workoutPlan", workoutPlan);
-        model.addAttribute("users", allUsers);
+        model.addAttribute("allClients", teste);
         model.addAttribute("linkedUserIds", linkedUserIds);
         model.addAttribute("linkedUsers", linkedUsers);
         model.addAttribute("body", "student/workoutplan/linkusers");
