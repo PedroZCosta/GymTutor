@@ -47,6 +47,13 @@
       color: white;
     }
 
+    .profile-img {
+      width: 75px;
+      height: 75px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
 
   </style>
 </head>
@@ -84,10 +91,7 @@
       <tbody>
       <tr th:each="request : ${pendingRequests}">
         <td>
-          <img th:src="@{/images/users/{userId}/profile.jpg(userId=${request.sender.userId})}" alt="Imagem de perfil" style="width: 75px;
-      height: 75px;
-      object-fit: cover;
-      border-radius: 50%;"
+          <img th:src="@{/images/users/{userId}/profile.jpg(userId=${request.sender.userId})}" alt="Imagem de perfil";
                onerror="this.onerror=null; this.src='/images/users/nophoto.jpg';"
                class="profile-img"  />
         </td>
@@ -101,10 +105,10 @@
               <button type="submit" class="btn btn-custom-red"
                       onclick="return confirm('Você tem certeza de que deseja rejeitar esta conexão?')">Rejeitar</button>
             </form>
-            <form th:action="@{/chat}" method="get">
-              <input type="hidden" name="otherUserId" th:value="${user.userId}" />
-              <button type="submit" class="btn btn-primary">Enviar mensagem</button>
-            </form>
+<!--            <form th:action="@{/chat}" method="get">-->
+<!--              <input type="hidden" name="otherUserId" th:value="${user.userId}" />-->
+<!--              <button type="submit" class="btn btn-primary">Enviar mensagem</button>-->
+<!--            </form>-->
           </div>
         </td>
       </tr>
