@@ -28,20 +28,20 @@
     <form th:action="@{/student/workout/{workoutId}/edit(workoutId=${workoutId})}"
           th:method="post" th:object="${workoutModel}">
 
+      <!-- Nome do treino -->
       <div class="mb-3">
-        <label for="workoutName" class="form-label">Nome da ficha de treino</label>
+        <label for="workoutName" class="form-label">Nome do treino</label>
         <input type="text" class="form-control rounded-pill shadow-sm" id="workoutName" name="workoutName"
-               th:field="*{workoutName}" minlength="3" maxlength="100" required>
-
-      </div>
-      <div th:if="${#fields.hasErrors('workoutName')}" class="text-danger form-text">
-        <p th:each="err : ${#fields.errors('workoutName')}" th:text="${err}"></p>
+               th:field="*{workoutName}" minlength="2" maxlength="200" required>
+        <div th:if="${#fields.hasErrors('workoutName')}" class="text-danger form-text">
+          <p th:each="err : ${#fields.errors('workoutName')}" th:text="${err}"></p>
+        </div>
       </div>
 
       <div class="mb-4">
         <label for="restTime" class="form-label">Tempo de descanso entre séries</label>
         <input type="text" class="form-control rounded-pill shadow-sm" id="restTime" name="restTime"
-               th:field="*{restTime}" required>
+               th:field="*{restTime}" minlength="10" maxlength="30" required>
         <div th:if="${#fields.hasErrors('restTime')}" class="text-danger form-text">
           <p th:each="err : ${#fields.errors('restTime')}" th:text="${err}"></p>
         </div>
