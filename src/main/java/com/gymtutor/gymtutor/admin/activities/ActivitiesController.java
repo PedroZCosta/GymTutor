@@ -138,6 +138,8 @@ public class ActivitiesController {
     }
 
     private String handleException(Exception ex, Model model, ActivitiesModel activitiesModel, String view, RedirectAttributes redirectAttributes){
+//        System.out.println(ex.getMessage());
+//        System.out.println(ex.getCause());
         return switch (ex) {
             case IllegalArgumentException illegalArgumentException ->
                     handleIllegalArgumentException(illegalArgumentException, model, activitiesModel, view);
@@ -169,6 +171,7 @@ public class ActivitiesController {
 
     private String handleError(String errorMessage, Model model, ActivitiesModel activitiesModel, String view){
         if (model != null) {
+//            System.err.println(errorMessage);
             model.addAttribute("errorMessage", errorMessage);
             model.addAttribute("ActivitiesModel", activitiesModel);
             model.addAttribute("muscularGroups", muscularGroupRepository.findAll());

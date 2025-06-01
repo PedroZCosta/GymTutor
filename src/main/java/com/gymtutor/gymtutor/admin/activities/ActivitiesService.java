@@ -16,6 +16,10 @@ public class ActivitiesService {
     private ActivitiesRepository activitiesRepository;
 
     public void createActivity(ActivitiesModel activitiesModel){
+
+        if (!activitiesRepository.findByActivityName(activitiesModel.getActivityName()).isEmpty()) {
+            throw new IllegalArgumentException("Já existe uma atividade com esse nome.");
+        }
         activitiesRepository.save(activitiesModel);
     }
 
