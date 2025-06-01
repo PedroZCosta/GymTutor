@@ -98,7 +98,6 @@ public class ClientPerUserController {
         try {
             return block.execute();
         } catch (Exception ex) {
-            ex.printStackTrace(); // Mostra o erro no console
             return handleException(ex, model, view, redirectAttributes, loggedUser);
         }
     }
