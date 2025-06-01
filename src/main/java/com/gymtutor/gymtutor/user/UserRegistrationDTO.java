@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.br.CPF;
 public class UserRegistrationDTO {
 
     @NotBlank
-    @Size(min = 2, message = "O nome deve ter pelo menos 2 caracteres.")
+    @Size(min = 3, message = "O nome deve ter pelo menos 3 caracteres.")
     private String userName;
 
     @NotBlank
