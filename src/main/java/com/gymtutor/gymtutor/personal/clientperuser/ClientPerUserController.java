@@ -1,5 +1,8 @@
 package com.gymtutor.gymtutor.personal.clientperuser;
 
+import com.gymtutor.gymtutor.commonusers.profile.social.UserRelationModel;
+import com.gymtutor.gymtutor.commonusers.profile.social.UserRelationRepository;
+import com.gymtutor.gymtutor.commonusers.webchat.Conversation;
 import org.springframework.ui.Model;
 import com.gymtutor.gymtutor.commonusers.profile.social.UserRelationService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
@@ -12,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +30,9 @@ public class ClientPerUserController {
     @Autowired
     private UserRelationService userRelationService;
 
+    @Autowired
+    private UserRelationRepository userRelationRepository;
+
     @GetMapping
     public String showClientForm(
             Model model,
@@ -37,6 +44,29 @@ public class ClientPerUserController {
             User personal = loggedUser.getUser();
 
             List<User> connections = userRelationService.getAllConnectedUsers(personal);
+
+            List<UserRelationModel> pendingRelationsSender = userRelationRepository.findBySenderAndAcceptedTrue(loggedUser.getUser());
+            List<UserRelationModel> pendingRelationsReceiver = userRelationRepository.findByReceiverAndAcceptedTrue(loggedUser.getUser());
+
+
+            List<User> unlinkedClientsSender = pendingRelationsSender.stream()
+                    .map(UserRelationModel::getReceiver)
+                    .toList();
+
+
+            List<User> unlinkedClientsReceiver = pendingRelationsReceiver.stream()
+                    .map(UserRelationModel::getSender)
+                    .toList();
+
+
+            List<User> allUnlinkedClients = new ArrayList<>();
+            allUnlinkedClients.addAll(unlinkedClientsReceiver);
+            allUnlinkedClients.addAll(unlinkedClientsSender);
+
+            for (User a : allUnlinkedClients) {
+                System.err.println(a.getUserEmail());
+                System.err.println(a.getUserPassword());
+            }
 
             // Buscar todos os clientes já vinculados a esse personal
             List<ClientPerUserModel> clientLinks = clientPerUserService.findByPersonalId(personal.getUserId());
@@ -52,6 +82,7 @@ public class ClientPerUserController {
                     .map(ClientPerUserModel::getClient)
                     .collect(Collectors.toList());
 
+            model.addAttribute("unlinkedClients", allUnlinkedClients);
             model.addAttribute("connections", connections);
             model.addAttribute("linkedClientIds", linkedClientIds);
             model.addAttribute("linkedClients", linkedClients);
