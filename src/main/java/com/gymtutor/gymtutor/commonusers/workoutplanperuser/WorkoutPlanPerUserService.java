@@ -96,7 +96,7 @@ public class WorkoutPlanPerUserService {
 
         // Clona o plano (sem ID, com novo nome, etc.)
         WorkoutPlanModel clonedPlan = new WorkoutPlanModel();
-        clonedPlan.setWorkoutPlanName(originalPlan.getWorkoutPlanName() + " (" + copiedUser.getUserName() + ")");
+        clonedPlan.setWorkoutPlanName(originalPlan.getWorkoutPlanName()  );
          // não pode esquecer disso!
 
         // Descrição

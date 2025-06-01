@@ -28,4 +28,15 @@ public class WorkoutPlanWithRecordsDTO {
     public void setRecords(List<WorkoutExecutionRecordPerUserModel> records) {
         this.records = records;
     }
+
+    // ✅ NOVO MÉTODO: soma dos treinos feitos
+    public int getTotalExecutionCount() {
+        if (records == null || records.isEmpty()) {
+            return 0;
+        }
+
+        return records.stream()
+                .mapToInt(WorkoutExecutionRecordPerUserModel::getExecutionCount)
+                .sum();
+    }
 }
