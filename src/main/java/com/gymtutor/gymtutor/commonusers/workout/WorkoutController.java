@@ -92,9 +92,9 @@ public class WorkoutController {
             @AuthenticationPrincipal CustomUserDetailsService loggedUser
             ){
         if (bindingResult.hasErrors()){
-            return handleValidationErrors(model, "/student/workoutId/edit", workoutModel, bindingResult, workoutId);
-
-        }return handleRequest(redirectAttributes, model, "student/workout/edit", workoutModel, () -> {
+            return handleValidationErrors(model, "/student/workout/edit", workoutModel, bindingResult, workoutId);
+        }
+        return handleRequest(redirectAttributes, model, "student/workout/edit", workoutModel, () -> {
             workoutService.updateWorkout(workoutModel, workoutId);
             redirectAttributes.addFlashAttribute("successMessage", "Treino alterado com sucesso!");
             return "redirect:/student/workout";
