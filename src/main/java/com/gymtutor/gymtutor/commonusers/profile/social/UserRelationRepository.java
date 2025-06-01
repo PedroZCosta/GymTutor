@@ -1,5 +1,6 @@
 package com.gymtutor.gymtutor.commonusers.profile.social;
 
+import com.gymtutor.gymtutor.personal.clientperuser.ClientPerUserModel;
 import com.gymtutor.gymtutor.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,5 +18,6 @@ public interface UserRelationRepository extends JpaRepository<UserRelationModel,
 
     // Conexões onde o usuário é o destinatário e a solicitação é pendente
     List<UserRelationModel> findByReceiverAndAcceptedFalse(User receiver);
+
 
 }
