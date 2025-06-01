@@ -72,6 +72,9 @@
 
                         <!-- Seção do Personal -->
                         <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
+                            <a class="nav-link text-white" href="/personal/clientgraphs">Acompanhar clientes</a>
+                        </li>
+                        <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
                             <a class="nav-link text-white" href="/personal/linkclients">Adicionar clientes</a>
                         </li>
                     </ul>

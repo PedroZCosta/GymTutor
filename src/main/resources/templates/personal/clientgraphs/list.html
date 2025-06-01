@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gráficos dos Clientes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container mt-4">
+  <h1>Gráficos dos Clientes</h1>
+
+  <div th:if="${#lists.isEmpty(clients)}">
+    <p>Nenhum cliente com registros encontrados.</p>
+  </div>
+
+  <div th:if="${!#lists.isEmpty(clients)}">
+    <div th:each="clientDTO : ${clients}" class="mb-5">
+      <h3 th:text="${clientDTO.user.userName}">Nome do Cliente</h3>
+
+      <div th:each="planRecord : ${clientDTO.workoutPlanWithRecordsList}">
+        <h5 th:text="${planRecord.workoutPlan.workoutPlanName}">Nome do Treino</h5>
+        <table class="table table-striped table-bordered">
+          <thead class="table-dark">
+          <tr>
+            <th>ID do Treino</th>
+            <th>Contagem de Execuções</th>
+            <th>Última Execução</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="record : ${planRecord.records}">
+            <td th:text="${planRecord.workoutPlan.workoutPlanId}">ID</td>
+            <td th:text="${record.executionCount}">0</td>
+            <td th:text="${#temporals.format(record.lastExecutionTime, 'dd/MM/yyyy HH:mm')}">00/00/0000</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

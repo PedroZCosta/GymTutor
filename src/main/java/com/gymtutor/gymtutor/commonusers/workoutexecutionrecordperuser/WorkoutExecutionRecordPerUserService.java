@@ -215,8 +215,20 @@ public class WorkoutExecutionRecordPerUserService {
                 }
             }
         }
-
         return true; // Todos estão com mais de 20 minutos ou não foram concluídos ainda
+    }
+
+    public void resetAllExecutions(Integer workoutPlanId) {
+        List<WorkoutExecutionRecordPerUserModel> records =
+                workoutExecutionRecordPerUserRepository.findAllByWorkoutPlanId(workoutPlanId);
+        for (WorkoutExecutionRecordPerUserModel record : records) {
+            record.setExecutionCount((short) 0);
+            workoutExecutionRecordPerUserRepository.save(record);
+        }
+    }
+
+    public List<WorkoutExecutionRecordPerUserModel>  findAllRecordByPersonalId(int personalId){
+        return workoutExecutionRecordPerUserRepository.findAllByWorkoutExecutionRecordPerUserId_UserId(personalId);
     }
 
 }

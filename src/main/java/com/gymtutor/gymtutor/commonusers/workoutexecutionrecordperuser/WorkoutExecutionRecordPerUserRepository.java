@@ -30,4 +30,6 @@ public interface WorkoutExecutionRecordPerUserRepository extends JpaRepository<W
 
     @Query("SELECT w FROM WorkoutExecutionRecordPerUserModel w WHERE w.workoutExecutionRecordPerUserId.workoutPlanId = :workoutPlanId")
     List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutPlanId(@Param("workoutPlanId") Integer workoutPlanId);
+
+    List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutExecutionRecordPerUserId_UserId(Integer userId);
 }
