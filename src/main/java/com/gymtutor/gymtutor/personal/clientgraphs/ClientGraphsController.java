@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -45,10 +46,12 @@ public class ClientGraphsController {
     public String restartClientWorkout(
             Model model,
             @AuthenticationPrincipal CustomUserDetails loggedUser,
+            @RequestParam("workoutPlanId") int workoutPlanId,  // recebe o userId do cliente no form
             RedirectAttributes redirectAttributes
     ){
         return handleRequest(redirectAttributes, model, "/personal/clientgraphs", null, loggedUser, () -> {
-            workoutExecutionRecordPerUserService.resetAllExecutions(loggedUser.getUser().getUserId());
+
+            workoutExecutionRecordPerUserService.resetAllExecutions(workoutPlanId);
             redirectAttributes.addFlashAttribute("successMessage", "Ficha de treino reiniciada com sucesso!");
             return "redirect:/personal/clientgraphs";
         });

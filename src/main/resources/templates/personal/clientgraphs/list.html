@@ -65,6 +65,7 @@
       <h3 class="mb-3" th:text="${clientDTO.user.userName}">Nome do Cliente</h3>
 
       <!-- Loop por plano do cliente -->
+      <!-- Loop por plano do cliente -->
       <div th:each="planRecord, planStat : ${clientDTO.workoutPlanWithRecordsList}" class="chart-card">
         <h5 class="mb-3" th:text="${planRecord.workoutPlan.workoutPlanName}">Nome do Treino</h5>
 
@@ -74,6 +75,16 @@
         <!-- Inputs ocultos com os dados -->
         <input type="hidden" th:attr="id=${'total-' + clientStat.index + '-' + planStat.index}" th:value="${planRecord.workoutPlan.targetDaysToComplete}" />
         <input type="hidden" th:attr="id=${'done-' + clientStat.index + '-' + planStat.index}" th:value="${planRecord.totalExecutionCount}" />
+
+        <!-- Mova o formulário para dentro do loop para ter acesso a planRecord -->
+        <form th:action="@{/personal/clientgraphs/restart-client-workout}" method="post" class="mb-3">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <input type="hidden" th:if="${planRecord.workoutPlan != null}" th:name="workoutPlanId" th:value="${planRecord.workoutPlan.workoutPlanId}" />
+          <button type="submit" class="btn btn-outline-danger btn-sm"
+                  onclick="return confirm('Tem certeza que deseja reiniciar esta ficha de treino?');">
+            Reiniciar ficha de treino deste cliente
+          </button>
+        </form>
       </div>
     </div>
   </div>
