@@ -2,10 +2,13 @@ package com.gymtutor.gymtutor.commonusers.workoutplan;
 
 import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
+import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserModel;
+import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserService;
 import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
 import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserService;
 import com.gymtutor.gymtutor.security.CustomUserDetails;
 import com.gymtutor.gymtutor.security.CustomUserDetailsService;
+import com.gymtutor.gymtutor.user.User;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,10 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -34,6 +35,9 @@ public class WorkoutPlanController {
     @Autowired
     private WorkoutPlanRepository workoutPlanRepository;
 
+    @Autowired
+    private WorkoutExecutionRecordPerUserService workoutExecutionRecordPerUserService;
+
 
     @GetMapping
     public String listWorkoutPlan(
@@ -46,11 +50,35 @@ public class WorkoutPlanController {
             List<WorkoutPlanModel> createdPlans = workoutPlanRepository.findByUserUserIdAndCopiedForUserIsNull(userId);
             List<WorkoutPlanModel> copiedPlans = workoutPlanService.findAllByCopiedForUserUserId(userId);
 
+            User user = userDetails.getUser();
+
+            List<WorkoutExecutionRecordPerUserModel> variavel = workoutExecutionRecordPerUserService.findAllRecordByPersonalId(user.getUserId());
+
+            Map<Integer, LocalDateTime> lastExecutionMap = new HashMap<>();
+
+            for (WorkoutExecutionRecordPerUserModel r : variavel) {
+                if (r == null) continue;
+
+                var idObj = r.getWorkoutExecutionRecordPerUserId();
+                if (idObj == null) continue;
+
+                Integer workoutId = idObj.getWorkoutId();
+                if (workoutId == null) continue;
+
+                LocalDateTime lastExec = r.getLastExecutionTime();
+                // Você pode decidir se quer ou não pular null no valor:
+                if (lastExec == null) continue;
+
+                // Se já tem no mapa, não sobrescreve (comportamento original)
+                lastExecutionMap.putIfAbsent(workoutId, lastExec);
+            }
+
             // Junta os dois, sem duplicar
             Set<WorkoutPlanModel> allPlans = new LinkedHashSet<>();
             allPlans.addAll(createdPlans);
             allPlans.addAll(copiedPlans);
 
+            model.addAttribute("lastExecutionMap", lastExecutionMap);
             model.addAttribute("workoutPlanList", allPlans);
             model.addAttribute("LoggedUserId", userId);
             model.addAttribute("body", "student/workoutplan/list");

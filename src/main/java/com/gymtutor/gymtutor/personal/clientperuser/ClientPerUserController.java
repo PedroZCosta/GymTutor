@@ -63,11 +63,6 @@ public class ClientPerUserController {
             allUnlinkedClients.addAll(unlinkedClientsReceiver);
             allUnlinkedClients.addAll(unlinkedClientsSender);
 
-            for (User a : allUnlinkedClients) {
-                System.err.println(a.getUserEmail());
-                System.err.println(a.getUserPassword());
-            }
-
             // Buscar todos os clientes já vinculados a esse personal
             List<ClientPerUserModel> clientLinks = clientPerUserService.findByPersonalId(personal.getUserId());
 

@@ -27,7 +27,16 @@
 
             <ul class="mb-3">
                 <li th:each="workout : ${plan.workoutPerWorkoutPlans}">
-                    <span class="fw-bold" th:text="${workout.workout.workoutName}">Treino X</span>
+                    <span class="fw-bold d-block text-white" th:text="${workout.workout.workoutName}">Treino X</span>
+                    <small class="text-white">
+                        Última execução:
+                        <span th:if="${lastExecutionMap[workout.workout.workoutId] != null}"
+                              th:text="${#temporals.format(lastExecutionMap[workout.workout.workoutId], 'dd/MM/yyyy HH:mm')}">
+    </span>
+                        <span th:if="${lastExecutionMap[workout.workout.workoutId] == null}">
+        Nunca executado
+    </span>
+                    </small>
 
                     <form th:action="@{/student/workoutplan/workoutCheck}"
                           method="post"
