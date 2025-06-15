@@ -26,77 +26,100 @@
             <p th:text="${plan.workoutPlanDescription}">Descrição da ficha</p>
 
             <ul class="mb-3">
-                <li th:each="workout : ${plan.workoutPerWorkoutPlans}">
-                    <span class="fw-bold d-block text-white" th:text="${workout.workout.workoutName}">Treino X</span>
-                    <small class="text-white">
-                        Última execução:
-                        <span th:if="${lastExecutionMap[workout.workout.workoutId] != null}"
-                              th:text="${#temporals.format(lastExecutionMap[workout.workout.workoutId], 'dd/MM/yyyy HH:mm')}">
-    </span>
-                        <span th:if="${lastExecutionMap[workout.workout.workoutId] == null}">
-        Nunca executado
-    </span>
-                    </small>
-
-                    <form th:action="@{/student/workoutplan/workoutCheck}"
-                          method="post"
-                          th:id="'form-checkworkout-' + ${workout.workout.workoutId}">
-
-                        <input type="hidden" name="userId" th:value="${LoggedUserId}" />
-                        <input type="hidden" name="workoutPlanId" th:value="${plan.workoutPlanId}" />
-                        <input type="hidden" name="workoutId" th:value="${workout.workout.workoutId}" />
-
-                        <button type="button"
-                                class="btn btn-success mt-2"
-                                th:onclick="'confirmarConclusaoTreino(' + ${workout.workout.workoutId} + ')'"
-                        >
-                            Concluir Treino
-                        </button>
-                    </form>
-
-                    <ul>
-                        <li class="mb-1" th:each="activity : ${workout.workout.workoutActivities}">
-                            <button class="btn btn-link text-white text-start p-0"
-                                    type="button"
-                                    data-bs-toggle="modal"
-                                    th:attr="data-bs-target='#modal-activity-' + ${activity.activity.activitiesId}"
-                                    th:text="${activity.sequence} + ' - ' + ${activity.activity.activityName} + ' - Repetições: ' + ${activity.reps}">
+                <div th:each="workout : ${plan.workoutPerWorkoutPlans}" class="bg-white rounded-4 shadow p-4 mb-4 border">
+                    <!-- Header do Treino -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="mt-2 mb-1 fw-bold text-secondary" th:text="${workout.workout.workoutName}">Nome do Treino</h5>
+                            <small class="text-muted">
+                                Última execução:
+                                <span th:if="${lastExecutionMap[workout.workout.workoutId] != null}"
+                                      th:text="${#temporals.format(lastExecutionMap[workout.workout.workoutId], 'dd/MM/yyyy HH:mm')}">
+                </span>
+                                <span th:if="${lastExecutionMap[workout.workout.workoutId] == null}">
+                    Nunca executado
+                </span>
+                            </small>
+                        </div>
+                        <form th:action="@{/student/workoutplan/workoutCheck}" method="post"
+                              th:id="'form-checkworkout-' + ${workout.workout.workoutId}">
+                            <input type="hidden" name="userId" th:value="${LoggedUserId}" />
+                            <input type="hidden" name="workoutPlanId" th:value="${plan.workoutPlanId}" />
+                            <input type="hidden" name="workoutId" th:value="${workout.workout.workoutId}" />
+                            <button type="button" class="btn btn-success btn-sm"
+                                    th:onclick="'confirmarConclusaoTreino(' + ${workout.workout.workoutId} + ')'">
+                                Concluir Treino
                             </button>
+                        </form>
+                    </div>
 
-                            <!-- Modal da Atividade -->
-                            <div class="modal fade"
-                                 th:id="'modal-activity-' + ${activity.activity.activitiesId}"
-                                 tabindex="-1"
-                                 aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content" style="background-color: #7d0022">
-                                        <div class="modal-header d-flex justify-content-between">
-                                            <h5 class="modal-title" th:text="${activity.activity.activityName}">Nome da Atividade</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                        </div>
-                                        <div class="modal-body text-center">
-                                            <div class="d-flex flex-column gap-3">
-                                                <div class="p-4 rounded-4 text-white d-flex flex-wrap gap-3 justify-content-center" style="background-color: #7d0022;">
-                                                    <div th:each="image : ${activity.activity.images}" class="text-center">
-                                                        <img th:src="${image.imagePath}" alt="Imagem" style="width: 120px; height:120px; border-radius: 8px;" />
+                    <hr class="my-3" />
+
+                    <!-- Tabela de Exercícios -->
+                    <div class="mb-3">
+                        <h6 class="text-uppercase text-secondary fw-semibold mb-2">Exercícios</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-light">
+                                <tr class="text-center text-secondary">
+                                    <th>Seq.</th>
+                                    <th>Atividade</th>
+                                    <th>Repetições</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="activity : ${workout.workout.workoutActivities}">
+                                    <td class="text-center" th:text="${activity.sequence}">1</td>
+                                    <td th:text="${activity.activity.activityName}">Supino</td>
+                                    <td class="text-center" th:text="${activity.reps}">4 x 10</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-outline-primary btn-sm"
+                                                type="button"
+                                                data-bs-toggle="modal"
+                                                th:attr="data-bs-target='#modal-activity-' + ${activity.activity.activitiesId}">
+                                            Ver
+                                        </button>
+                                        <!-- Modal -->
+                                        <div class="modal fade"
+                                             th:id="'modal-activity-' + ${activity.activity.activitiesId}"
+                                             tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content" style="background-color: #7d0022">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-white" th:text="${activity.activity.activityName}">Atividade</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                                     </div>
-                                                    <div th:each="video : ${activity.activity.videos}" class="text-center d-flex">
-                                                        <p th:text="${video.videoName}"></p>
-                                                        <iframe th:if="${video.videoLink != null and video.videoLink.contains('v=')}"
-                                                                th:src="'https://www.youtube.com/embed/' + ${#strings.substring(video.videoLink, video.videoLink.indexOf('v=') + 2)}"
-                                                                width="200" height="113" frameborder="0"
-                                                                allowfullscreen></iframe>
+                                                    <div class="modal-body text-white">
+                                                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                                                            <div th:each="image : ${activity.activity.images}">
+                                                                <img th:src="${image.imagePath}" alt="Imagem"
+                                                                     class="rounded" style="width: 120px; height: 120px;" />
+                                                            </div>
+                                                            <div th:each="video : ${activity.activity.videos}" class="text-center">
+                                                                <p class="text-white small" th:text="${video.videoName}"></p>
+                                                                <iframe th:if="${video.videoLink != null and video.videoLink.contains('v=')}"
+                                                                        th:src="'https://www.youtube.com/embed/' + ${#strings.substring(video.videoLink, video.videoLink.indexOf('v=') + 2)}"
+                                                                        width="200" height="113" frameborder="0" allowfullscreen></iframe>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Fim Modal -->
-                        </li>
-                    </ul>
-                </li>
+                                        <!-- Fim Modal -->
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="bg-warning-subtle border border-warning rounded p-3 text-warning-emphasis small">
+                        <strong>Observação:</strong> Acompanhe seus pesos, aumente gradualmente conforme sua evolução.
+                    </div>
+                </div>
             </ul>
 
             <!-- Botões -->
