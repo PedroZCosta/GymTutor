@@ -1,8 +1,11 @@
 package com.gymtutor.gymtutor.commonusers.workoutplan;
 
 
+import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
+import com.gymtutor.gymtutor.commonusers.workoutactivities.WorkoutActivitiesModel;
 import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserModel;
 import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserService;
+import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
 import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserId;
 import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserModel;
 import com.gymtutor.gymtutor.commonusers.workoutplanperuser.WorkoutPlanPerUserRepository;
@@ -15,8 +18,10 @@ import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // Serviço para gerenciar a lógica de negócios relacionada a entidades WorkoutPlan (WorkoutPlanService),
@@ -120,6 +125,21 @@ public class WorkoutPlanService {
             workoutPlanPerUserRepository.delete(existingLink.get());
         } else {
             System.out.println("Vínculo não encontrado.");
+        }
+    }
+
+    public void activitiesSort(Set<WorkoutPlanModel> allPlans){
+        for (WorkoutPlanModel plan : allPlans) {
+            for (WorkoutPerWorkoutPlanModel workoutPerPlan : plan.getWorkoutPerWorkoutPlans()) {
+                WorkoutModel workout = workoutPerPlan.getWorkout();
+                if (workout != null && workout.getWorkoutActivities() != null) {
+                    workout.setWorkoutActivities(
+                            workout.getWorkoutActivities().stream()
+                                    .sorted(Comparator.comparingInt(WorkoutActivitiesModel::getSequence))
+                                    .collect(Collectors.toList())
+                    );
+                }
+            }
         }
     }
 
