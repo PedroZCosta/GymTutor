@@ -50,6 +50,9 @@ public class WorkoutExecutionRecordController {
             return "redirect:/student/workoutplan";
         } else if (ex instanceof DataIntegrityViolationException) {
             errorMessage = "Erro de integridade de dados.";
+        } else if (ex instanceof RuntimeException || ex instanceof IllegalStateException) {
+            // Captura suas exceções customizadas e mostra a mensagem
+            errorMessage = ex.getMessage();
         } else {
             errorMessage = "Erro inesperado. Tente novamente.";
         }

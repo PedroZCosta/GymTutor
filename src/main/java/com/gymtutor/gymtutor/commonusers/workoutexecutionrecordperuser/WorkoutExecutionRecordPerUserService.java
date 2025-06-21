@@ -47,7 +47,7 @@ public class WorkoutExecutionRecordPerUserService {
                 workoutExecutionRecordPerUserRepository.findRecord(sender.getUserId(), receiverId, workoutPlanId, workoutId);
 
         if (optionalRecord.isEmpty()) {
-            throw new RuntimeException("Registro não encontrado");
+            throw new IllegalArgumentException("Não foi possível localizar o treino. Verifique se ele ainda está vinculado à ficha.");
         }
         // checa se ja passou 20 minutos de todos os treinos para poder completar mais um
         if(canMarkWorkoutAsCompleted(workoutPlanId)){
@@ -61,7 +61,7 @@ public class WorkoutExecutionRecordPerUserService {
             workoutExecutionRecordPerUserRepository.save(record);
         }else{
             throw new IllegalStateException("Você só pode concluir um novo treino após 20 minutos do último.");
-        } // todo: mostrar na tela o errorMessage
+        }
 
     }
 
