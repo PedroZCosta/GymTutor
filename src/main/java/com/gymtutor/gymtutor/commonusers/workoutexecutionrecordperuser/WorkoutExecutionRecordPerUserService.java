@@ -39,9 +39,9 @@ public class WorkoutExecutionRecordPerUserService {
     @Autowired
     private WorkoutPerWorkoutPlanRepository workoutPerWorkoutPlanRepository;
 
-    public void workoutCheck(Integer userId, Integer workoutPlanId, Integer workoutId) {
+    public void workoutCheck(Integer senderID, Integer receiverId, Integer workoutPlanId, Integer workoutId) {
         Optional<WorkoutExecutionRecordPerUserModel> optionalRecord =
-                workoutExecutionRecordPerUserRepository.findRecord(userId, workoutPlanId, workoutId);
+                workoutExecutionRecordPerUserRepository.findRecord(senderID, receiverId, workoutPlanId, workoutId);
 
         if (optionalRecord.isEmpty()) {
             throw new RuntimeException("Registro não encontrado");
@@ -53,7 +53,7 @@ public class WorkoutExecutionRecordPerUserService {
 
             record.setExecutionCount((short) (record.getExecutionCount() + 1));
             // Checa se a soma de treinos concluidos ja completou a ficha de treino
-            checkTotalCompletions(userId, workoutPlanId);
+            checkTotalCompletions(receiverId, workoutPlanId);
             record.setLastExecutionTime(LocalDateTime.now());
 
             workoutExecutionRecordPerUserRepository.save(record);
@@ -63,7 +63,7 @@ public class WorkoutExecutionRecordPerUserService {
 
     }
 
-    public void createInitialExecutionsForPlan(WorkoutPlanPerUserModel workoutPlanPerUserModel) {
+    public void createInitialExecutionsForPlan(WorkoutPlanPerUserModel workoutPlanPerUserModel, int senderId) {
         List<WorkoutModel> treinos = workoutService.findByWorkoutPlanId(
                 workoutPlanPerUserModel.getWorkoutPlan().getWorkoutPlanId()
         );
@@ -72,7 +72,8 @@ public class WorkoutExecutionRecordPerUserService {
             WorkoutExecutionRecordPerUserModel execucao = new WorkoutExecutionRecordPerUserModel();
 
             WorkoutExecutionRecordPerUserId execId = new WorkoutExecutionRecordPerUserId();
-            execId.setUserId(workoutPlanPerUserModel.getUser().getUserId());
+            execId.setReceiverId(workoutPlanPerUserModel.getUser().getUserId());
+            execId.setSenderId(senderId);
             execId.setWorkoutPlanId(workoutPlanPerUserModel.getWorkoutPlan().getWorkoutPlanId());
             execId.setWorkoutId(treino.getWorkoutId());
 
@@ -103,7 +104,8 @@ public class WorkoutExecutionRecordPerUserService {
             WorkoutExecutionRecordPerUserModel execucao = new WorkoutExecutionRecordPerUserModel();
 
             WorkoutExecutionRecordPerUserId execId = new WorkoutExecutionRecordPerUserId();
-            execId.setUserId(user.getUserId());
+            execId.setSenderId(user.getUserId());
+            execId.setReceiverId(user.getUserId()); // eu mesmo iniciei entao eu sou o cara que manda e recebe
             execId.setWorkoutPlanId(workoutPlan.getWorkoutPlanId());
             execId.setWorkoutId(treino.getWorkoutId());
 
@@ -136,7 +138,7 @@ public class WorkoutExecutionRecordPerUserService {
         // Buscar execuções do usuário nessa ficha
         List<WorkoutExecutionRecordPerUserModel> execucoes =
                 workoutExecutionRecordPerUserRepository
-                        .findAllByWorkoutExecutionRecordPerUserId_UserIdAndWorkoutExecutionRecordPerUserId_WorkoutPlanId(userId, workoutPlanId);
+                        .findAllByWorkoutExecutionRecordPerUserId_ReceiverIdAndWorkoutExecutionRecordPerUserId_WorkoutPlanId(userId, workoutPlanId);
 
         // Criar um mapa para facilitar o acesso por workoutId
         Map<Integer, Short> execucoesPorWorkout = execucoes.stream()
@@ -173,9 +175,10 @@ public class WorkoutExecutionRecordPerUserService {
         completedWorkoutPlanRepository.save(completedWorkout);
     }
 
-    public void syncExecutionRecordsWithWorkoutPlan(WorkoutPlanModel workoutPlan, User user) {
+    public void syncExecutionRecordsWithWorkoutPlan(WorkoutPlanModel workoutPlan, User receiver) {
         List<WorkoutModel> workoutsInPlan = workoutPerWorkoutPlanRepository.findAllWorkoutsByWorkoutPlan(workoutPlan);
-        List<WorkoutExecutionRecordPerUserModel> existingRecords = workoutExecutionRecordPerUserRepository.findAllByWorkoutPlanId(workoutPlan.getWorkoutPlanId());
+        List<WorkoutExecutionRecordPerUserModel> existingRecords =
+                workoutExecutionRecordPerUserRepository.findAllByWorkoutPlanId(workoutPlan.getWorkoutPlanId());
 
         Set<Integer> existingWorkoutIds = existingRecords.stream()
                 .map(record -> record.getWorkoutExecutionRecordPerUserId().getWorkoutId())
@@ -186,13 +189,14 @@ public class WorkoutExecutionRecordPerUserService {
 
                 WorkoutExecutionRecordPerUserId id = new WorkoutExecutionRecordPerUserId();
                 id.setWorkoutId(workout.getWorkoutId());
-                id.setUserId(user.getUserId()); // ID do usuário que está vinculado à ficha
-                id.setWorkoutPlanId(workoutPlan.getWorkoutPlanId()); // ou getId() se for outro nome
+                id.setReceiverId(receiver.getUserId()); // o aluno
+                id.setSenderId(workoutPlan.getUser().getUserId()); // o criador da ficha
+                id.setWorkoutPlanId(workoutPlan.getWorkoutPlanId());
 
                 WorkoutExecutionRecordPerUserModel newRecord = new WorkoutExecutionRecordPerUserModel();
                 newRecord.setWorkoutExecutionRecordPerUserId(id);
-                newRecord.setExecutionCount((short) 0); // padrão
-                newRecord.setLastExecutionTime(null);   // ainda não executado
+                newRecord.setExecutionCount((short) 0);
+                newRecord.setLastExecutionTime(null);
 
                 workoutExecutionRecordPerUserRepository.save(newRecord);
             }
@@ -228,7 +232,16 @@ public class WorkoutExecutionRecordPerUserService {
     }
 
     public List<WorkoutExecutionRecordPerUserModel>  findAllRecordByPersonalId(int personalId){
-        return workoutExecutionRecordPerUserRepository.findAllByWorkoutExecutionRecordPerUserId_UserId(personalId);
+        List<WorkoutExecutionRecordPerUserModel> a = workoutExecutionRecordPerUserRepository.findAllByWorkoutExecutionRecordPerUserId_SenderId(personalId);
+        if (a.isEmpty()){
+            System.out.println("veio nada piazada");
+        }
+        for (WorkoutExecutionRecordPerUserModel teste : a){
+            System.out.println("id: ");
+            System.out.println(teste.getWorkoutExecutionRecordPerUserId());
+            System.out.println("\n");
+        }
+        return a;
     }
 
 }

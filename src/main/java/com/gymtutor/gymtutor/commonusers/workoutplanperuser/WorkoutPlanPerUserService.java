@@ -88,11 +88,11 @@ public class WorkoutPlanPerUserService {
     }
 
     @Transactional
-    public void linkUserToPlan(int workoutPlanId, int userId) {
+    public void linkUserToPlan(int workoutPlanId, int senderId, int receiverId) {
         // Busca o plano original
         WorkoutPlanModel originalPlan = workoutPlanService.findById(workoutPlanId);
 
-        User copiedUser = userRepository.findById(userId).orElseThrow();
+        User copiedUser = userRepository.findById(receiverId).orElseThrow();
 
         // Clona o plano (sem ID, com novo nome, etc.)
         WorkoutPlanModel clonedPlan = new WorkoutPlanModel();
@@ -109,7 +109,7 @@ public class WorkoutPlanPerUserService {
         clonedPlan.setUser(originalPlan.getUser()); // ou o novo usuário, se quiser alterar
 
         // Setando o usuario que ira utilizar essa cópia
-        User copyingUser = userRepository.findById(userId)
+        User copyingUser = userRepository.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("Usuário que está copiando não encontrado"));
         clonedPlan.setCopiedForUser(copyingUser);
 
@@ -131,7 +131,7 @@ public class WorkoutPlanPerUserService {
             clonedWorkout.setWorkoutName(originalWorkout.getWorkoutName());
             clonedWorkout.setRestTime(originalWorkout.getRestTime());
             clonedWorkout.setUser(originalWorkout.getUser());
-            clonedWorkout.setReceiverUserId(userId); // seta o usuario como o usuario novo
+            clonedWorkout.setReceiverUserId(receiverId); // seta o usuario como o usuario dono daquela ficha
 
             // Salva treino clonado
             workoutRepository.save(clonedWorkout);
@@ -171,11 +171,11 @@ public class WorkoutPlanPerUserService {
 
 
         // Finalmente, vincula o plano clonado ao usuário
-        User user = userService.findById(userId)
+        User user = userService.findById(receiverId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
         WorkoutPlanPerUserModel link = new WorkoutPlanPerUserModel();
-        WorkoutPlanPerUserId id = new WorkoutPlanPerUserId(clonedPlan.getWorkoutPlanId(), userId);
+        WorkoutPlanPerUserId id = new WorkoutPlanPerUserId(clonedPlan.getWorkoutPlanId(), receiverId);
         link.setWorkoutPlanPerUserId(id);
         link.setWorkoutPlan(clonedPlan);
         link.setUser(user);
@@ -184,7 +184,7 @@ public class WorkoutPlanPerUserService {
 
         // Inicia o acompanhamento de exercicios do aluno
         workoutExecutionRecordperUserService.createInitialCompletedStatusForPlan(link);
-        workoutExecutionRecordperUserService.createInitialExecutionsForPlan(link);
+        workoutExecutionRecordperUserService.createInitialExecutionsForPlan(link, senderId);
     }
 
     public List<WorkoutPlanModel> findWorkoutPlansByUserId(int userId) {

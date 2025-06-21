@@ -8,30 +8,35 @@ import java.util.Objects;
 @Embeddable
 public class WorkoutExecutionRecordPerUserId implements Serializable {
 
-    @Column(name="user_id", nullable = false)
-    private Integer userId;
+    @Column(name = "sender_id", nullable = true)
+    private Integer senderId;
 
-    @Column(name="workoutPlan_id", nullable = false)
+    @Column(name = "receiver_id", nullable = false)
+    private Integer receiverId;
+
+    @Column(name = "workoutPlan_id", nullable = false)
     private Integer workoutPlanId;
 
-    @Column(name="workout_id", nullable = false)
+    @Column(name = "workout_id", nullable = false)
     private Integer workoutId;
 
     public WorkoutExecutionRecordPerUserId() {
     }
 
-    public WorkoutExecutionRecordPerUserId(Integer userId, Integer workoutPlanId, Integer workoutId) {
-        this.userId = userId;
-        this.workoutPlanId = workoutPlanId;
-        this.workoutId = workoutId;
+    public Integer getSenderId() {
+        return senderId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public void setSenderId(Integer senderId) {
+        this.senderId = senderId;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public Integer getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(Integer receiverId) {
+        this.receiverId = receiverId;
     }
 
     public Integer getWorkoutPlanId() {
@@ -55,13 +60,14 @@ public class WorkoutExecutionRecordPerUserId implements Serializable {
         if (this == o) return true;
         if (!(o instanceof WorkoutExecutionRecordPerUserId)) return false;
         WorkoutExecutionRecordPerUserId that = (WorkoutExecutionRecordPerUserId) o;
-        return Objects.equals(userId, that.userId) &&
+        return Objects.equals(senderId, that.senderId) &&
+                Objects.equals(receiverId, that.receiverId) &&
                 Objects.equals(workoutPlanId, that.workoutPlanId) &&
                 Objects.equals(workoutId, that.workoutId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, workoutPlanId, workoutId);
+        return Objects.hash(senderId, receiverId, workoutPlanId, workoutId);
     }
 }

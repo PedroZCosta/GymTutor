@@ -18,14 +18,14 @@ public class WorkoutExecutionRecordController {
 
     @PostMapping("/workoutCheck")
     public String changeWorkoutExecutionRecord(
-            @RequestParam Integer userId,
+            @RequestParam Integer receiverId,
             @RequestParam Integer workoutPlanId,
             @RequestParam Integer workoutId,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
         return handleRequest(redirectAttributes, model, null, () -> {
-            workoutExecutionRecordPerUserService.workoutCheck(userId, workoutPlanId, workoutId);
+            workoutExecutionRecordPerUserService.workoutCheck(receiverId, receiverId, workoutPlanId, workoutId);
             redirectAttributes.addFlashAttribute("successMessage", "Treino registrado com sucesso!");
         });
     }

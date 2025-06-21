@@ -15,21 +15,28 @@ public interface WorkoutExecutionRecordPerUserRepository extends JpaRepository<W
 
     // Tive que fazer isso pois usar o JPA para 3 parametros de id Embedded da uns B.O as vezes
     @Query("SELECT r FROM WorkoutExecutionRecordPerUserModel r " +
-            "WHERE r.workoutExecutionRecordPerUserId.userId = :userId " +
+            "WHERE r.workoutExecutionRecordPerUserId.senderId = :senderId " +
+            "AND r.workoutExecutionRecordPerUserId.receiverId = :receiverId " +
             "AND r.workoutExecutionRecordPerUserId.workoutPlanId = :workoutPlanId " +
             "AND r.workoutExecutionRecordPerUserId.workoutId = :workoutId")
     Optional<WorkoutExecutionRecordPerUserModel> findRecord(
-            @Param("userId") Integer userId,
+            @Param("senderId") Integer senderId,
+            @Param("receiverId") Integer receiverId,
             @Param("workoutPlanId") Integer workoutPlanId,
             @Param("workoutId") Integer workoutId
     );
 
-    List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutExecutionRecordPerUserId_UserIdAndWorkoutExecutionRecordPerUserId_WorkoutPlanId(
-            Integer userId, Integer workoutPlanId
+    List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutExecutionRecordPerUserId_ReceiverIdAndWorkoutExecutionRecordPerUserId_WorkoutPlanId(
+            Integer receiverId, Integer workoutPlanId
     );
 
     @Query("SELECT w FROM WorkoutExecutionRecordPerUserModel w WHERE w.workoutExecutionRecordPerUserId.workoutPlanId = :workoutPlanId")
     List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutPlanId(@Param("workoutPlanId") Integer workoutPlanId);
 
-    List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutExecutionRecordPerUserId_UserId(Integer userId);
+    List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutExecutionRecordPerUserId_SenderId(Integer senderId);
+
+    List<WorkoutExecutionRecordPerUserModel> findAllByWorkoutExecutionRecordPerUserId_SenderIdAndWorkoutExecutionRecordPerUserId_ReceiverId(
+            Integer senderId, Integer receiverId);
 }
+
+

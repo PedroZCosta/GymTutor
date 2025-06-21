@@ -1,6 +1,7 @@
 package com.gymtutor.gymtutor.personal.clientgraphs;
 
 import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserModel;
+import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserRepository;
 import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutExecutionRecordPerUserService;
 import com.gymtutor.gymtutor.commonusers.workoutexecutionrecordperuser.WorkoutPlanWithRecordsDTO;
 import com.gymtutor.gymtutor.commonusers.workoutplan.WorkoutPlanModel;
@@ -27,6 +28,9 @@ public class ClientGraphsService {
     @Autowired
     private WorkoutPlanService workoutPlanService;
 
+    @Autowired
+    private WorkoutExecutionRecordPerUserRepository workoutExecutionRecordPerUserRepository;
+
     public List<ClientGraphDTO> findAllClientsGraphs(int personalId){
         // instaciamento da lista de DTO
         List<ClientGraphDTO> listClientGraphDTOs = new ArrayList<>();
@@ -44,7 +48,7 @@ public class ClientGraphsService {
             ClientGraphDTO clientGraphDTO = new ClientGraphDTO();
             clientGraphDTO.setUser(user);
 
-            var allRecords = workoutExecutionRecordPerUserService.findAllRecordByPersonalId(user.getUserId());
+            var allRecords = findAllBySenderAndReceiver(personalId, user.getUserId());
 
             var groupedByWorkoutPlan = allRecords.stream()
                     .collect(Collectors.groupingBy(record -> record.getWorkoutExecutionRecordPerUserId().getWorkoutPlanId()));
@@ -68,6 +72,9 @@ public class ClientGraphsService {
 
         // usuarios aqui e daqui eu consigo os id dos usuarios que dai eu consigo
         return listClientGraphDTOs;
+    }
 
+    public List<WorkoutExecutionRecordPerUserModel> findAllBySenderAndReceiver(int senderId, int receiverId) {
+        return workoutExecutionRecordPerUserRepository.findAllByWorkoutExecutionRecordPerUserId_SenderIdAndWorkoutExecutionRecordPerUserId_ReceiverId(senderId, receiverId);
     }
 }

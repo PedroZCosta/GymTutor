@@ -78,14 +78,15 @@ public class WorkoutPlanPerUserController {
     @PostMapping("/link")
     public String linkUser(
             @PathVariable Integer workoutPlanId,
-            @RequestParam Integer userId,
+            @RequestParam Integer receiverId,
             RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal CustomUserDetails loggedUser,
             Model model
     ) {
         return handleRequest(redirectAttributes, model,
                 "/student/workoutplan/linkusers",
                 null, () ->{
-                    workoutPlanPerUserService.linkUserToPlan(workoutPlanId, userId);
+                    workoutPlanPerUserService.linkUserToPlan(workoutPlanId, loggedUser.getUserId(), receiverId);
                     redirectAttributes.addFlashAttribute("successMessage", "Usuário vinculado com sucesso!");
                     return "redirect:/student/workoutplan/" + workoutPlanId + "/linkusers";
                 });
@@ -115,6 +116,7 @@ public class WorkoutPlanPerUserController {
         try{
             return block.execute();
         }catch (Exception ex) {
+            ex.printStackTrace();
             return handleException(ex, model, workoutPlanPerUserModel, view, redirectAttributes);
         }
     }
