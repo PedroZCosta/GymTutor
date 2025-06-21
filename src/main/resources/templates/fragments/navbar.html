@@ -64,10 +64,10 @@
                             <a class="nav-link text-white" href="/student/social">Social</a>
                         </li>
                         <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
-                            <a class="nav-link text-white" href="/student/workoutplan">Ficha de treinos</a>
+                            <a class="nav-link text-white" href="/student/workoutplan">Minhas fichas</a>
                         </li>
                         <li class="nav-item" th:if="${LoggedUserRole.contains('ROLE_STUDENT') or LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}">
-                            <a class="nav-link text-white" href="/student/workout">Treinos individuais</a>
+                            <a class="nav-link text-white" href="/student/workout">Meus treinos</a>
                         </li>
 
                         <!-- Seção do Personal -->

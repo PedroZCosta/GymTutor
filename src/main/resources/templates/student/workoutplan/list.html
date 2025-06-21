@@ -132,7 +132,7 @@
                 </form>
                 <form th:if="${LoggedUserRole.contains('ROLE_PERSONAL') or LoggedUserRole.contains('ROLE_ADMIN')}"
                       th:action="@{/student/workoutplan/{workoutPlanId}/linkusers(workoutPlanId=${plan.workoutPlanId})}" method="get" class="flex-fill">
-                    <button type="submit" class="btn btn-secondary w-100">Vincular Usuários</button>
+                    <button type="submit" class="btn btn-secondary w-100">Adicionar Usuários a ficha</button>
                 </form>
                 <form th:action="@{/student/workoutplan/{workoutPlanId}/linkworkout(workoutPlanId=${plan.workoutPlanId})}" method="get" class="flex-fill">
                     <button type="submit" class="btn btn-secondary w-100">Vincular Treinos</button>

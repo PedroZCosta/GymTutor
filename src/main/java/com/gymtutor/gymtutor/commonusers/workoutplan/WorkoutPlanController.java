@@ -80,6 +80,8 @@ public class WorkoutPlanController {
 
             workoutPlanService.activitiesSort(allPlans);
 
+
+
             model.addAttribute("lastExecutionMap", lastExecutionMap);
             model.addAttribute("workoutPlanList", allPlans);
             model.addAttribute("LoggedUserId", userId);
