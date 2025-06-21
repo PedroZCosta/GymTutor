@@ -39,13 +39,15 @@ public class WorkoutExecutionRecordPerUserService {
     @Autowired
     private WorkoutPerWorkoutPlanRepository workoutPerWorkoutPlanRepository;
 
-    public void workoutCheck(Integer senderID, Integer receiverId, Integer workoutPlanId, Integer workoutId) {
+    public void workoutCheck(Integer receiverId, Integer workoutPlanId, Integer workoutId) {
+        WorkoutPlanModel workoutPlan = workoutPlanService.findById(workoutPlanId);
+        User sender = workoutPlan.getUser();
+
         Optional<WorkoutExecutionRecordPerUserModel> optionalRecord =
-                workoutExecutionRecordPerUserRepository.findRecord(senderID, receiverId, workoutPlanId, workoutId);
+                workoutExecutionRecordPerUserRepository.findRecord(sender.getUserId(), receiverId, workoutPlanId, workoutId);
 
         if (optionalRecord.isEmpty()) {
             throw new RuntimeException("Registro não encontrado");
-
         }
         // checa se ja passou 20 minutos de todos os treinos para poder completar mais um
         if(canMarkWorkoutAsCompleted(workoutPlanId)){
@@ -232,16 +234,7 @@ public class WorkoutExecutionRecordPerUserService {
     }
 
     public List<WorkoutExecutionRecordPerUserModel>  findAllRecordByPersonalId(int personalId){
-        List<WorkoutExecutionRecordPerUserModel> a = workoutExecutionRecordPerUserRepository.findAllByWorkoutExecutionRecordPerUserId_SenderId(personalId);
-        if (a.isEmpty()){
-            System.out.println("veio nada piazada");
-        }
-        for (WorkoutExecutionRecordPerUserModel teste : a){
-            System.out.println("id: ");
-            System.out.println(teste.getWorkoutExecutionRecordPerUserId());
-            System.out.println("\n");
-        }
-        return a;
+        return workoutExecutionRecordPerUserRepository.findAllByWorkoutExecutionRecordPerUserId_SenderId(personalId);
     }
 
 }

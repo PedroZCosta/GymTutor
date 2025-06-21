@@ -43,7 +43,7 @@
                         </div>
                         <form th:action="@{/student/workoutplan/workoutCheck}" method="post"
                               th:id="'form-checkworkout-' + ${workout.workout.workoutId}">
-                            <input type="hidden" name="userId" th:value="${LoggedUserId}" />
+                            <input type="hidden" name="receiverId" th:value="${LoggedUserId}" />
                             <input type="hidden" name="workoutPlanId" th:value="${plan.workoutPlanId}" />
                             <input type="hidden" name="workoutId" th:value="${workout.workout.workoutId}" />
                             <button type="button" class="btn btn-success btn-sm"

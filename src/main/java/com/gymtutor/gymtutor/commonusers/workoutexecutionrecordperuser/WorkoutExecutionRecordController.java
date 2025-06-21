@@ -25,7 +25,7 @@ public class WorkoutExecutionRecordController {
             Model model
     ) {
         return handleRequest(redirectAttributes, model, null, () -> {
-            workoutExecutionRecordPerUserService.workoutCheck(receiverId, receiverId, workoutPlanId, workoutId);
+            workoutExecutionRecordPerUserService.workoutCheck(receiverId, workoutPlanId, workoutId);
             redirectAttributes.addFlashAttribute("successMessage", "Treino registrado com sucesso!");
         });
     }
