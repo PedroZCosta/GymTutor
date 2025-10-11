@@ -25,7 +25,7 @@ public class ActivitiesModel {
     private String activityName;
 
     @NotBlank(message = "Descrição não pode estar vazio!")
-    @Size(min = 10, max=200 , message = "Nome deve ter entre 10 e 200 caracteres.")
+    @Size(min = 10, max=200 , message = "Descrição deve ter entre 10 e 200 caracteres.")
     private String activityDescription;
 
     // Cria uma tabela relacionar entre o papel e o usuario
