@@ -63,21 +63,35 @@
 <script>
     function previewImage(event) {
         var file = event.target.files[0];
-        var reader = new FileReader();
+        if (!file) return;
 
+        // Tipos de imagem permitidos (MIME types)
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+
+        // Verifica o tipo do arquivo
+        if (!allowedTypes.includes(file.type)) {
+            alert("Tipo de arquivo inválido. Por favor, selecione uma imagem (JPG, PNG, GIF, WEBP ou BMP).");
+            event.target.value = "";  // Limpa o input
+            document.getElementById('imagePreview').style.display = 'none';
+            return;
+        }
+
+        // Verifica o tamanho (máximo 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert("O tamanho da imagem não pode exceder 5MB.");
+            event.target.value = "";  // Limpa o input
+            document.getElementById('imagePreview').style.display = 'none';
+            return;
+        }
+
+        // Exibe a imagem na pré-visualização
+        var reader = new FileReader();
         reader.onload = function(e) {
             var preview = document.getElementById('imagePreview');
             preview.src = e.target.result;
             preview.style.display = 'block';
         }
-
-        if (file.size > 5 * 1024 * 1024) {
-            alert("O tamanho da imagem não pode exceder 5MB.");
-            event.target.value = "";  // Limpa o campo file
-            document.getElementById('imagePreview').style.display = 'none';
-        } else {
-            reader.readAsDataURL(file);
-        }
+        reader.readAsDataURL(file);
     }
 </script>
 

@@ -68,23 +68,35 @@
 <script>
     function previewImage(event) {
         var file = event.target.files[0];
-        var reader = new FileReader();
+        if (!file) return;
 
+        // Verifica o tipo MIME do arquivo
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert("Tipo de arquivo inválido. Por favor, selecione uma imagem (JPG, PNG, GIF, WEBP ou BMP).");
+            document.getElementById('imageFile').value = "";
+            document.getElementById('imagePreview').style.display = 'none';
+            return;
+        }
+
+        // Verifica o tamanho (5MB = 5 * 1024 * 1024)
+        if (file.size > 5 * 1024 * 1024) {
+            alert("O tamanho da imagem não pode exceder 5MB.");
+            document.getElementById('imageFile').value = "";
+            document.getElementById('imagePreview').style.display = 'none';
+            return;
+        }
+
+        // Leitura da imagem e exibição
+        var reader = new FileReader();
         reader.onload = function(e) {
             var preview = document.getElementById('imagePreview');
             preview.src = e.target.result;
             preview.style.display = 'block';
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-            alert("O tamanho da imagem não pode exceder 5MB.");
-            document.getElementById('imageFile').value = "";
-            document.getElementById('imagePreview').style.display = 'none';
-        } else {
-            reader.readAsDataURL(file);
-        }
+        reader.readAsDataURL(file);
     }
 </script>
-
 </body>
 </html>
