@@ -28,7 +28,7 @@ public class WorkoutModel {
     @OneToMany(mappedBy = "workout")
     private List<WorkoutActivitiesModel> workoutActivities; // Relacionamento com WorkoutActivities
 
-    @NotBlank(message = "Repetição não pode estar vazio!")
+    @NotBlank(message = "Descanso não pode estar vazio!")
     @Size(min = 10, max=30 , message = "Este campo deve ter entre 10 e 30 caracteres.")
     private String restTime;
 

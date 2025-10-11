@@ -4,6 +4,7 @@ import com.gymtutor.gymtutor.commonusers.workout.WorkoutModel;
 import com.gymtutor.gymtutor.commonusers.workoutperworkoutplan.WorkoutPerWorkoutPlanModel;
 import com.gymtutor.gymtutor.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -43,6 +44,7 @@ public class WorkoutPlanModel {
     private User copiedForUser;
 
     @Column(name = "target_days_to_complete", nullable = false)
+    @Min(value = 1, message = "O número de dias deve ser maior que 0.")
     private Short targetDaysToComplete;
 
     // Construtor padrão

@@ -46,7 +46,7 @@
 
             <div class="mb-4">
                 <label for="workoutPlanTargetDaysToComplete" class="form-label">Dias totais para a compleção da ficha</label>
-                <input type="number" class="form-control rounded-pill shadow-sm" id="workoutPlanTargetDaysToComplete" name="workoutPlanTargetDaysToComplete" th:field="*{TargetDaysToComplete}" required>
+                <input type="number" class="form-control rounded-pill shadow-sm" id="workoutPlanTargetDaysToComplete" name="workoutPlanTargetDaysToComplete" th:field="*{TargetDaysToComplete}" min="1" required>
                 <div th:if="${#fields.hasErrors('TargetDaysToComplete')}" class="text-danger form-text">
                     <p th:each="err : ${#fields.errors('TargetDaysToComplete')}" th:text="${err}"></p>
                 </div>
